@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/blue"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:id="@+id/who"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textColor="@color/coffee"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:weightSum="1.0">
+
+        <Button
+            android:id="@+id/rsvp"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_weight=".50"
+            android:background="@color/yellowish_tan"
+            android:text="@string/rsvp"
+            android:textColor="@color/orange" />
+
+        <Button
+            android:id="@+id/more_details"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_weight=".50"
+            android:background="@color/yellowish_tan"
+            android:text="@string/meetup_more_details"
+            android:textColor="@color/orange" />
+    </LinearLayout>
+</LinearLayout>

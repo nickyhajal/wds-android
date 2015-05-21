@@ -1,0 +1,12 @@
+<resources>
+    <string name="preference_file_key">com.worlddominationsummit.wdsandroid</string>
+    <string name="login_email">E-Mail Address</string>
+    <string name="login_pw">Password</string>
+    <string name="login_button">Login to WDS</string>
+    <string name="question_text">Wat</string>
+    <string name="search_title">Search Attendees</string>
+    <string name="rsvp">RSVP</string>
+    <string name="meetup_more_details">More Details</string>
+    <string name="action_settings">Uhh whatever settings</string>
+    <string name="app_name">WDS</string>
+</resources>
