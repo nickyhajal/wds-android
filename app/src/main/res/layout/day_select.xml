@@ -1,0 +1,78 @@
+<LinearLayout
+    android:id="@+id/select_buttons"
+    android:visibility="gone"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Wednesday, July 8th"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:tag="2014-07-09"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Thursday, July 9th"
+        android:tag="2014-07-10"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Friday, July 10th"
+        android:tag="2014-07-11"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Saturday, July 11th"
+        android:tag="2014-07-12"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Sunday, July 12th"
+        android:tag="2014-07-13"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Monday, July 13th"
+        android:tag="2014-07-14"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Tuesday, July 14th"
+        android:tag="2014-07-15"
+        android:gravity="left|center"
+        android:paddingLeft="16dp"
+        android:textColor="@color/dark_gray"
+        android:background="@drawable/button_bottom_line"
+        />
+</LinearLayout>

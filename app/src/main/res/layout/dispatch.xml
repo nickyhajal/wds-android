@@ -10,15 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ListView
-            android:id="@+id/dispatch"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@android:color/white"
-            android:cacheColorHint="@android:color/white"
-            android:divider="@color/tan"
-            android:dividerHeight="4dp"/>
+    <ListView
+        android:id="@+id/dispatchContent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@android:color/white"
+        android:cacheColorHint="@android:color/white"
+        android:divider="@color/tan"
+        android:dividerHeight="4dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

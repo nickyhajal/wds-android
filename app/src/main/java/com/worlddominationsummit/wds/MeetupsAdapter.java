@@ -3,6 +3,7 @@ package com.worlddominationsummit.wds;
  * Created by nicky on 5/19/15.
  */
 
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import com.android.volley.VolleyError;
+import com.android.volley.Response;
 import com.applidium.headerlistview.SectionAdapter;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -81,7 +85,7 @@ public class MeetupsAdapter extends SectionAdapter {
     @Override
     public View getRowView(int section, int row, View convertView, ViewGroup parent) {
         ViewHolder holder = new ViewHolder();
-        Event event = Event.fromHashMap((HashMap<String, String>)getRowItem(section, row));
+        final Event event = Event.fromHashMap((HashMap<String, String>)getRowItem(section, row));
         if (convertView == null) {
             convertView = LayoutInflater.from(this.context).inflate(R.layout.meetup_row, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
@@ -99,6 +103,29 @@ public class MeetupsAdapter extends SectionAdapter {
         }
         holder.name.setText(event.what);
         holder.who.setText(event.who);
+        holder.rsvp.setText(event.isAttending() ? "unRSVP" : "RSVP");
+        final Button rsvp = holder.rsvp;
+        holder.rsvp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Me.toggleRsvp(event, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject rsp) {
+                        rsvp.setText(event.isAttending() ? "unRSVP" : "RSVP");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+            }
+        });
+        holder.details.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.self.open_meetup(event);
+            }
+        });
         return convertView;
     }
 

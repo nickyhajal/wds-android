@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/slidingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4" />
+
+    <com.worlddominationsummit.wds.DominationScrollView
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/meetupWhat"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:paddingTop="16dp"
+                android:text="Meetup Name"
+                android:textColor="@color/blue"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/meetupTime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
+                android:text="Meetup Time n Place"
+                android:textColor="@color/dark_gray"
+                android:textSize="18sp" />
+
+            <View
+                android:id="@+id/myRectangleView"
+                android:layout_width="fill_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/dark_gray" />
+
+            <TextView
+                android:id="@+id/meetupWho"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
+                android:text="A meetup for entrepreneurs, authors and dancers."
+                android:textColor="@color/dark_gray"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/meetupDescr"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:text="A meetup for entrepreneurs, authors and dancers."
+                android:textColor="@color/dark_gray"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </com.worlddominationsummit.wds.DominationScrollView>
+
+</LinearLayout>

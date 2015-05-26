@@ -28,8 +28,12 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
+    compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.6'
     compile files('libs/android-smart-image-view-1.0.0.jar')
+    compile files('libs/htmlspanner.jar')
+    compile 'com.github.curioustechizen.android-ago:library:1.2.0'
     compile 'com.github.applidium:HeaderListView:f9c33c21ae'
 }

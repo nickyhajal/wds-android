@@ -2,12 +2,14 @@ package com.worlddominationsummit.wds;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import com.android.volley.*;
-import com.android.volley.Response;
-import com.applidium.headerlistview.HeaderListView;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,23 +19,40 @@ import java.util.HashMap;
  */
 public class HomeFragment extends Fragment{
     public View view;
-    public HeaderListView listview;
-    public MeetupsAdapter adapter;
+    public ListView dispatchContent;
+    public DispatchAdapter adapter;
     public ArrayList<HashMap> items;
-    public String day = "2014-07-12";
+    public Dispatch mDispatch;
+    public SwipeRefreshLayout swipeRefresh;
 
-    public void willDisplay() {
+    public void init() {
+        mDispatch = new Dispatch();
+        mDispatch.context = this;
+        JSONObject params = new JSONObject();
+        try {
+            params.put("channel_type", "global");
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        mDispatch.initParams(params);
+        mDispatch.initFilters();
         this.items = new ArrayList<HashMap>();
+    }
+    public void willDisplay() {
         final HomeFragment ref = this;
-        Puts.i("GET EVENTS");
-        Assets.pull("events", new Response.Listener<JSONObject>() {
+        mDispatch.fetch(new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
-                ref.update_items((ArrayList<HashMap>) Store.getArray("meetups"));
+                try {
+                    ref.update_items((ArrayList<HashMap>) JsonHelper.toList(rsp.getJSONArray("feed_contents")));
+                } catch (JSONException e) {
+                    Log.e("WDS", "Json Exception", e);
+                }
             }
-        }, new Response.ErrorListener() {
+        }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("WDS", "VOLEY ER", error);
 //                ref.tabsStarted = true;
 //                ref.open_tabs();
             }
@@ -42,25 +61,33 @@ public class HomeFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(this.view == null) {
-            this.view = inflater.inflate(R.layout.meetups, container, false);
-            this.listview = (HeaderListView) this.view.findViewById(R.id.meetupList);
-            this.update_items();
+        if (this.view == null) {
+            this.view = inflater.inflate(R.layout.dispatch, container, false);
+            this.dispatchContent = (ListView) this.view.findViewById(R.id.dispatchContent);
+            this.swipeRefresh = (SwipeRefreshLayout) this.view.findViewById(R.id.swipeRefresh);
+            Puts.i(swipeRefresh.toString());
+            this.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    update_dispatch();
+                }
+            });
+
         }
         return this.view;
     }
 
+    public void update_dispatch() {
+        Puts.i("UPDATE");
+    }
     public void update_items(ArrayList<HashMap> items) {
         this.items = items;
         this.update_items();
     }
     public void update_items() {
-        Puts.i("UPDATE ITEMS");
-        this.adapter = new MeetupsAdapter(this.getActivity());
-        this.adapter.setDay(this.day);
-        this.adapter.setItems(this.items);
-        if (this.listview != null) {
-            this.listview.setAdapter(this.adapter);
+        this.adapter = new DispatchAdapter(this.getActivity(), this.items);
+        if (this.dispatchContent != null) {
+            this.dispatchContent.setAdapter(this.adapter);
         }
     }
 }

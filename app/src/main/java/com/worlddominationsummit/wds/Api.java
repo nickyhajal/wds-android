@@ -52,10 +52,8 @@ public class Api {
             }
         }
         if(method == Request.Method.GET && params != null) {
-            url += Api.params_to_query(params);
+            url += "?"+JsonHelper.UrlEncode(params);
         }
-        Puts.i(url);
-        Puts.i(params.toString());
         JsonObjectRequest request = new JsonObjectRequest(method, url, params, successListener, errorListener);
         Api.queue.add(request);
     }

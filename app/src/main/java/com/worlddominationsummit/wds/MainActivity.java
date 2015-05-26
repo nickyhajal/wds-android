@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -36,7 +37,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public ScheduleFragment scheduleFragment;
     public HomeFragment homeFragment;
 //    public ProfileFragment profileFragment;
-//    public MeetupFragment MeetupFragment;
+    public MeetupFragment meetupFragment;
     public TabsFragment tabsFragment;
 
 
@@ -49,8 +50,6 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.contentLayout = new FrameLayout(this);
         this.contentLayout.setId(R.id.frame_layout);
         this.setContentView(this.contentLayout);
-        this.initScreens();
-        this.open_loading();
         this.initApp();
         this.initSearch();
         this.startExperience();
@@ -87,6 +86,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
         Font.init(this);
         Store.init(this);
         Api.init(this);
+        initScreens();
+        this.open_loading();
         Assets.init(this);
         Me.init(this);
     }
@@ -96,8 +97,11 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.loadingFragment = new LoadingFragment();
         this.tabsFragment = new TabsFragment();
         this.meetupsFragment = new MeetupsFragment();
+        this.meetupFragment = new MeetupFragment();
         this.scheduleFragment = new ScheduleFragment();
         this.attendeeSearchFragment = new AttendeeSearchFragment();
+        this.homeFragment= new HomeFragment();
+        this.homeFragment.init();
     }
 
     public void startExperience() {
@@ -146,7 +150,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
 
     public void run() {
-        open_schedule();
+        open_dispatch();
     }
 
     public void open_meetups() {
@@ -155,7 +159,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
 
     public void open_dispatch() {
-        //this.meetupsFragment.willDisplay();
+        this.homeFragment.willDisplay();
         this.tabsFragment.open(this.homeFragment);
     }
 
@@ -183,6 +187,11 @@ public class MainActivity extends FragmentActivity implements Runnable {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, frag).addToBackStack(null).commit();
     }
 
+    public void open_meetup(Event event) {
+        this.meetupFragment.setEvent(event);
+        open(this.meetupFragment);
+    }
+
     public void open_search() {
         this.search_close.setVisibility(View.VISIBLE);
         open(this.attendeeSearchFragment);
@@ -190,7 +199,10 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void close_search() {
         this.search_close.setVisibility(View.GONE);
+        this.search_inp.clearFocus();
         getActionBar().getCustomView().requestFocus();
+        InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.search_inp.getWindowToken(), 0);
         open_tabs();
     }
 

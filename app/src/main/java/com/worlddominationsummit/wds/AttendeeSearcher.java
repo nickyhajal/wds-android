@@ -64,7 +64,6 @@ public class AttendeeSearcher implements Runnable{
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Puts.i("Search problem");
             }
         });
     }

@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:paddingTop="10dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        >
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="0dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            >
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="fill_parent"
+                android:text="Nicky Hajal"
+                android:layout_height="22dp"
+                android:layout_marginTop="0dp"
+                android:textColor="@color/orange"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_marginTop="-2dp"
+                android:layout_height="30dp">
+                <com.github.curioustechizen.ago.RelativeTimeTextView
+                    android:textColor="@color/dark_gray"
+                    android:textSize="14sp"
+                    android:id="@+id/timestamp"
+                    android:text="20 minutes ago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:id="@+id/channel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textColor="@color/dark_gray"
+                    android:text=" - global"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/coffee"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        />
+    <LinearLayout
+        android:layout_marginBottom="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="24dp">
+        <Button
+            android:id="@+id/num_likes"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:textColor="@color/orange"
+            android:text="3 Likes"
+            android:textSize="15sp"
+            android:layout_width="0dp"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            />
+        <Button
+            android:id="@+id/num_comments"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:textSize="15sp"
+            android:textColor="@color/orange"
+            android:text="3 Likes"
+            android:gravity="right|center"
+            android:paddingRight="10dp"
+            />
+    </LinearLayout>
+</LinearLayout>

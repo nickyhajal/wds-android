@@ -3,12 +3,14 @@ package com.worlddominationsummit.wds;
  * Created by nicky on 5/18/15.
  */
 
+import android.text.Spannable;
 import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import net.nightwhistler.htmlspanner.HtmlSpanner;
 
 public class Event{
     public String event_id;
@@ -24,6 +26,8 @@ public class Event{
     public String startTime;
     public String startStr;
     public String dayStr;
+    public String timeStr;
+    public String whoStr;
     public String because;
     public String becauseStr;
     public int num_rsvps;
@@ -83,7 +87,19 @@ public class Event{
                 }
             }
         }
+        this.timeStr = this.dayStr+" at "+this.startStr;
+        if (this.who != null) {
+            this.whoStr = "A meetup for "+this.who.replaceFirst(this.who.substring(0, 1), this.who.substring(0, 1).toLowerCase());
+        }
 
+    }
+    public Spannable descrWithHtmlParsed() {
+        HtmlSpanner htmlspanner = new HtmlSpanner();
+        Puts.i("CREATE");
+        return htmlspanner.fromHtml("<html><body><p>"+this.descr+"</p></body></html>");
+    }
+    public Boolean isAttending() {
+        return Me.isAttendingEvent(this);
     }
 
 

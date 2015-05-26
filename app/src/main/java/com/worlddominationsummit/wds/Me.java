@@ -52,6 +52,14 @@ public class Me {
             return "";
         }
     }
+    public static JSONArray getJSONArray (String key) {
+        try {
+            return Me.params.getJSONArray(key);
+        } catch (JSONException e) {
+            Log.e("WDS", "JSON Exception", e);
+            return new JSONArray();
+        }
+    }
 
     public static void set (String key, String val) {
         try {
@@ -87,7 +95,7 @@ public class Me {
 
     public static void checkLoggedIn() {
         Me.user_token = Store.get("user_token");
-        if(Me.user_token != "") {
+        if(!Me.user_token.equals("")) {
             Api.get("user/validate", null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject rsp) {
@@ -117,7 +125,7 @@ public class Me {
 
     public static int checkWalkthrough() {
         String step = Store.get("walkthrough");
-        return step == "" ? 0 : Integer.parseInt(step);
+        return step.equals("") ? 0 : Integer.parseInt(step);
     }
 
     public static void saveUserToken(String user_token) {
@@ -142,12 +150,12 @@ public class Me {
         }
     }
 
-    public static boolean likesFeedItem(int item_id) {
+    public static boolean likesFeedItem(String item_id) {
         try {
             JSONArray likes = new JSONArray(Me.get("feed_likes"));
             int len = likes.length();
             for (int i=0; i < len; i++){
-                if(likes.getInt(i) == item_id) {
+                if(likes.getString(i).equals(item_id)) {
                     return true;
                 }
             }
@@ -156,6 +164,69 @@ public class Me {
         catch (JSONException e) {
             Log.e("WDS", "JSON Exception", e);
             return false;
+        }
+    }
+
+    public static void toggleLike(String feed_id, final Response.Listener<JSONObject> successListener, Response.ErrorListener errorListener) {
+        final String fid = feed_id;
+        JSONObject params = new JSONObject();
+        try {
+            params.put("feed_id", feed_id);
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        if (!Me.likesFeedItem(feed_id)) {
+            Puts.i("POST LIKE");
+            Api.post("feed/like", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject rsp) {
+                    JSONArray feed_likes = new JSONArray();
+                    try {
+                        feed_likes = new JSONArray(Me.get("feed_likes"));
+                    } catch (JSONException e) {
+                        Log.e("WDS", "Json Exception", e);
+                    }
+                    feed_likes.put(fid);
+                    Me.set("feed_likes", feed_likes);
+                    successListener.onResponse(rsp);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO: Server error response
+                }
+            });
+        }
+        else {
+            Api.delete("feed/like", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject rsp) {
+                    JSONArray tmp = new JSONArray();
+                    JSONArray feed_likes = new JSONArray();
+                    try {
+                        feed_likes = new JSONArray(Me.get("feed_likes"));
+                    } catch (JSONException e) {
+                        Log.e("WDS", "Json Exception", e);
+                    }
+                    int len = feed_likes.length();
+                    for(int i = 0; i < len; i++) {
+                        if(!feed_likes.optString(i).equals(fid)) {
+                            try {
+                                tmp.put(feed_likes.get(i));
+                            } catch (JSONException e) {
+                                Log.e("WDS", "Json Exception", e);
+                            }
+                        }
+                    }
+                    Me.set("feed_likes", feed_likes);
+                    successListener.onResponse(rsp);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO: Server error response
+                }
+            });
         }
     }
 
@@ -217,6 +288,36 @@ public class Me {
             }
         }
     }
+    public static void toggleRsvp(final Event event, final Response.Listener<JSONObject> successListener, final Response.ErrorListener errorListener) {
+        String event_id = String.valueOf(event.event_id);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("event_id", event_id);
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        Api.post("event/rsvp", params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject rsp) {
+                JSONArray rsvps = Me.getJSONArray("rsvps");
+                if(Me.isAttendingEvent(event)) {
+                    JsonHelper.deleteVal(rsvps, event.event_id);
+                }
+                else {
+                    rsvps.put(event.event_id);
+                }
+                Me.set("rsvps", rsvps);
+                successListener.onResponse(rsp);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResponse(error);
+            }
+        });
+    }
+
 
 //    public static boolean isInterestedInEvent(Event event) {
 //        try {

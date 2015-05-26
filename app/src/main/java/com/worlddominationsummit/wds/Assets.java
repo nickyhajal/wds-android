@@ -59,9 +59,7 @@ public class Assets {
                         Log.e("WDS", "Json Exception", e);
                     }
                     if (rsp.has(key)) {
-                        Puts.i(key);
                         if (key.equals("me")) {
-                            Puts.i("LETS DO ME");
                             try {
                                 Assets.process_me(rsp.getJSONObject(key));
                             } catch (JSONException e) {
@@ -95,7 +93,6 @@ public class Assets {
     }
 
     public static void process_me(JSONObject rsp) {
-        Puts.i(">>>>>>> UPDATE ME!!");
         Me.update(rsp);
         Store.set("me", rsp);
     }

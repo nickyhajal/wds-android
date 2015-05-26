@@ -11,6 +11,7 @@ import java.util.Iterator;
  * Created by nicky on 5/18/15.
  */
 public class Attendee {
+    public static String default_avatar = "http://worlddominationsummit.com/images/default-avatar.png";
     public String user_id;
     public String first_name = "░░░░░░░░░";
     public String last_name = "░░░░░░░";
@@ -76,17 +77,17 @@ public class Attendee {
     }
 
     private void initDistance() {
-        double distance = Double.parseDouble(this.distance);
-        if(this.distance != "") {
-            if(distance < 2) {
+        if (this.distance != null && !this.distance.equals("")) {
+            double distance = Double.parseDouble(this.distance);
+            if (distance < 2) {
                 distance = 4;
             }
+            this.distance = Double.toString(Math.ceil(distance));
         }
-        this.distance = Double.toString(Math.ceil(distance));
     }
     private void initPic() {
         this.hasPic = true;
-        if(this.pic == "") {
+        if(this.pic.equals("")) {
             this.pic = "/images/default-avatar.png";
             this.hasPic = false;
         }

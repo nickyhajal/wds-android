@@ -46,6 +46,21 @@ public class JsonHelper {
         return map;
     }
 
+    public static JSONArray deleteVal(JSONArray json, String val) {
+        JSONArray out = new JSONArray();
+        int len = json.length();
+        for(int i = 0; i < len; i++) {
+            try {
+                if(json.get(i) != val) {
+                    out.put(val);
+                }
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+        }
+        return out;
+    }
+
     public static List toList(JSONArray array) throws JSONException {
         List list = new ArrayList();
         for (int i = 0; i < array.length(); i++) {
@@ -64,5 +79,62 @@ public class JsonHelper {
         } else {
             return json;
         }
+    }
+    public static String UrlEncode(JSONObject json) {
+        String output = "";
+        List<String> keys = new ArrayList<String>();
+        try {
+            keys = JsonHelper.toList(json.names());
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        for (String currKey : keys) {
+            try {
+                output += UrlEncodePart(json.get(currKey), currKey);
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+        }
+
+        return output.substring(0, output.length()-1);
+    }
+
+    private static String UrlEncodePart(Object json, String prefix) {
+        String output = "";
+        if (json instanceof JSONObject) {
+            JSONObject obj = (JSONObject)json;
+            List<String> keys = new ArrayList<String>();
+            try {
+                keys = JsonHelper.toList(obj.names());
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+            for (String currKey : keys) {
+                String subPrefix = prefix + "[" + currKey + "]";
+                try {
+                    output += UrlEncodePart(obj.get(currKey), subPrefix);
+                } catch (JSONException e) {
+                    Log.e("WDS", "Json Exception", e);
+                }
+            }
+        } else if (json instanceof JSONArray) {
+            JSONArray jsonArr = (JSONArray) json;
+            int arrLen = jsonArr.length();
+
+            for (int i = 0; i < arrLen; i++) {
+                String subPrefix = prefix + "[" + i + "]";
+                Object child = new Object();
+                try {
+                    child = jsonArr.get(i);
+                } catch (JSONException e) {
+                    Log.e("WDS", "Json Exception", e);
+                }
+                output += UrlEncodePart(child, subPrefix);
+            }
+        } else {
+            output = prefix + "=" + json.toString() + "&";
+        }
+
+        return output;
     }
 }

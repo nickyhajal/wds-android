@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.volley.*;
 import com.android.volley.Response;
 import com.applidium.headerlistview.HeaderListView;
@@ -46,9 +45,12 @@ public class ScheduleFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(this.view == null) {
+            final ScheduleFragment ref = this;
             this.view = inflater.inflate(R.layout.schedule, container, false);
             this.listview = (HeaderListView) this.view.findViewById(R.id.scheduleList);
             this.listview.getListView().setId(R.id.scheduleListview);
+
+            // DAY SELECT
             TextView name = (TextView) this.view.findViewById(R.id.selectLabel);
             name.setTypeface(Font.use("Vitesse_Medium"));
             Button btn = (Button) this.view.findViewById(R.id.selectBtn);
@@ -56,11 +58,22 @@ public class ScheduleFragment extends Fragment{
             final LinearLayout selectBtns= (LinearLayout) this.view.findViewById(R.id.select_buttons);
             selectBtns.setVisibility(View.GONE);
             btn.setTypeface(Font.use("Vitesse_Medium"));
+            View.OnClickListener selectDayListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView t = (TextView) v;
+                    String day = t.getTag().toString();
+                    String dayStr = t.getText().toString();
+                    ref.changeDay(day, dayStr);
+                    selectBtns.setVisibility(View.GONE);
+                }
+            };
             int count = selectBtns.getChildCount();
             for (int i = 0; i <= count; i++) {
                 View v = selectBtns.getChildAt(i);
                 if (v instanceof TextView) {
                     ((TextView) v).setTypeface(Font.use("Vitesse_Medium"));
+                    v.setOnClickListener(selectDayListener);
                 }
             }
             btn.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +85,13 @@ public class ScheduleFragment extends Fragment{
             this.update_items();
         }
         return this.view;
+    }
+
+    public void changeDay(String day, String dayStr) {
+        this.day = day;
+        TextView dayView = (TextView) this.view.findViewById(R.id.selectLabel);
+        dayView.setText(dayStr);
+        update_items();
     }
 
     public void update_items(ArrayList<HashMap> items) {

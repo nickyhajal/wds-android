@@ -31,8 +31,11 @@ public class Store {
    }
 
    public static String get(String key) {
-      return Store.data.getString(key, "");
+       return Store.data.getString(key, "");
    }
+    public static String get(String key, String def) {
+        return Store.data.getString(key, def);
+    }
    public static List getArray(String key) {
       try {
          JSONArray json = new JSONArray(Store.data.getString(key, ""));
@@ -42,6 +45,31 @@ public class Store {
          return new ArrayList();
       }
    }
+   public static HashMap getMap(String key) {
+      try {
+         HashMap map = (HashMap) JsonHelper.toMap(Store.getJsonObject(key));
+         return map;
+      } catch (JSONException e) {
+         Log.e("WDS", "Json Exception", e);
+         return new HashMap();
+      }
+   }
+   public static JSONObject getJsonObject(String key) {
+      try {
+         return new JSONObject(Store.get(key, "{}"));
+      } catch (JSONException e) {
+         Log.e("WDS", "Json Exception", e);
+         return new JSONObject();
+      }
+   }
+    public static JSONArray getJsonArray(String key) {
+        try {
+            return new JSONArray(Store.get(key, "{}"));
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+            return new JSONArray();
+        }
+    }
    public static String get(String key, Boolean cache) {
       if(cache) {
          // TODO: Check Cache

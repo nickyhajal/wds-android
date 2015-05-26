@@ -1,123 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:padding="0dp"
-  android:background="@color/tan"
-  >
-    <LinearLayout
-        android:id="@+id/select_buttons"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Wednesday, July 8th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Thursday, July 9th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Friday, July 10th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Saturday, July 11th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Sunday, July 12th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Monday, July 13th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:text="Tuesday, July 14th"
-            android:gravity="left|center"
-            android:paddingLeft="16dp"
-            android:textColor="@color/dark_gray"
-            android:background="@drawable/button_bottom_line"
-            />
-    </LinearLayout>
-
-  <RelativeLayout
-      android:orientation="horizontal"
-      android:layout_width="fill_parent"
-      android:layout_height="40dp"
-      android:background="@color/bright_tan"
-      >
-    <TextView
-        android:id="@+id/selectLabel"
-        android:textSize="20sp"
-        android:textColor="@color/dark_gray"
-        android:textColorHint="@color/white"
-        android:hint="@string/search_title"
-        android:layout_marginTop="3dp"
-        android:paddingTop="5dp"
-        android:paddingLeft="16dp"
-        android:text="Saturday, July 23rd"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/search_close"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/selectBtn"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:paddingTop="3dp"
-        android:textSize="20sp"
-        android:text="Select"
-        android:layout_alignParentRight="true"
-        android:background="@color/bright_tan"
-        android:textColor="@color/dark_gray"/>
-
-  </RelativeLayout>
-  <com.applidium.headerlistview.HeaderListView
-    android:id="@+id/meetupList"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/white"
-    android:cacheColorHint="@android:color/white"
-    android:divider="@color/tan"
-    android:dividerHeight="4dp"
-    android:layout_marginLeft="4dp"
-      android:layout_marginRight="4dp"
-    >
-  </com.applidium.headerlistview.HeaderListView>
+    android:background="@color/tan"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <include layout="@layout/day_select" />
+
+    <include layout="@layout/day_select_heading" />
+
+    <com.applidium.headerlistview.HeaderListView
+        android:id="@+id/meetupList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@android:color/white"
+        android:cacheColorHint="@android:color/white"
+        android:divider="@color/tan"
+        android:dividerHeight="4dp"></com.applidium.headerlistview.HeaderListView>
 </LinearLayout>
