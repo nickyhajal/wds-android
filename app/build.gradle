@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.worlddominationsummit.wds"
+        applicationId "com.worlddominationsummit.wdsandroid"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -20,6 +21,7 @@ android {
 }
 
 repositories {
+    mavenCentral()
     maven {
         url "https://jitpack.io"
     }
@@ -28,11 +30,13 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.google.android.gms:play-services:7.3.0'
+    compile "com.google.android.gms:play-services:7.5.+"
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.6'
+    compile 'info.hoang8f:android-segmented:1.0.5'
     compile files('libs/android-smart-image-view-1.0.0.jar')
+    compile 'com.github.pungrue26:SelectableRoundedImageView:c310290065'
+    compile files('libs/htmlcleaner-2.2.1.jar')
     compile files('libs/htmlspanner.jar')
     compile 'com.github.curioustechizen.android-ago:library:1.2.0'
     compile 'com.github.applidium:HeaderListView:f9c33c21ae'

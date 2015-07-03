@@ -1,33 +1,73 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dp"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:layout_height="fill_parent"
+    android:visibility="gone"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/search_inp"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:background="@drawable/input_white_line"
-        android:hint="@string/search_title"
-        android:layout_marginTop="3dp"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/search_close"
+    <LinearLayout
+        android:id="@+id/titleShell"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="Meetups"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="4dp"
+            android:paddingRight="16dp"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/search_close"
-        android:layout_width="35dp"
-        android:layout_height="40dp"
-        android:paddingTop="10dp"
-        android:paddingRight="8dp"
-        android:textSize="20sp"
-        android:text="X"
-        android:layout_alignParentRight="true"
-        android:background="@color/green"
-        android:textColor="@color/white"/>
+    <LinearLayout
+        android:id="@+id/meetups"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <Spinner
+            android:id="@+id/meetupSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            />
+    </LinearLayout>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/searchShell"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+
+        <EditText
+            android:id="@+id/search_inp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@+id/search_close"
+            android:background="@drawable/input_white_line"
+            android:hint="@string/search_title"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/search_close"
+            android:layout_width="35dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@color/green"
+            android:paddingRight="8dp"
+            android:paddingTop="10dp"
+            android:text="X"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+</LinearLayout>

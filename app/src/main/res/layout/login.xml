@@ -1,47 +1,77 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.worlddominationsummit.wdsandroid.NonFocusingScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="30dp"
-    android:background="@color/green"
-    >
-    <ImageView
-      android:src="@drawable/big_logo"
-      android:maxHeight="200dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:adjustViewBounds="true"
-      android:layout_gravity="center_horizontal"
-      />
-    <EditText
-      android:id="@+id/email_inp"
-      android:textSize="16sp"
-      android:textColor="@color/orange"
-      android:textColorHint="@color/orange"
-      android:inputType="textEmailAddress"
-      android:hint="@string/login_email"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/input_solid_white"
-      android:layout_marginTop="30dp"/>
-    <EditText
-      android:id="@+id/pw_inp"
-      android:textSize="16sp"
-      android:textColor="@color/orange"
-      android:textColorHint="@color/orange"
-      android:inputType="textPassword"
-      android:hint="@string/login_pw"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:password="true"
-      android:background="@drawable/input_solid_white"/>
-    <Button
-      android:id="@+id/login_button"
-      android:textSize="16sp"
-      android:textColor="@color/white"
-      android:background="@color/orange"
-      android:gravity="center_horizontal|center_vertical"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/login_button" />
-</LinearLayout>
+    android:background="@color/green">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/green"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:maxHeight="200dp"
+            android:src="@drawable/big_logo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/email_inp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/input_solid_white"
+                android:hint="@string/login_email"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/orange"
+                android:textColorHint="@color/orange"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/pw_inp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_solid_white"
+                android:hint="@string/login_pw"
+                android:inputType="textPassword"
+                android:password="true"
+                android:textColor="@color/orange"
+                android:textColorHint="@color/orange"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/orange"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/login_button"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/forgot"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Forgot Password?"
+                android:textColor="@color/light_tan"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.worlddominationsummit.wdsandroid.NonFocusingScrollView>

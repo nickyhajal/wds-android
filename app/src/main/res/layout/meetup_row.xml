@@ -24,6 +24,17 @@
         android:layout_marginRight="10dp"
         android:textSize="16sp"/>
 
+    <TextView
+        android:id="@+id/because"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textColor="@color/dark_gray"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="2dp"
+        android:textSize="15sp"/>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -36,7 +47,7 @@
             android:layout_width="fill_parent"
             android:layout_height="45dp"
             android:layout_weight=".50"
-            android:background="@color/yellowish_tan"
+            android:background="@drawable/tan_top_line"
             android:text="@string/rsvp"
             android:textColor="@color/orange" />
 
@@ -45,7 +56,7 @@
             android:layout_width="fill_parent"
             android:layout_height="45dp"
             android:layout_weight=".50"
-            android:background="@color/yellowish_tan"
+            android:background="@drawable/tan_top_left_line"
             android:text="@string/meetup_more_details"
             android:textColor="@color/orange" />
     </LinearLayout>

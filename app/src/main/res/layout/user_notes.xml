@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ListView
+        android:id="@+id/userNotesList"
+        android:background="@color/tan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+
+        />
+
+    <Button
+        android:id="@+id/startNote"
+        android:tag="font_Karla"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@drawable/white_top_line"
+        android:textColor="@color/dark_gray"
+        android:layout_alignParentBottom="true"
+        android:gravity="left|center"
+        android:textSize="17sp"
+        android:paddingTop="7dp"
+        android:paddingBottom="6dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:text="Write a note..."/>
+
+
+
+</RelativeLayout>

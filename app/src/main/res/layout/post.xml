@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="0dp"
+    android:background="@color/tan"
+    >
+    <RelativeLayout
+        android:id="@+id/controls"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@color/bright_tan">
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_height="40dp" />
+        <Button
+            android:id="@+id/postBtn"
+            android:tag="font_Karla_Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Post"
+            android:minWidth="120dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:layout_alignParentRight="true"
+            android:background="@color/orange"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+    <EditText
+        android:id="@+id/postField"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:hint="Start typing here to share a post..."
+        android:textColorHint="@color/dark_gray"
+        android:background="@drawable/input_solid_white"
+        android:padding="16dp"
+        android:gravity="top"
+        android:tag="font_Karla"
+        />
+
+</LinearLayout>

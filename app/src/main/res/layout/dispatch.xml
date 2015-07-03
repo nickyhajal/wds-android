@@ -5,8 +5,135 @@
     android:orientation="vertical"
     android:padding="0dp">
 
+    <RelativeLayout
+        android:id="@+id/community_controls"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp">
+        <Button
+            android:id="@+id/community_leave_btn"
+            android:layout_width="40dp"
+            android:maxWidth="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="15sp"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/button_bottom_right_line"
+            android:textColor="@color/dark_gray"
+            android:tag="leave"
+            android:text="x"
+            />
+        <Button
+            android:id="@+id/community_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@+id/community_post_btn"
+            android:layout_toRightOf="@+id/community_leave_btn"
+            android:background="@drawable/button_bottom_right_line"
+            android:tag="communities"
+            android:text="Community Name"
+            android:textColor="@color/dark_gray"
+            />
+        <Button
+            android:id="@+id/community_post_btn"
+            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="1dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@drawable/button_bottom_line"
+            android:textColor="@color/dark_gray"
+            android:tag="post"
+            android:text="Share a Post"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dispatch_controls"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="1dp"
+            android:textSize="15sp"
+            android:layout_toLeftOf="@+id/communities_btn"
+            android:background="@drawable/button_bottom_right_line"
+            android:textColor="@color/dark_gray"
+            android:tag="filters"
+            android:text="Filters"
+            />
+        <Button
+            android:id="@+id/communities_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@+id/post_btn"
+            android:background="@drawable/button_bottom_right_line"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textSize="15sp"
+            android:tag="communities"
+            android:text="Communities"
+            android:textColor="@color/dark_gray"
+            />
+        <Button
+            android:id="@+id/post_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="1dp"
+            android:textSize="15sp"
+            android:background="@drawable/button_bottom_line"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/dark_gray"
+            android:tag="post"
+            android:text="Share a Post"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/offlineMessage"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:text="Looks like you're offline"
+            android:textSize="24sp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginTop="90dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/dark_gray"
+            android:tag="font_Vitesse_Medium"
+            android:gravity="center"
+            />
+        <TextView
+            android:text="The Dispatch will be back once it can connect to WDS HQ."
+            android:textSize="18sp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:tag="font_Karla"
+            android:gravity="center"
+            android:textColor="@color/dark_gray"
+            />
+    </LinearLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
+        android:background="@color/tan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,9 +143,9 @@
         android:layout_height="fill_parent"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:background="@android:color/white"
+        android:background="@color/tan"
         android:cacheColorHint="@android:color/white"
         android:divider="@color/tan"
-        android:dividerHeight="4dp"/>
+        android:dividerHeight="0dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

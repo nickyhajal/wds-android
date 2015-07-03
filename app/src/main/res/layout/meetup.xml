@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:id="@+id/slidingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,19 +10,24 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
+        map:liteMode="true"
         android:layout_height="0dp"
-        android:layout_weight="0.4" />
+        android:layout_weight="0.6" />
 
-    <com.worlddominationsummit.wds.DominationScrollView
+    <com.worlddominationsummit.wdsandroid.DominationScrollView
         android:id="@+id/content"
+        android:background="@color/light_tan"
+        android:paddingBottom="0dp"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6">
+        android:layout_weight="0.4">
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="14dp"
+            android:paddingBottom="50dp"
             android:orientation="vertical">
 
             <TextView
@@ -30,7 +36,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:paddingTop="16dp"
                 android:text="Meetup Name"
                 android:textColor="@color/blue"
                 android:textSize="24sp" />
@@ -56,6 +61,40 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/dark_gray" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <TextView
+                    android:id="@+id/hostedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hosted\nBy:"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="16sp"/>
+                <ImageView
+                    android:id="@+id/hostAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+                <TextView
+                    android:id="@+id/hostName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/orange"
+                    android:background="@color/tan"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="1dp"
+                    android:paddingRight="10dp"
+                    android:layout_marginTop="-2dp"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/meetupWho"
                 android:layout_width="fill_parent"
@@ -66,6 +105,61 @@
                 android:text="A meetup for entrepreneurs, authors and dancers."
                 android:textColor="@color/dark_gray"
                 android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/rsvp"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textSize="15sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/light_tan"
+                android:background="@color/blue"
+                android:tag="font_Karla_Bold"
+                />
+            <Button
+                android:id="@+id/attendees"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textSize="15sp"
+                android:text="View Attendees"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/orange"
+                android:background="@color/tan"
+                android:tag="font_Karla_Bold"
+                />
+
+            <Button
+                android:id="@+id/feed"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textSize="15sp"
+                android:text="View Meetup Feed"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/orange"
+                android:background="@color/tan"
+                android:tag="font_Karla_Bold"
+                />
 
             <TextView
                 android:id="@+id/meetupDescr"
@@ -78,6 +172,6 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="18sp" />
         </LinearLayout>
-    </com.worlddominationsummit.wds.DominationScrollView>
+    </com.worlddominationsummit.wdsandroid.DominationScrollView>
 
 </LinearLayout>

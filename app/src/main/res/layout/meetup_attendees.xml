@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bright_tan"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:tag="font_Karla_Italic"
+        android:text="Loading..."
+        android:textColor="@color/dark_gray"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/nullMsg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No attendees...yet"
+        android:tag="font_Karla_Italic"
+        android:textSize="26sp"
+        android:gravity="center"
+        android:textColor="@color/dark_gray"
+        />
+
+    <ListView
+        android:id="@+id/results"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/tan"
+        android:dividerHeight="1dp"
+        android:paddingLeft="0dp"
+        android:visibility="gone"></ListView>
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.worlddominationsummit.wds;
+package com.worlddominationsummit.wdsandroid;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

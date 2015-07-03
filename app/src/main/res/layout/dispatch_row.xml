@@ -1,12 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bg"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/tan"
     android:orientation="vertical"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:paddingTop="10dp">
+    >
+    <LinearLayout
+        android:id="@+id/card"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -74,6 +82,7 @@
         android:layout_marginBottom="10dp"
         />
     <LinearLayout
+        android:id="@+id/buttons"
         android:layout_marginBottom="5dp"
         android:layout_width="fill_parent"
         android:layout_height="24dp">
@@ -101,5 +110,6 @@
             android:gravity="right|center"
             android:paddingRight="10dp"
             />
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>

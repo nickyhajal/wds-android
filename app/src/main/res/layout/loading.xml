@@ -4,14 +4,16 @@
     android:layout_height="match_parent"
     android:id="@+id/login_layout"
     android:background="@color/green"
+    android:gravity="center_vertical"
     android:weightSum="1">
-
     <ImageView
-        android:layout_width="317dp"
-        android:layout_height="match_parent"
         android:id="@+id/imageView"
-        android:layout_gravity="center"
         android:src="@drawable/big_logo"
-        android:paddingTop="90dp"
-        android:paddingBottom="120dp" />
+        android:maxHeight="250dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+    />
 </LinearLayout>

@@ -8,11 +8,24 @@
     <include layout="@layout/day_select"/>
     <include layout="@layout/day_select_heading"/>
 
+    <TextView
+        android:id="@+id/nullMsg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="24sp"
+        android:textColor="@color/dark_gray"
+        android:text="You don't have anything schedule here... yet."
+        android:padding="30dp"
+        android:layout_marginTop="70dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
   <com.applidium.headerlistview.HeaderListView
       android:id="@+id/scheduleList"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:background="@android:color/white"
+      android:background="@color/tan"
       android:cacheColorHint="@android:color/white"
       android:divider="@color/tan"
       android:dividerHeight="4dp"

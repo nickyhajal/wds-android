@@ -5,6 +5,51 @@
   android:padding="0dp"
   android:background="@color/bright_tan"
   >
+  <RelativeLayout
+      android:id="@+id/search_controls"
+      android:layout_width="fill_parent"
+      android:layout_height="40dp">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="1dp"
+        android:textSize="15sp"
+        android:layout_toLeftOf="@+id/friended_me_btn"
+        android:background="@drawable/button_bottom_right_line"
+        android:textColor="@color/dark_gray"
+        android:tag="friends"
+        android:text="Friends"
+        />
+    <Button
+        android:id="@+id/friended_me_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_toLeftOf="@+id/match_btn"
+        android:background="@drawable/button_bottom_right_line"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="15sp"
+        android:tag="friended me"
+        android:text="Friended Me"
+        android:textColor="@color/dark_gray"
+        />
+    <Button
+        android:id="@+id/match_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="1dp"
+        android:textSize="15sp"
+        android:background="@drawable/button_bottom_line"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/dark_gray"
+        android:tag="match me"
+        android:text="You'd Like"
+        />
+  </RelativeLayout>
   <ListView
     android:id="@+id/results"
     android:layout_width="fill_parent"
@@ -13,6 +58,6 @@
     android:cacheColorHint="@android:color/transparent"
     android:divider="@color/tan"
     android:dividerHeight="1dp"
-    android:paddingLeft="2dp" >
+    android:paddingLeft="0dp" >
   </ListView>
 </LinearLayout>

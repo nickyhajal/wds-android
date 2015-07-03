@@ -4,6 +4,76 @@
     android:background="@color/tan"
     android:orientation="vertical"
     android:padding="0dp">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp">
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@+id/communities_btn"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:background="@drawable/button_bottom_line"
+            android:textSize="14sp"
+            android:text="Filters"
+            />
+        <Button
+            android:id="@+id/communities_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="14sp"
+            android:layout_marginTop="1dp"
+            android:padding="0dp"
+            android:layout_toLeftOf="@+id/post_btn"
+            android:background="@drawable/button_bottom_line"
+            android:text="Communities"
+            />
+        <Button
+            android:id="@+id/post_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:padding="0dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/button_bottom_line"
+            android:text="Share a Post"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/offlineMessage"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:text="Looks like you're offline"
+            android:textSize="24sp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginTop="90dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/dark_gray"
+            android:gravity="center"
+            />
+        <TextView
+            android:text="The Dispatch will be back once it can connect to WDS HQ."
+            android:textSize="18sp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textColor="@color/dark_gray"
+            />
+    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"

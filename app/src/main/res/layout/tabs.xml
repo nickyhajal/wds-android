@@ -31,38 +31,68 @@
         android:orientation="horizontal"
         android:background="@color/coffee">
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_dispatch"
             style="?android:attr/buttonStyleSmall"
-            android:layout_weight="0.34"
+            android:layout_weight="0.25"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:layout_gravity="center_horizontal|center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:maxHeight="40dp"
+            android:scaleType="fitCenter"
             android:background="@color/coffee"
-            android:textColor="@color/orange"
-            android:text="Dispatch" />
+            android:src="@drawable/dispatch_icon"
+            />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_schedule"
             style="?android:attr/buttonStyleSmall"
-            android:layout_weight="0.34"
+            android:layout_weight="0.25"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal|center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:maxHeight="40dp"
+            android:scaleType="fitCenter"
             android:background="@color/coffee"
             android:textColor="@color/white"
-            android:text="Schedule" />
+            android:src="@drawable/schedule_icon"
+            />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_meetups"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
-            android:layout_weight="0.34"
+            android:layout_weight="0.25"
             android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal|center"
+            android:maxHeight="40dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scaleType="fitCenter"
             android:background="@color/coffee"
             android:textColor="@color/white"
-            android:text="Meetups" />
+            android:src="@drawable/meetups_icon"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_explore"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_weight="0.25"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal|center"
+            android:maxHeight="40dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:scaleType="fitCenter"
+            android:background="@color/coffee"
+            android:textColor="@color/white"
+            android:src="@drawable/explore_icon"
+            />
     </LinearLayout>
 
 
