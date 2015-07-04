@@ -263,14 +263,17 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
             map.clear();
-            LatLng markerPos = new LatLng(Double.parseDouble(ref.event.lat), Double.parseDouble(ref.event.lon));
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPos, 16));
-            Marker marker = map.addMarker(new MarkerOptions()
-                    .title(ref.event.place)
-                    .snippet(ref.event.address)
-                    .anchor(0.5f, 1.0f)
-                    .position(markerPos));
-            marker.showInfoWindow();
+            if(event.lat != null && event.lon != null && event.address != null
+                    && !event.lat.equals("null") && !event.lon.equals("null") && !event.address.equals("null")) {
+                LatLng markerPos = new LatLng(Double.parseDouble(ref.event.lat), Double.parseDouble(ref.event.lon));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPos, 16));
+                Marker marker = map.addMarker(new MarkerOptions()
+                .title(ref.event.place)
+                .snippet(ref.event.address)
+                .anchor(0.5f, 1.0f)
+                .position(markerPos));
+                marker.showInfoWindow();
+            }
         }
     }
 

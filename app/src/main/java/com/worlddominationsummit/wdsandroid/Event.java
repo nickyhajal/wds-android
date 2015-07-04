@@ -126,7 +126,7 @@ public class Event{
         int len = because.length();
         for (int i = 0; i < len; i++) {
             str += because.optString(i);
-            if (i < len-3) {
+            if (i < len-2) {
                 str += ", ";
             }
             else if (i == len - 2) {

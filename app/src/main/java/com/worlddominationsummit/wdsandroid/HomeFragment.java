@@ -278,6 +278,9 @@ public class HomeFragment extends Fragment{
     @Override
     public void onDetach() {
         activeMeetup = null;
+        mDispatch.leaveChannel();
+        mDispatchControls.setVisibility(View.VISIBLE);
+        mCommunityControls.setVisibility(View.GONE);
         super.onDetach();
     }
 }
