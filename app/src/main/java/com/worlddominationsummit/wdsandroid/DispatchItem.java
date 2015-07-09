@@ -8,8 +8,10 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 /**
  * Created by nicky on 5/18/15.
@@ -48,7 +50,10 @@ public class DispatchItem {
         if (it.created_at_str != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             try {
-                it.created_at = formatter.parse(it.created_at_str).getTime();
+                TimeZone tz = TimeZone.getDefault();
+                Date now = new Date();
+                long offsetFromUtc = tz.getOffset(now.getTime());
+                it.created_at = formatter.parse(it.created_at_str).getTime() + offsetFromUtc - 3000;
             } catch (ParseException e) {
                 Log.e("WDS", "Parse Exception", e);
             }

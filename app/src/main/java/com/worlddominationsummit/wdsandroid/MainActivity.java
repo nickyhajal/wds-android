@@ -456,8 +456,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
         else getActionBar().show();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, frag, tag);
-        if  (frag != loadingFragment && frag != postFragment) {
-            Puts.i("ADD TO BACK STACK");
+        if  (frag != loadingFragment) {
             transaction.addToBackStack(tag);
         }
         transaction.commit();
@@ -547,24 +546,28 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public void onBackPressed() {
         // Fragment fragmentBeforeBackPress = getCurrentFragment();
         // Perform the usual back action
-        if (tabsActive && tabsFragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
-            tabsFragment.getChildFragmentManager().popBackStack();
+        if (active == postFragment && false) {
+            open_tabs();
         }
         else {
-            super.onBackPressed();
-            tabsActive = false;
-        }
-        Handler hnd = new Handler();
-        hnd.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                findActive();
-                updateTitle();
-                if (tabsActive) {
-                    tabsFragment.updateTabs();
-                }
+            if (tabsActive && tabsFragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
+                tabsFragment.getChildFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+                tabsActive = false;
             }
-        }, 10);
+            Handler hnd = new Handler();
+            hnd.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findActive();
+                    updateTitle();
+                    if (tabsActive) {
+                        tabsFragment.updateTabs();
+                    }
+                }
+            }, 10);
+        }
     }
 
     private static class TitleSpinner extends ArrayAdapter<String> {

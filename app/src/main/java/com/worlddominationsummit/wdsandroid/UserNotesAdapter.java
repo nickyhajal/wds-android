@@ -47,8 +47,6 @@ public class UserNotesAdapter extends ArrayAdapter<HashMap>{
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Puts.i(unote.toString());
-        Puts.i((String) unote.get("note"));
         holder.note.setText((String) unote.get("note"));
         return convertView;
     }

@@ -21,8 +21,8 @@ public class Api {
 
     public static RequestQueue queue;
 
-    private static String url = "http://wds.nky";
-//    private static String url = "http://worlddominationsummit.com";
+//    private static String url = "http://wds.nky";
+    private static String url = "http://worlddominationsummit.com";
 
     public static void init(Context context){
         Api.queue = Volley.newRequestQueue(context);
