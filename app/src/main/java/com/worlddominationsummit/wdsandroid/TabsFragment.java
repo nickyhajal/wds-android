@@ -29,9 +29,7 @@ public class TabsFragment extends Fragment{
     public ImageButton dispatch;
     public ImageButton schedule;
     public ImageButton meetups;
-    public ImageButton mDspBtn;
-    public ImageButton mSchBtn;
-    public ImageButton mMtpBtn;
+    public ImageButton explore;
     public MainActivity context;
     public Fragment active;
     public HashMap<String, Fragment> frags;
@@ -54,9 +52,7 @@ public class TabsFragment extends Fragment{
             this.dispatch = (ImageButton) this.view.findViewById(R.id.btn_dispatch);
             this.schedule = (ImageButton) this.view.findViewById(R.id.btn_schedule);
             this.meetups = (ImageButton) this.view.findViewById(R.id.btn_meetups);
-            //this.dispatch.setTypeface(Font.use("Karla"));
-//            this.schedule.setTypeface(Font.use("Karla"));
-//            this.meetups.setTypeface(Font.use("Karla"));
+            this.explore = (ImageButton) this.view.findViewById(R.id.btn_explore);
             dispatch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
@@ -73,6 +69,12 @@ public class TabsFragment extends Fragment{
                 @Override
                 public void onClick(View arg0) {
                     MainActivity.self.open_meetups();
+                }
+            });
+            explore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    MainActivity.self.open_explore();
                 }
             });
         }
@@ -106,6 +108,7 @@ public class TabsFragment extends Fragment{
         dispatch.setImageResource((MainActivity.self.active == this.context.homeFragment) ? R.drawable.dispatch_icon_selected : R.drawable.dispatch_icon);
         schedule.setImageResource((MainActivity.self.active == this.context.scheduleFragment) ? R.drawable.schedule_icon_selected : R.drawable.schedule_icon);
         meetups.setImageResource((MainActivity.self.active == this.context.meetupsFragment) ? R.drawable.meetups_icon_selected : R.drawable.meetups_icon);
+        explore.setImageResource((MainActivity.self.active == this.context.exploreFragment) ? R.drawable.explore_icon_selected : R.drawable.explore_icon);
 //        this.dispatch.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.homeFragment) ? R.drawable.dispatch_icon_selected : R.drawable.dispatch_icon), 32, 32), null, null);
 //        this.schedule.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.scheduleFragment) ? R.drawable.schedule_icon_selected : R.drawable.schedule_icon), 32, 32), null, null);
 //        this.meetups.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.meetupsFragment) ? R.drawable.meetups_icon_selected : R.drawable.meetups_icon), 32, 32), null, null);

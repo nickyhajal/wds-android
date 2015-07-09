@@ -24,6 +24,31 @@
             />
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/explore"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <Spinner
+            android:id="@+id/exploreSpinner"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_height="fill_parent"
+            android:paddingRight="20dp"
+            />
+        <Button
+            android:id="@+id/checkin"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Check In"
+            android:layout_marginRight="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@color/green"
+            />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/meetups"
         android:layout_width="fill_parent"

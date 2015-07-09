@@ -103,6 +103,7 @@ public class Assets {
         if (asset.equals("meetups")) {
             pullAsset = "events";
         }
+        Puts.i(pullAsset);
         long tracked = 0;
         try {
             tracked = _tracker.getLong(pullAsset);

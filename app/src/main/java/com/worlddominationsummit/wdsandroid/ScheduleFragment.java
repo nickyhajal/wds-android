@@ -89,7 +89,7 @@ public class ScheduleFragment extends Fragment{
             name.setTypeface(Font.use("Vitesse_Medium"));
             Button btn = (Button) this.view.findViewById(R.id.selectBtn);
             btn.setTypeface(Font.use("Vitesse_Medium"));
-            final LinearLayout selectBtns= (LinearLayout) this.view.findViewById(R.id.select_buttons);
+            final LinearLayout selectBtns = (LinearLayout) this.view.findViewById(R.id.select_buttons);
             selectBtns.setVisibility(View.GONE);
             btn.setTypeface(Font.use("Vitesse_Medium"));
             View.OnClickListener selectDayListener = new View.OnClickListener() {

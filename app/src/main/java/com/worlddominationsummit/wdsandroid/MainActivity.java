@@ -41,10 +41,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import info.hoang8f.android.segmented.SegmentedGroup;
 public class MainActivity extends FragmentActivity implements Runnable {
 
     public static MainActivity self;
@@ -55,7 +52,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
     private RelativeLayout searchShell;
     private FrameLayout contentLayout;
     private Spinner mMeetupSpinner;
+    private Spinner mExploreSpinner;
     private LinearLayout mMeetupHead;
+    private RelativeLayout mExploreHead;
     private AttendeeSearcher searcher;
     private Boolean tabsStarted = false;
     public LoginFragment loginFragment;
@@ -71,6 +70,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public CommunitiesFragment communitiesFragment;
     public UserNotesFragment userNotesFragment;
     public MeetupFragment meetupFragment;
+    public ExploreFragment exploreFragment;
+    public CheckinFragment checkinFragment;
     public MeetupAttendeesFragment meetupAttendeesFragment;
     public DispatchContentFragment dispatchContentFragment;
     public TabsFragment tabsFragment;
@@ -124,6 +125,17 @@ public class MainActivity extends FragmentActivity implements Runnable {
         mMeetupSpinner = (Spinner) bar.findViewById(R.id.meetupSpinner);
         mMeetupHead = (LinearLayout) bar.findViewById(R.id.meetups);
         mMeetupHead.setVisibility(View.GONE);
+        mExploreSpinner = (Spinner) bar.findViewById(R.id.exploreSpinner);
+        mExploreHead = (RelativeLayout) bar.findViewById(R.id.explore);
+        mExploreHead.setVisibility(View.GONE);
+        Button checkinBtn = (Button) bar.findViewById(R.id.checkin);
+        checkinBtn.setTypeface(Font.use("Vitesse_Medium"));
+        checkinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open_checkins();
+            }
+        });
         ArrayList<String> meetupSections = new ArrayList<String>();
         meetupSections.add("Browse Meetups");
         meetupSections.add("Attending Meetups");
@@ -131,6 +143,12 @@ public class MainActivity extends FragmentActivity implements Runnable {
         TitleSpinner meetupSpinnerAdapter =  new TitleSpinner(this, R.layout.title_spinner, meetupSections);
         mMeetupSpinner.setAdapter(meetupSpinnerAdapter);
         mMeetupSpinner.setSelection(0);
+        ArrayList<String> exploreSections = new ArrayList<String>();
+        exploreSections.add("Near You");
+        exploreSections.add("What's Hot");
+        TitleSpinner exploreSpinnerAdapter =  new TitleSpinner(this, R.layout.title_spinner, exploreSections);
+        mExploreSpinner.setAdapter(exploreSpinnerAdapter);
+        mExploreSpinner.setSelection(0);
         this.search_inp.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 ref.run_search(s.toString());
@@ -144,10 +162,21 @@ public class MainActivity extends FragmentActivity implements Runnable {
         });
         this.search_inp.setOnFocusChangeListener(searchFocus);
         this.search_close.setOnClickListener(searchCloseClick);
-        mMeetupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mExploreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 meetupsFragment.changeState(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
+        mExploreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                exploreFragment.changeState(position);
             }
 
             @Override
@@ -177,13 +206,15 @@ public class MainActivity extends FragmentActivity implements Runnable {
         meetupFragment = new MeetupFragment();
         profileFragment = new ProfileFragment();
         scheduleFragment = new ScheduleFragment();
+        checkinFragment = new CheckinFragment();
         attendeeSearchFragment = new AttendeeSearchFragment();
         postFragment = new PostFragment();
         meetupAttendeesFragment = new MeetupAttendeesFragment();
         communitiesFragment = new CommunitiesFragment();
         filtersFragment = new FiltersFragment();
         dispatchContentFragment = new DispatchContentFragment();
-        homeFragment= new HomeFragment();
+        homeFragment = new HomeFragment();
+        exploreFragment = new ExploreFragment();
         userNotesFragment = new UserNotesFragment();
         homeFragment.init();
     }
@@ -300,10 +331,14 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 }
             } else if (active == meetupsFragment) {
                 title = "Meetups";
+            } else if (active == exploreFragment) {
+                title = "Explore";
             } else if (active == homeFragment) {
                 if (homeFragment.activeMeetup != null) {
                     title = "Dispatch: " + meetupFragment.event.what;
                 }
+            } else if (active == checkinFragment) {
+                title = "Check In";
             } else if (active == communitiesFragment) {
                 title = "Communities";
             } else if (active == scheduleFragment) {
@@ -324,9 +359,12 @@ public class MainActivity extends FragmentActivity implements Runnable {
             this.titleShell.setVisibility(View.GONE);
             this.searchShell.setVisibility(View.GONE);
             mMeetupHead.setVisibility(View.GONE);
+            mExploreHead.setVisibility(View.GONE);
             if (title.length() > 0) {
                 if (title.equals("Meetups")) {
                     mMeetupHead.setVisibility(View.VISIBLE);
+                } else if (title.equals("Explore")) {
+                        mExploreHead.setVisibility(View.VISIBLE);
                 } else {
                     this.title.setText(title);
                     this.titleShell.setVisibility(View.VISIBLE);
@@ -368,6 +406,16 @@ public class MainActivity extends FragmentActivity implements Runnable {
             public void run() {
                 homeFragment.willDisplay();
                 tabsFragment.open(homeFragment, "home");
+            }
+        }, 10);
+    }
+
+    public void open_explore() {
+        open_tabs();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tabsFragment.open(exploreFragment, "explore");
             }
         }, 10);
     }
@@ -446,6 +494,10 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void update_search(JSONArray users) {
         this.attendeeSearchFragment.update_items(users);
+    }
+
+    public void open_checkins() {
+        open(checkinFragment, "checkin");
     }
 
 
@@ -541,6 +593,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 .findFragmentByTag(fragmentTag);
         return currentFragment;
     }
+
 
     @Override
     public void onBackPressed() {
