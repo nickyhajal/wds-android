@@ -85,6 +85,8 @@ public class TabsFragment extends Fragment{
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.tab_content, frag, tag);
         transaction.addToBackStack(tag);
+        if (frag != MainActivity.self.postFragment) {
+        }
         transaction.commit();
         if (!MainActivity.self.frags.containsKey(tag)){
             MainActivity.self.frags.put(tag, frag);
@@ -147,7 +149,6 @@ public class TabsFragment extends Fragment{
 
     @Override
     public void onDestroy() {
-        Puts.i("DESTROY");
         if (MainActivity.self.active.isResumed()) {
         }
         super.onDestroy();
@@ -156,7 +157,6 @@ public class TabsFragment extends Fragment{
     public Fragment getCurrentFragment(){
         FragmentManager fragmentManager = getChildFragmentManager();
         String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
-        Puts.i(fragmentTag);
         Fragment currentFragment = getChildFragmentManager().findFragmentByTag(fragmentTag);
         return currentFragment;
     }

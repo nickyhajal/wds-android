@@ -207,9 +207,7 @@ public class ProfileFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("WDS", "Json Exception", e);
                     }
-                    Puts.i(params);
                     if (Me.isFriend(mAtn.user_id)) {
-                        Puts.i("POST");
                         Api.delete("user/connection", params, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject jsonObject) {
@@ -224,7 +222,6 @@ public class ProfileFragment extends Fragment {
                             }
                         });
                     } else {
-                        Puts.i("POST");
                         Api.post("user/connection", params, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject jsonObject) {
@@ -258,17 +255,28 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             });
+            mInstagram.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String instagram = "http://instagram.com/"+mAtn.instagram;
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(instagram)));
+                }
+            });
             mSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mAtn.site)));
+                    String site = mAtn.site;
+                    if(!site.contains("http://") && !site.contains("https://")) {
+                        site = "http://"+site;
+                    }
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(site)));
                 }
             });
             mFb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 String fb = mAtn.facebook;
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com.com/" + fb)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com/" + fb)));
                 }
             });
             Font.applyTo(content);

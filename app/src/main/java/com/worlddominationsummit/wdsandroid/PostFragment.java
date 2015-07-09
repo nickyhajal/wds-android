@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,12 +58,10 @@ public class PostFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mPostField.setText("");
-        mPostBtn.setText("Post");
+    public void onDestroyView() {
         mFeedItem = null;
         mUserId = null;
+        super.onDestroy();
     }
 
     @Override
@@ -94,7 +93,16 @@ public class PostFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject jsonObject) {
                                 closeKeyPad(mPostField);
-                                MainActivity.self.open_user_notes(mUserId);
+                                mPostBtn.setText("Saved!");
+                                mPostField.setText("");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                                    }
+                                }, 100);
+                                //MainActivity.self.open_user_notes(mUserId);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -115,7 +123,16 @@ public class PostFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject jsonObject) {
                                 MainActivity.self.dispatchContentFragment.scrollToBottom = true;
-                                MainActivity.self.open_dispatch_item(mFeedItem);
+                                closeKeyPad(mPostField);
+                                mPostBtn.setText("Posted!");
+                                mPostField.setText("");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                                    }
+                                }, 100);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -129,9 +146,17 @@ public class PostFragment extends Fragment {
                         MainActivity.self.homeFragment.mDispatch.post(text, new Response.Listener() {
                             @Override
                             public void onResponse(Object o) {
-                                mPostBtn.setText("Post");
-                                MainActivity.self.homeFragment.resetDispatch();
-                                MainActivity.self.open_dispatch();
+                                mPostBtn.setText("Posted!");
+                                mPostField.setText("");
+                                MainActivity.self.homeFragment.load_new();
+                                closeKeyPad(mPostField);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                                    }
+                                }, 100);
                             }
                         }, new Response.ErrorListener() {
                             @Override

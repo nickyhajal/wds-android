@@ -150,7 +150,6 @@ public class HomeFragment extends Fragment{
                 public void onClick(View v) {
                     Button t = (Button) v;
                     String action = t.getTag().toString();
-                    Puts.i(action);
                     if (action.equals("filters")) {
                         MainActivity.self.open_filters();
                     } else if (action.equals("communities")) {
@@ -237,7 +236,6 @@ public class HomeFragment extends Fragment{
         load_new();
     }
     public void prepend_items(ArrayList<HashMap> items) {
-        Puts.i(items.size());
         int len = items.size()-1;
         for (int i = len; i >= 0; i--) {
             HashMap item = items.get(i);
@@ -278,9 +276,6 @@ public class HomeFragment extends Fragment{
     @Override
     public void onDetach() {
         activeMeetup = null;
-        mDispatch.leaveChannel();
-        mDispatchControls.setVisibility(View.VISIBLE);
-        mCommunityControls.setVisibility(View.GONE);
         super.onDetach();
     }
 }

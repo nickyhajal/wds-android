@@ -138,9 +138,7 @@ public class MeetupsFragment extends Fragment{
     }
 
     public void update_items(JSONArray items) {
-        Puts.i(this.items);
         this.items = items;
-        Puts.i(this.items);
         this.update_items();
     }
     public void update_items() {

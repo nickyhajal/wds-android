@@ -125,7 +125,7 @@ public class Dispatch {
         try {
             params.put("content", text);
             params.put("channel_type", mParams.get("channel_type"));
-            if(params.has("channel_id")) {
+            if(mParams.has("channel_id")) {
                 params.put("channel_id", mParams.get("channel_id"));
             }
         } catch (JSONException e) {

@@ -64,7 +64,6 @@ public class AttendeeSearcher implements Runnable{
                 @Override
                 public void onResponse(JSONObject rsp) {
                     try {
-                        Puts.i(rsp);
                         context.update_search(rsp.getJSONArray("user"));
                     } catch (JSONException e) {
                         Log.e("WDS", "Json Exception", e);
