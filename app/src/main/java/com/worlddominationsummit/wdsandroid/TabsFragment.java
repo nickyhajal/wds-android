@@ -82,7 +82,9 @@ public class TabsFragment extends Fragment{
     public void open(Fragment frag, String tag) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.tab_content, frag, tag);
-        transaction.addToBackStack(tag);
+        if (frag != MainActivity.self.postFragment) {
+            transaction.addToBackStack(tag);
+        }
         transaction.commit();
         if (!MainActivity.self.frags.containsKey(tag)){
             MainActivity.self.frags.put(tag, frag);

@@ -116,6 +116,7 @@ public class PostFragment extends Fragment {
                             public void onResponse(JSONObject jsonObject) {
                                 MainActivity.self.dispatchContentFragment.scrollToBottom = true;
                                 MainActivity.self.open_dispatch_item(mFeedItem);
+                                closeKeyPad(mPostField);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -132,6 +133,7 @@ public class PostFragment extends Fragment {
                                 mPostBtn.setText("Post");
                                 MainActivity.self.homeFragment.resetDispatch();
                                 MainActivity.self.open_dispatch();
+                                closeKeyPad(mPostField);
                             }
                         }, new Response.ErrorListener() {
                             @Override

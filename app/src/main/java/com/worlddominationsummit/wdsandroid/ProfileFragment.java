@@ -261,14 +261,18 @@ public class ProfileFragment extends Fragment {
             mSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mAtn.site)));
+                    String site = mAtn.site;
+                    if(!site.contains("http://") && !site.contains("https://")) {
+                        site = "http://"+site;
+                    }
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(site)));
                 }
             });
             mFb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 String fb = mAtn.facebook;
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com.com/" + fb)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com/" + fb)));
                 }
             });
             Font.applyTo(content);

@@ -456,7 +456,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
         else getActionBar().show();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, frag, tag);
-        if  (frag != loadingFragment) {
+        if  (frag != loadingFragment && frag != postFragment) {
+            Puts.i("ADD TO BACK STACK");
             transaction.addToBackStack(tag);
         }
         transaction.commit();
