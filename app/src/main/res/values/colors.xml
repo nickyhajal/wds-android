@@ -4,6 +4,8 @@
     <item name="orange" type="color">#FFE99533</item>
     <item name="tan" type="color">#FFEAEADC</item>
     <item name="yellowish_tan" type="color">#FFF2F2E8</item>
+    <item name="dark_yellow_tan" type="color">#FFD6D6CC</item>
+    <item name="mid_tan" type="color">#FFF6F6EA</item>
     <item name="bright_tan" type="color">#FFFCFCF3</item>
     <item name="medium_tan" type="color">#FFFDFDF8</item>
     <item name="light_tan" type="color">#FFFCFCFA</item>
@@ -17,6 +19,7 @@
     <item name="bright_green" type="color">#FFBDC72B</item>
     <item name="white" type="color">#FFFFFFFF</item>
     <item name="coffee" type="color">#FF21170A</item>
+    <item name="light_coffee" type="color">#FF716B60</item>
 
 
     <integer-array name="androidcolors">

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.volley.*;
 import com.android.volley.Response;
 import com.applidium.headerlistview.HeaderListView;
@@ -27,14 +26,12 @@ import java.util.HashMap;
 /**
  * Created by nicky on 5/18/15.
  */
-public class MeetupsFragment extends Fragment{
+public class RegistrationFragment extends Fragment{
     public View view;
     public HeaderListView listview;
-    public MeetupsAdapter adapter;
+    public RegistrationAdapter adapter;
     public JSONArray items;
     public String day = "";
-    public String mState = "browse";
-    public String mDayStr = "Tuesday, July 7th";
     public TextView mNullMsg;
 
     public void willDisplay() {
@@ -42,8 +39,8 @@ public class MeetupsFragment extends Fragment{
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
             String today = dateFormat.format(date);
-            if (today.compareTo("2015-07-07") < 0) {
-                day = "2015-07-07";
+            if (today.compareTo("2016-08-09") < 0) {
+                day = "2016-08-11";
             }
             else {
                 day = today;
@@ -52,13 +49,14 @@ public class MeetupsFragment extends Fragment{
         if (this.items == null) {
             this.items = new JSONArray();
         }
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final MeetupsFragment ref = this;
-        Assets.getSmart("meetups", new Response.Listener<JSONObject>() {
+        final RegistrationFragment ref = this;
+        Assets.getSmart("events", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
                 try {
@@ -79,10 +77,10 @@ public class MeetupsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(this.view == null) {
-            final MeetupsFragment ref = this;
-            this.view = inflater.inflate(R.layout.meetups, container, false);
-            this.listview = (HeaderListView) this.view.findViewById(R.id.meetupList);
-            this.listview.getListView().setId(R.id.meetupListview);
+            final RegistrationFragment ref = this;
+            this.view = inflater.inflate(R.layout.registration, container, false);
+            this.listview = (HeaderListView) this.view.findViewById(R.id.scheduleList);
+            this.listview.getListView().setId(R.id.scheduleListview);
             mNullMsg = (TextView) this.view.findViewById(R.id.nullMsg);
             mNullMsg.setTypeface(Font.use("Karla_Bold"));
 
@@ -91,7 +89,7 @@ public class MeetupsFragment extends Fragment{
             name.setTypeface(Font.use("Vitesse_Medium"));
             Button btn = (Button) this.view.findViewById(R.id.selectBtn);
             btn.setTypeface(Font.use("Vitesse_Medium"));
-            final LinearLayout selectBtns= (LinearLayout) this.view.findViewById(R.id.select_buttons);
+            final LinearLayout selectBtns = (LinearLayout) this.view.findViewById(R.id.select_buttons);
             selectBtns.setVisibility(View.GONE);
             btn.setTypeface(Font.use("Vitesse_Medium"));
             View.OnClickListener selectDayListener = new View.OnClickListener() {
@@ -118,7 +116,6 @@ public class MeetupsFragment extends Fragment{
                     selectBtns.setVisibility(View.VISIBLE);
                 }
             });
-
             this.update_items();
         }
         return this.view;
@@ -126,14 +123,8 @@ public class MeetupsFragment extends Fragment{
 
     public void changeDay(String day, String dayStr) {
         this.day = day;
-        mDayStr = dayStr;
         TextView dayView = (TextView) this.view.findViewById(R.id.selectLabel);
         dayView.setText(dayStr);
-        update_items();
-    }
-    public void changeState(int id) {
-        String[] states = {"browse", "attending", "suggested"};
-        mState = states[id];
         update_items();
     }
 
@@ -142,9 +133,8 @@ public class MeetupsFragment extends Fragment{
         this.update_items();
     }
     public void update_items() {
-        this.adapter = new MeetupsAdapter(this.getActivity());
+        this.adapter = new RegistrationAdapter(this.getActivity());
         this.adapter.setDay(this.day);
-        this.adapter.setState(mState);
         this.adapter.setItems(this.items);
         checkIfNull();
         if (this.listview != null) {
@@ -157,16 +147,6 @@ public class MeetupsFragment extends Fragment{
             mNullMsg.setVisibility(View.GONE);
         }
         else {
-            String[] parts = mDayStr.split(" ");
-            String end = " for "+parts[1]+" "+parts[2]+"...yet.";
-            String text = "There are no meetups"+end;
-            if (mState.equals("attending")) {
-                text = "You haven't RSVPd to any meetups"+end;
-            }
-            else if (mState.equals("suggested")) {
-                text = "Join more communities for more suggestions.";
-            }
-            mNullMsg.setText(text);
             this.listview.setVisibility(View.GONE);
             mNullMsg.setVisibility(View.VISIBLE);
         }

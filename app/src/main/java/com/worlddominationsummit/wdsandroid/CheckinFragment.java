@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -48,7 +50,9 @@ public class CheckinFragment extends Fragment {
     public Location mCurrentLocation;
     public String mLastCheckin = "999999";
     public long mLastCheckinTime = 0;
+    public Switch mAutoSwitch;
     public JSONObject mCheckins;
+    public Boolean mCheckingIn = false;
 
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
@@ -145,7 +149,25 @@ public class CheckinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(R.layout.checkin, container, false);
+            mAutoSwitch = (Switch) mView.findViewById(R.id.autoSwitch);
             mPlacesList = (ListView) mView.findViewById(R.id.placesList);
+            if (Store.get("auto-checkin", "yes").equals("yes")) {
+                mAutoSwitch.setChecked(true);
+            }
+            else {
+                mAutoSwitch.setChecked(false);
+            }
+            mAutoSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        Store.set("auto-checkin", "yes");
+                    }
+                    else {
+                        Store.set("auto-checkin", "no");
+                    }
+                }
+            });
             Font.applyTo(mView);
             update_places();
         }
@@ -167,36 +189,45 @@ public class CheckinFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        mCheckingIn = false;
+        super.onDestroyView();
+    }
+
     public void checkin(HashMap<String,String> place, final Button btn) {
-        long now = System.currentTimeMillis() / 1000;
-        btn.setText("Checking In");
-        if (!mLastCheckin.equals((place.get("place_id"))) || now - mLastCheckinTime > 300) {
-            mLastCheckin = String.valueOf(place.get("place_id"));
-            mLastCheckinTime = now;
-            JSONObject params = new JSONObject();
-            try {
-                params.put("location_id", place.get("place_id"));
-                params.put("location_type", "place");
-            } catch (JSONException e) {
-                Log.e("WDS", "Json Exception", e);
+        if (!mCheckingIn) {
+            mCheckingIn = true;
+            long now = System.currentTimeMillis() / 1000;
+            btn.setText("Checking In");
+            if (!mLastCheckin.equals((place.get("place_id"))) || now - mLastCheckinTime > 300) {
+                mLastCheckin = String.valueOf(place.get("place_id"));
+                mLastCheckinTime = now;
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("location_id", place.get("place_id"));
+                    params.put("location_type", "place");
+                } catch (JSONException e) {
+                    Log.e("WDS", "Json Exception", e);
+                }
+                Api.post("user/checkin", params, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                    }
+                });
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                        btn.setText("Check In");
+                    }
+                }, 750);
             }
-            Api.post("user/checkin", params, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject jsonObject) {
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                }
-            });
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
-                    getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
-                    btn.setText("Check In");
-                }
-            }, 750);
         }
     }
 

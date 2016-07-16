@@ -26,24 +26,24 @@ import java.util.List;
 /**
  * Created by nicky on 5/18/15.
  */
-public class MeetupAttendeesFragment extends Fragment{
+public class EventAttendeesFragment extends Fragment{
     public View view;
     public ListView listview;
     public AttendeeSearchAdapter adapter;
     public ArrayList<HashMap> items;
     public TextView mLoading;
     public TextView mNullMsg;
-    public String mMeetupId;
+    public String mEventId;
 
-    public void setMeetup(String meetup_id) {
-        mMeetupId = meetup_id;
+    public void setEvent(String event_id) {
+        mEventId = event_id;
         if (listview != null) {
             listview.setVisibility(View.GONE);
             mNullMsg.setVisibility(View.GONE);
             mLoading.setVisibility(View.VISIBLE);
             JSONObject params = new JSONObject();
             try {
-                params.put("event_id", meetup_id);
+                params.put("event_id", event_id);
                 params.put("include_users", "1");
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);
@@ -76,13 +76,13 @@ public class MeetupAttendeesFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(this.view == null) {
-            this.view = inflater.inflate(R.layout.meetup_attendees, container, false);
+            this.view = inflater.inflate(R.layout.event_attendees, container, false);
             this.listview = (ListView) this.view.findViewById(R.id.results);
             mLoading = (TextView) this.view.findViewById(R.id.loading);
             mNullMsg= (TextView) this.view.findViewById(R.id.nullMsg);
             this.update_items(new ArrayList<HashMap>());
             Font.applyTo(view);
-            setMeetup(mMeetupId);
+            setEvent(mEventId);
         }
         return this.view;
     }

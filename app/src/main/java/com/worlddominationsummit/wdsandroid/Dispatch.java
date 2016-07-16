@@ -46,7 +46,7 @@ public class Dispatch {
                 filters.put("twitter", "1");
                 filters.put("following" , "0");
                 filters.put("communities" , "0");
-                filters.put("meetups" , "1");
+                filters.put("events" , "1");
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);
             }
@@ -149,18 +149,34 @@ public class Dispatch {
         }
         return "";
     }
-    public static String getMeetupNameFromEventId(String event_id) {
-        JSONArray ints = Store.getJsonArray("meetups");
+    public static JSONObject getEventFromEventId(String event_id) {
+        JSONArray ints = Store.getJsonArray("events");
         int len = ints.length();
         for(int i = 0; i < len; i++) {
-            JSONObject meetup = new JSONObject();
+            JSONObject event = new JSONObject();
             try {
-                meetup = ints.getJSONObject(i);
+                event = ints.getJSONObject(i);
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);
             }
-            if (event_id.equals(meetup.optString("event_id"))) {
-                return meetup.optString("what");
+            if (event_id.equals(event.optString("event_id"))) {
+                return event;
+            }
+        }
+        return null;
+    }
+    public static String getEventNameFromEventId(String event_id) {
+        JSONArray ints = Store.getJsonArray("events");
+        int len = ints.length();
+        for(int i = 0; i < len; i++) {
+            JSONObject event = new JSONObject();
+            try {
+                event = ints.getJSONObject(i);
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+            if (event_id.equals(event.optString("event_id"))) {
+                return event.optString("what");
             }
         }
         return "";

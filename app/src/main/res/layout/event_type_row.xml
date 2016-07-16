@@ -1,0 +1,86 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/frame"
+    android:layout_marginLeft="-1dp"
+    android:padding="0dp"
+    android:orientation="vertical" >
+
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scaleType="fitEnd"
+    android:adjustViewBounds="true"
+    android:padding="0dp"
+    android:layout_gravity="fill"
+    android:id="@+id/background"
+    android:layout_marginLeft="-1dp"
+    />
+
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scaleType="fitEnd"
+    android:adjustViewBounds="true"
+    android:padding="0dp"
+    android:layout_gravity="fill"
+    android:src="@drawable/faded_overlay"
+    android:id="@+id/overlay"
+    android:layout_marginLeft="-1dp"
+    />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:padding="0dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="fill"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="0dp"
+        android:layout_height="match_parent"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:shadowColor="@color/coffee"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:shadowRadius="3"
+            android:layout_marginBottom="0dp"
+            android:layout_above="@+id/descr"
+            android:gravity="center"
+            android:text=""
+            android:textSize="28sp"
+            android:textColor="@color/bright_tan" />
+
+        <TextView
+            android:id="@+id/descr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_marginBottom="30dp"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="3"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp"
+            android:layout_alignParentBottom="true"
+            android:text=""
+            android:textSize="18sp"
+            android:textColor="@color/bright_tan" />
+    </RelativeLayout>
+
+</LinearLayout>
+
+</FrameLayout>

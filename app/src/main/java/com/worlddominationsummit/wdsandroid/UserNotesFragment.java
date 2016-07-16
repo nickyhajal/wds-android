@@ -74,10 +74,12 @@ public class UserNotesFragment extends Fragment {
     }
 
     public void update_items() {
-        mAdapter = new UserNotesAdapter(this.getActivity(), mItems);
-        mAdapter.mContext = this;
-        if (mUserNotesList != null) {
-            mUserNotesList.setAdapter(mAdapter);
+        if (mItems != null) {
+            mAdapter = new UserNotesAdapter(this.getActivity(), mItems);
+            mAdapter.mContext = this;
+            if (mUserNotesList != null) {
+                mUserNotesList.setAdapter(mAdapter);
+            }
         }
     }
 

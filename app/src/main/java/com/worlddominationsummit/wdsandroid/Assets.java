@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -100,7 +101,7 @@ public class Assets {
         String pullAsset = asset;
         JSONArray existing = Store.getJsonArray(asset);
         JSONObject rsp = new JSONObject();
-        if (asset.equals("meetups")) {
+        if (asset.equals("meetups") || asset.equals("academy") || asset.equals("spark_session") || asset.equals("activity")) {
             pullAsset = "events";
         }
         Puts.i(pullAsset);
@@ -182,18 +183,47 @@ public class Assets {
             }
         });
         events = new JSONArray(jsonValues);
+        JSONArray allowed_events = new JSONArray();
         int ev_length = events.length();
-        JSONArray meetups = new JSONArray();
+        JSONObject types = new JSONObject();
+        for (int t = 0; t < EventTypes.list.length(); t++ ) {
+            try {
+                JSONObject e = EventTypes.list.getJSONObject(t);
+                types.put(e.getString("id"), new JSONArray());
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+        }
         for (int i = 0; i < ev_length; i++) {
             try {
-                if (events.getJSONObject(i).getString("type").equals("meetup")) {
-                    meetups.put(events.getJSONObject(i));
+                JSONObject event = events.getJSONObject(i);
+                if (Me.hasPermissionForEvent(event)) {
+                    allowed_events.put(event);
+                    for (int t = 0; t < EventTypes.list.length(); t++ ) {
+                        JSONObject e = EventTypes.list.getJSONObject(t);
+                        String type = e.getString("id");
+                        if (events.getJSONObject(i).getString("type").equals(type)) {
+                            JSONArray evsOfType = types.getJSONArray(type);
+                            evsOfType.put(events.getJSONObject(i));
+                            types.put(type, evsOfType);
+                        }
+                    }
                 }
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception --", e);
             }
         }
-        Store.set("events", events);
-        Store.set("meetups", meetups);
+        Store.set("events", allowed_events);
+        Iterator<?> keys = types.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            JSONArray evsOfType = new JSONArray();
+            try {
+                evsOfType = types.getJSONArray(key);
+            } catch (JSONException e) {
+                Log.e("WDS", "Json Exception", e);
+            }
+            Store.set(key, evsOfType);
+        }
     }
 }

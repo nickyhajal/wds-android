@@ -10,21 +10,27 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 
 public class Event{
     public String event_id;
+    public String slug;
     public String what = "░░░░░░░░░";
     public String who = "░░░░░░░";
     public String place = "░░░░░";
     public String descr = "░░░░░ ░░░░░░░░░░ ░░░░░";
     public String start;
     public String type;
+    public String for_type = "all";
+    public String format;
     public String lat;
     public String lon;
     public String address;
+    public String venueNote = "";
     public String startTime;
     public String startStr;
     public String dayStr;
@@ -46,15 +52,19 @@ public class Event{
     public static Event fromJson(JSONObject params) {
         Event ev = new Event();
         ev.event_id = params.optString("event_id");
+        ev.slug = params.optString("slug");
         ev.what = params.optString("what");
         ev.who = params.optString("who");
         ev.place = params.optString("place");
         ev.descr = params.optString("descr");
         ev.start = params.optString("start");
         ev.type = params.optString("type");
+        ev.format = params.optString("format");
+        ev.for_type = params.optString("for_type");
         ev.lat = params.optString("lat");
         ev.lon = params.optString("lon");
         ev.address = params.optString("address");
+        ev.venueNote = params.optString("venue_note");
         ev.startTime = params.optString("startTime");
         ev.startStr = params.optString("startStr");
         ev.dayStr = params.optString("dayStr");
@@ -84,13 +94,15 @@ public class Event{
     }
 
     public Event() { }
-    public Event(String event_id, String what, String who, String place, String descr, String start, String type, String lat, String lon, String address, String startTime, String startStr, String dayStr, JSONArray hostsJSON) {
+    public Event(String event_id, String slug, String what, String who, String place, String descr, String start, String type, String for_type, String lat, String lon, String address, String startTime, String startStr, String dayStr, JSONArray hostsJSON) {
         this.event_id = event_id;
+        this.slug = slug;
         this.what = what;
         this.who = who;
         this.place = place;
         this.descr = descr;
         this.type = type;
+        this.for_type = for_type;
         this.start = start;
         this.lat = lat;
         this.lon = lon;
@@ -112,13 +124,48 @@ public class Event{
                 }
             }
         }
+        try {
+            if (this.what != null) {
+                this.what = new String(this.what.getBytes("ISO-8859-1"), "UTF-8");
+    //            this.what = Html.fromHtml(this.what).toString();
+            }
+            if (this.who != null) {
+                this.who = new String(this.who.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            if (this.descr != null) {
+                this.descr = new String(this.descr.getBytes("ISO-8859-1"), "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         this.timeStr = this.dayStr+" at "+this.startStr;
-        if (this.who != null && this.who.length() > 0) {
-            this.who.replaceFirst("nicky", "nicky");
-            this.who.substring(0,1);
-            this.whoStr = "A meetup for "+this.who.replaceFirst(this.who.substring(0, 1), this.who.substring(0, 1).toLowerCase());
+        if (this.type.equals("academy")) {
+        }
+        else {
+            this.whoStr = "";
+            if (this.who != null && this.who.length() > 0) {
+                if (EventTypes.byId.has(this.type)) {
+                    String typelow = EventTypes.byId.optJSONObject(this.type).optString("singular", "event").toLowerCase();
+                    String start = "A "+ typelow;
+                    if (typelow.equals("activity")) {
+                        start = "An "+typelow;
+                    }
+                    this.whoStr = start + " for " + this.who.replaceFirst(this.who.substring(0, 1), this.who.substring(0, 1).toLowerCase());
+                    if (this.type.equals("meetup") && this.format != null && this.format.length() > 2) {
+                        String format = ucfirst(this.format);
+                        this.whoStr = format + ": " + this.whoStr;
+                    }
+                }
+            }
         }
 
+    }
+    final public static String ucfirst(String subject)
+    {
+        if (subject != null) {
+            return Character.toUpperCase(subject.charAt(0)) + subject.substring(1);
+        }
+        return "";
     }
     public void setBecause(JSONArray because) {
         String str = "";

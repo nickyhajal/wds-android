@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScheduleAdapter extends SectionAdapter {
+public class RegistrationAdapter extends SectionAdapter {
 
     public String day;
     public int numItems;
@@ -34,11 +34,11 @@ public class ScheduleAdapter extends SectionAdapter {
     public JSONArray items;
     public FragmentActivity context;
 
-    public ScheduleAdapter(FragmentActivity activity) {
+    public RegistrationAdapter(FragmentActivity activity) {
         this.context = activity;
         this.sections = new ArrayList<String>();
         this.numItems = 0;
-        this.day = "2014-07-10";
+        this.day = "2016-08-11";
     }
 
     public void setDay(String day) {
@@ -59,7 +59,7 @@ public class ScheduleAdapter extends SectionAdapter {
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);
             }
-            if (ev.optString("startDay").equals(this.day) && Me.isAttendingEvent(evh)) {
+            if (ev.optString("startDay").equals(this.day) && ev.optString("type").equals("registration")) {
                 if (!lastTime.equals(ev.optString("startStr"))) {
                     sectionIndex += 1;
                     this.items.put(new JSONArray());
@@ -117,7 +117,7 @@ public class ScheduleAdapter extends SectionAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+event.lat+","+event.lon));
+                        Uri.parse("http://maps.google.com/maps?daddr="+event.lat+","+event.lon));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 context.startActivity(intent);
             }
@@ -125,9 +125,12 @@ public class ScheduleAdapter extends SectionAdapter {
         holder.navBtn.setOnClickListener(navListener);
         holder.place.setOnClickListener(navListener);
         String name = event.what;
-        if (event.type.equals("meetup") || event.type.equals("academy") || event.type.equals("spark_session") || event.type.equals("activity")) {
-            String typeName = EventTypes.byId.optJSONObject(event.type).optString("singular");
-            name = typeName+": " + name;
+        if (event.type.equals("meetup")) {
+            name = "Meetup: " + name;
+        } else if (event.type.equals("academy")) {
+            name = "Academy: " + name;
+        }
+        if (event.type.equals("meetup")) {
             holder.moreBtn.setVisibility(View.VISIBLE);
             holder.moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.worlddominationsummit.wdsandroid"
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 5
-        versionName "1.4"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 10
+        versionName "1.5"
     }
     buildTypes {
         release {
@@ -29,15 +29,19 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile "com.google.android.gms:play-services:7.5.+"
-    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'info.hoang8f:android-segmented:1.0.5'
     compile files('libs/android-smart-image-view-1.0.0.jar')
-    compile 'com.github.pungrue26:SelectableRoundedImageView:c310290065'
     compile files('libs/htmlcleaner-2.2.1.jar')
     compile files('libs/htmlspanner.jar')
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'info.hoang8f:android-segmented:1.0.5'
+    compile 'com.github.pungrue26:SelectableRoundedImageView:c310290065'
     compile 'com.github.curioustechizen.android-ago:library:1.2.0'
     compile 'com.github.applidium:HeaderListView:f9c33c21ae'
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.android.gms:play-services-location:9.0.2'
+    compile 'com.google.android.gms:play-services-ads:9.0.2'
+    compile 'com.google.android.gms:play-services-auth:9.0.2'
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
 }

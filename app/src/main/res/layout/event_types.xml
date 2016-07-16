@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="0dp"
+    android:layout_margin="0dp"
+    android:background="@color/tan"
+    >
+    <ListView
+        android:id="@+id/eventTypesList"
+        android:layout_width="fill_parent"
+        android:layout_margin="0dp"
+        android:layout_height="fill_parent"
+        android:background="@color/tan"
+        android:cacheColorHint="@android:color/white"
+        android:divider="@color/tan"
+        android:dividerHeight="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        >
+    </ListView>
+</LinearLayout>

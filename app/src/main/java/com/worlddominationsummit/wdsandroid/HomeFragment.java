@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment{
     public RelativeLayout mDispatchControls;
     public RelativeLayout mCommunityControls;
     public Button mCommunityBtn;
-    public Event activeMeetup;
+    public Event activeEvent;
     public int mTries = 0;
 
     public void init() {
@@ -57,18 +57,18 @@ public class HomeFragment extends Fragment{
             mDispatchControls.setVisibility(View.GONE);
             mCommunityControls.setVisibility(View.VISIBLE);
             mCommunityBtn.setText(Dispatch.getCommunityFromInterest(channel_id));
-        } else if (channel_type.equals("meetup")) {
-            activeMeetup = MainActivity.self.meetupFragment.event;
+        } else if (channel_type.equals("event")) {
+            activeEvent = MainActivity.self.eventFragment.event;
             mDispatchControls.setVisibility(View.GONE);
             mCommunityControls.setVisibility(View.VISIBLE);
-            mCommunityBtn.setText(Dispatch.getMeetupNameFromEventId(channel_id));
+            mCommunityBtn.setText(Dispatch.getEventNameFromEventId(channel_id));
         }
         willDisplay();
     }
     public void leaveChannel() {
-        activeMeetup = null;
+        activeEvent = null;
         if (mDispatch.mParams.optString("channel_type").equals("meetup")) {
-            MainActivity.self.open_meetup();
+            MainActivity.self.open_event();
         }
         mDispatch.leaveChannel();
         mDispatchControls.setVisibility(View.VISIBLE);
@@ -275,7 +275,7 @@ public class HomeFragment extends Fragment{
 
     @Override
     public void onDetach() {
-        activeMeetup = null;
+        activeEvent = null;
         super.onDetach();
     }
 }

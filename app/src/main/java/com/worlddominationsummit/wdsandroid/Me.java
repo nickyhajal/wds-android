@@ -56,7 +56,7 @@ public class Me {
     }
     public static JSONArray getJSONArray (String key) {
         try {
-            return new JSONArray(Me.params.get(key));
+            return new JSONArray(Me.params.get(key).toString());
         } catch (JSONException e) {
             Log.e("WDS", "JSON Exception", e);
             return new JSONArray();
@@ -351,7 +351,7 @@ public class Me {
 
     public static boolean isAttendingEvent(HashMap<String, String> event) {
         if(event.get("type").equals("program")) {
-            return true;
+            return Me.hasPermissionForEvent(event);
         }
         else {
             try {
@@ -370,9 +370,32 @@ public class Me {
         }
     }
 
+    public static boolean hasPermissionForEvent(JSONObject event) {
+        try {
+            return Me.hasPermissionForEvent((HashMap) JsonHelper.toMap(event));
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        return false;
+    }
+    public static boolean hasPermissionForEvent(HashMap<String, String> event) {
+        String ftype = event.get("for_type");
+        if (ftype == null) {
+            ftype = "all";
+        }
+        return ftype.equals("all") || ftype.equals(Me.atn.ticket_type);
+    }
+    public static boolean hasPermissionForEvent(Event event) {
+        String ftype = event.for_type;
+        if (ftype == null) {
+            ftype = "all";
+        }
+        return ftype.equals("all") || ftype.equals(Me.atn.ticket_type);
+    }
+
     public static boolean isAttendingEvent(Event event) {
-        if(event.type == "program") {
-            return true;
+        if(event.type.equals("program")) {
+            return Me.hasPermissionForEvent(event);
         }
         else {
             try {
@@ -403,10 +426,10 @@ public class Me {
             public void onResponse(JSONObject rsp) {
                 JSONArray rsvps = Me.getJSONArray("rsvps");
                 if(Me.isAttendingEvent(event)) {
-                    JsonHelper.deleteVal(rsvps, event.event_id);
+                    rsvps = JsonHelper.deleteVal(rsvps, event.event_id);
                 }
                 else {
-                    rsvps.put(event.event_id);
+                    rsvps.put(Integer.valueOf(event.event_id));
                 }
                 Me.set("rsvps", rsvps);
                 successListener.onResponse(rsp);

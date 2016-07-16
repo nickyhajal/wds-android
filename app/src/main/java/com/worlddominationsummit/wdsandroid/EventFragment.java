@@ -18,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -28,7 +27,7 @@ import org.json.JSONObject;
 /**
  * Created by nicky on 5/18/15.
  */
-public class MeetupFragment extends Fragment implements OnMapReadyCallback {
+public class EventFragment extends Fragment implements OnMapReadyCallback {
     public View view;
     MapView mapView;
     public LinearLayout slidingLayout;
@@ -39,6 +38,9 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
     public TextView descr;
     public TextView mHostedBy;
     public TextView mHostName;
+    public TextView mVenue;
+    public TextView mAddr;
+    public TextView mVNotes;
     public Button mRsvp;
     public Button mAttendees;
     public Button mFeed;
@@ -100,8 +102,28 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
             this.time.setText(event.timeStr);
             this.who.setText(event.whoStr);
             this.descr.setText(event.descrWithHtmlParsed());
-            mHostName.setText(event.host.first_name+"\n"+event.host.last_name);
-            mImgLoader.DisplayImage(event.host.pic, mHostAvatar);
+            mVenue.setText("at "+event.place);
+            if (event.address != null && event.address.length() > 0 && !event.address.equals("null")) {
+                mAddr.setText(event.address);
+                mAddr.setVisibility(View.VISIBLE);
+
+            } else {
+                mAddr.setVisibility(View.GONE);
+            }
+            if (event.venueNote != null && event.venueNote.length() > 0 && !event.venueNote.equals("null")) {
+                mVNotes.setText(event.venueNote);
+                mVNotes.setVisibility(View.VISIBLE);
+
+            } else {
+                mVNotes.setVisibility(View.GONE);
+            }
+            if (event.host != null && event.host.first_name != null && event.host.last_name != null) {
+                mHostName.setText(event.host.first_name+"\n"+event.host.last_name);
+                mImgLoader.DisplayImage(event.host.pic, mHostAvatar);
+            }
+            else {
+                mHostName.setText("");
+            }
             //this.descr.setText(event.descr);
         }
     }
@@ -115,11 +137,17 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (this.view == null) {
-            this.view = inflater.inflate(R.layout.meetup, container, false);
+            this.view = inflater.inflate(R.layout.event, container, false);
             this.what = (TextView) this.view.findViewById(R.id.meetupWhat);
             this.what.setTypeface(Font.use("Vitesse_Medium"));
             this.time = (TextView) this.view.findViewById(R.id.meetupTime);
-            this.time.setTypeface(Font.use("Karla"));
+            this.time.setTypeface(Font.use("Karla_Bold"));
+            mVenue = (TextView) this.view.findViewById(R.id.meetupVenue);
+            mVenue.setTypeface(Font.use("Karla_Bold"));
+            mAddr = (TextView) this.view.findViewById(R.id.meetupAddr);
+            mAddr.setTypeface(Font.use("Karla"));
+            mVNotes = (TextView) this.view.findViewById(R.id.meetupVenueNotes);
+            mVNotes.setTypeface(Font.use("Karla_Italic"));
             this.who = (TextView) this.view.findViewById(R.id.meetupWho);
             this.who.setTypeface(Font.use("Karla_Bold"));
             this.descr = (TextView) this.view.findViewById(R.id.meetupDescr);
@@ -153,13 +181,13 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
             mAttendees.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.self.open_meetup_attendees(event.event_id);
+                    MainActivity.self.open_event_attendees(event.event_id);
                 }
             });
             mFeed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.self.homeFragment.setChannel("meetup", event.event_id);
+                    MainActivity.self.homeFragment.setChannel("event", event.event_id);
                     MainActivity.self.open_dispatch();
                 }
             });
@@ -168,22 +196,15 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
                 public void onClick(View v) {
                     Boolean isAttending = Me.isAttendingEvent(event);
                     Boolean isFull = event.isFull();
-                    if (!isFull || isAttending) {
-                        Me.toggleRsvp(event, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject jsonObject) {
-                                updateRsvpButton();
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                MainActivity.offlineAlert();
-                            }
-                        });
+                    RsvpDialog dialog = new RsvpDialog();
+                    dialog.setEvent(event, isAttending);
+
+                    if (!isFull && (!isAttending || !event.type.equals("academy"))) {
+                        dialog.show(MainActivity.self.getFragmentManager(), "rsvpdialog");
                     }
                 }
             });
-            final MeetupFragment ref = this;
+            final EventFragment ref = this;
             content.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
@@ -220,26 +241,30 @@ public class MeetupFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void updateRsvpButton() {
-        mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
-        mRsvp.setTextColor(getActivity().getResources().getColor(R.color.light_tan));
-        if (Me.isAttendingEvent(event)){
-            mRsvp.setText("You'll be there!");
-        }
-        else {
-            if (event.isFull()) {
-                mRsvp.setText("Event Full");
-                mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.light_gray));
-                mRsvp.setTextColor(getActivity().getResources().getColor(R.color.dark_gray));
-            }
-            else {
-                mRsvp.setText("RSVP");
+        if (mRsvp != null) {
+            mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
+            mRsvp.setTextColor(getActivity().getResources().getColor(R.color.light_tan));
+            if (Me.isAttendingEvent(event)) {
+                mRsvp.setText("You'll be there!");
+            } else {
+                if (event.isFull()) {
+                    mRsvp.setText("Event Full");
+                    mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.light_gray));
+                    mRsvp.setTextColor(getActivity().getResources().getColor(R.color.dark_gray));
+                } else {
+                    if (event.type.equals("academy")) {
+                        mRsvp.setText("Attend");
+                    } else {
+                        mRsvp.setText("RSVP");
+                    }
+                }
             }
         }
     }
 
     public void updateMap() {
         if (this.map != null) {
-            final MeetupFragment ref = this;
+            final EventFragment ref = this;
             //http://wptrafficanalyzer.in/blog/customizing-infowindow-contents-in-google-map-android-api-v2-using-infowindowadapter/
             map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 

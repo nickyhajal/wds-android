@@ -1,9 +1,9 @@
 package com.worlddominationsummit.wdsandroid;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 //import android.app.Activity;
@@ -12,6 +12,7 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,12 +22,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.view.WindowManager;
+
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,24 +55,27 @@ public class MainActivity extends FragmentActivity implements Runnable {
     private Spinner mExploreSpinner;
     private LinearLayout mMeetupHead;
     private RelativeLayout mExploreHead;
+    private RelativeLayout mScheduleHead;
     private AttendeeSearcher searcher;
     private Boolean tabsStarted = false;
     public LoginFragment loginFragment;
     public LoadingFragment loadingFragment;
     public WalkthroughFragment walkthroughFragment;
-    public MeetupsFragment meetupsFragment;
+    public EventsFragment eventsFragment;
+    public EventTypesFragment eventTypesFragment;
     public AttendeeSearchFragment attendeeSearchFragment;
     public ScheduleFragment scheduleFragment;
     public HomeFragment homeFragment;
     public ProfileFragment profileFragment;
+    public RegistrationFragment registrationFragment;
     public PostFragment postFragment;
     public FiltersFragment filtersFragment;
     public CommunitiesFragment communitiesFragment;
     public UserNotesFragment userNotesFragment;
-    public MeetupFragment meetupFragment;
+    public EventFragment eventFragment;
     public ExploreFragment exploreFragment;
     public CheckinFragment checkinFragment;
-    public MeetupAttendeesFragment meetupAttendeesFragment;
+    public EventAttendeesFragment eventAttendeesFragment;
     public DispatchContentFragment dispatchContentFragment;
     public TabsFragment tabsFragment;
     public Boolean tabsActive = false;
@@ -136,6 +139,18 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 open_checkins();
             }
         });
+        mScheduleHead = (RelativeLayout) bar.findViewById(R.id.scheduleHead);
+        mScheduleHead.setVisibility(View.GONE);
+        Button regBtn = (Button) bar.findViewById(R.id.regBtn);
+        regBtn.setTypeface(Font.use("Vitesse_Medium"));
+        regBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                open_registration();
+            }
+        });
+        TextView regTitle = (TextView) bar.findViewById(R.id.regTitle);
+        regTitle.setTypeface(Font.use("Vitesse_Medium"));
         ArrayList<String> meetupSections = new ArrayList<String>();
         meetupSections.add("Browse Meetups");
         meetupSections.add("Attending Meetups");
@@ -165,17 +180,6 @@ public class MainActivity extends FragmentActivity implements Runnable {
         mExploreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                meetupsFragment.changeState(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-
-        });
-        mExploreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 exploreFragment.changeState(position);
             }
 
@@ -193,6 +197,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
         Api.init(this);
         initScreens();
         this.open_loading();
+        EventTypes.init();
         Assets.init(this);
         Me.init(this);
     }
@@ -202,14 +207,16 @@ public class MainActivity extends FragmentActivity implements Runnable {
         loginFragment = new LoginFragment();
         walkthroughFragment = new WalkthroughFragment();
         tabsFragment = new TabsFragment();
-        meetupsFragment = new MeetupsFragment();
-        meetupFragment = new MeetupFragment();
+        eventsFragment = new EventsFragment();
+        eventTypesFragment = new EventTypesFragment();
+        eventFragment = new EventFragment();
         profileFragment = new ProfileFragment();
         scheduleFragment = new ScheduleFragment();
+        registrationFragment = new RegistrationFragment();
         checkinFragment = new CheckinFragment();
         attendeeSearchFragment = new AttendeeSearchFragment();
         postFragment = new PostFragment();
-        meetupAttendeesFragment = new MeetupAttendeesFragment();
+        eventAttendeesFragment = new EventAttendeesFragment();
         communitiesFragment = new CommunitiesFragment();
         filtersFragment = new FiltersFragment();
         dispatchContentFragment = new DispatchContentFragment();
@@ -220,7 +227,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
 
     public void startExperience() {
-        //Store.set("walkthrough", "0");
+//        Store.set("walkthrough", "0");
         int step = Me.checkWalkthrough();
         if(step < 7) {
             open_walkthrough(step);
@@ -282,7 +289,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void open_tabs() {
         if(this.tabsStarted) {
-            Log.i("WDS", "Show meetups");
+            Log.i("WDS", "Show events");
             open(this.tabsFragment, "tabs");
             if (ntfnData.length() > 0) {
                 showNotification();
@@ -329,13 +336,15 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 } else {
                     title = "Share a Post";
                 }
-            } else if (active == meetupsFragment) {
-                title = "Meetups";
+            } else if (active == eventTypesFragment) {
+                title = "Events";
+            } else if (active == eventsFragment) {
+                title = EventTypes.byId.optJSONObject(eventsFragment.mType).optString("plural");
             } else if (active == exploreFragment) {
                 title = "Explore";
             } else if (active == homeFragment) {
-                if (homeFragment.activeMeetup != null) {
-                    title = "Dispatch: " + meetupFragment.event.what;
+                if (homeFragment.activeEvent != null) {
+                    title = "Dispatch: " + eventFragment.event.what;
                 }
             } else if (active == checkinFragment) {
                 title = "Check In";
@@ -343,16 +352,18 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 title = "Communities";
             } else if (active == scheduleFragment) {
                 title = "Your Schedule";
+            } else if (active == registrationFragment) {
+                title = "Registration";
             } else if (active == filtersFragment) {
                 title = "Dispatch Filters";
             } else if (active == userNotesFragment) {
                 title = "User Notes";
             } else if (active == dispatchContentFragment) {
                 title = "Conversation";
-            } else if (active == meetupFragment) {
-                title = this.meetupFragment.event.what;
-            } else if (active == meetupAttendeesFragment) {
-                title = "Attendees for "+this.meetupFragment.event.what;
+            } else if (active == eventFragment) {
+                title = this.eventFragment.event.what;
+            } else if (active == eventAttendeesFragment) {
+                title = "Attendees for "+this.eventFragment.event.what;
             } else if (active == profileFragment) {
                 title = " ";
             }
@@ -360,11 +371,14 @@ public class MainActivity extends FragmentActivity implements Runnable {
             this.searchShell.setVisibility(View.GONE);
             mMeetupHead.setVisibility(View.GONE);
             mExploreHead.setVisibility(View.GONE);
+            mScheduleHead.setVisibility(View.GONE);
             if (title.length() > 0) {
-                if (title.equals("Meetups")) {
+                if (title.equals("Meetupsoeansrtoen-turnthissettinoff")) {
                     mMeetupHead.setVisibility(View.VISIBLE);
                 } else if (title.equals("Explore")) {
                         mExploreHead.setVisibility(View.VISIBLE);
+                } else if (title.equals("Your Schedule")) {
+                    mScheduleHead.setVisibility(View.VISIBLE);
                 } else {
                     this.title.setText(title);
                     this.titleShell.setVisibility(View.VISIBLE);
@@ -379,13 +393,27 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public void open_walkthrough(int step) {
         open(walkthroughFragment, true, "walkthrough");
     }
-    public void open_meetups() {
+    public void open_events(HashMap type) {
+        eventsFragment.setType(type);
+        open_events();
+    }
+    public void open_events() {
         open_tabs();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                meetupsFragment.willDisplay();
-                tabsFragment.open(meetupsFragment, "meetups");
+                eventsFragment.willDisplay();
+                tabsFragment.open(eventsFragment, "events");
+            }
+        }, 10);
+    }
+    public void open_event_types() {
+        open_tabs();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                eventsFragment.willDisplay();
+                tabsFragment.open(eventTypesFragment, "event_types");
             }
         }, 10);
     }
@@ -395,9 +423,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
         open(userNotesFragment, "user_notes");
     }
 
-    public void open_meetup_attendees(String meetup_id) {
-        meetupAttendeesFragment.setMeetup(meetup_id);
-        open(meetupAttendeesFragment, "meetup-attendees");
+    public void open_event_attendees(String event_id) {
+        eventAttendeesFragment.setEvent(event_id);
+        open(eventAttendeesFragment, "event-attendees");
     }
     public void open_dispatch() {
         open_tabs();
@@ -430,6 +458,11 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.tabsFragment.open(this.scheduleFragment, "schedule");
     }
 
+    public void open_registration() {
+        this.registrationFragment.willDisplay();
+        this.tabsFragment.open(this.registrationFragment, "registration");
+    }
+
     public void open_login() {
         open(this.loginFragment, true, "login");
     }
@@ -455,16 +488,16 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public void open_post() {
         open(this.postFragment, "post");
     }
-    public void open_meetup(Event event) {
-        this.meetupFragment.setEvent(event);
-        open(this.meetupFragment, "meetup");
+    public void open_event(Event event) {
+        this.eventFragment.setEvent(event);
+        open(this.eventFragment, "event");
     }
-    public void open_meetup() {
-        open(this.meetupFragment, "meetup");
+    public void open_event() {
+        open(this.eventFragment, "event");
     }
     public void open_profile(Attendee atn) {
         this.profileFragment.setAttendee(atn);
-        open(this.profileFragment, "meetups");
+        open(this.profileFragment, "events");
     }
     public void open_search() {
         searching = true;
@@ -525,6 +558,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
         }
     }
 
+    public static int getImage(String ImageName) {
+        return self.getResources().getIdentifier(ImageName, "drawable", self.getPackageName());
+    }
     public static void offlineAlert() {
         final Dialog dialog = new Dialog(MainActivity.self); // context, this etc.
         LayoutInflater inflater = dialog.getLayoutInflater();

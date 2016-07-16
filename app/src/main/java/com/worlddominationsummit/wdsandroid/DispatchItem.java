@@ -60,10 +60,27 @@ public class DispatchItem {
 
         }
         it.channel = it.channel_type;
-        if (it.channel.equals("interest")) {
-            it.channel = Dispatch.getCommunityFromInterest(it.channel_id);
-        } else if (it.channel.equals("meetup")) {
-            it.channel = "Meetup: "+Dispatch.getMeetupNameFromEventId(it.channel_id);
+        Puts.i(">>>>>>");
+        Puts.i(it.toString());
+        Puts.i(it.channel);
+        if (it.channel != null && it.channel.length() > 0) {
+            if (it.channel.equals("interest")) {
+                it.channel = Dispatch.getCommunityFromInterest(it.channel_id);
+            } else if (it.channel.equals("event")) {
+                Puts.i(it.channel_id);
+                JSONObject event = Dispatch.getEventFromEventId(it.channel_id);
+                Puts.i(event);
+                if (event != null) {
+                    if (EventTypes.types.toString().contains(event.optString("type"))) {
+                        String type = EventTypes.byId.optJSONObject(event.optString("type")).optString("singular");
+                        String name = event.optString("what");
+                        if (name.length() > 40) {
+                            name = name.substring(0, 37)+"...";
+                        }
+                        it.channel = type + ": " + name;
+                    }
+                }
+            }
         }
         it.initNums();
         return it;

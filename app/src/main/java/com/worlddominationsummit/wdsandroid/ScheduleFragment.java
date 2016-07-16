@@ -39,8 +39,8 @@ public class ScheduleFragment extends Fragment{
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
             String today = dateFormat.format(date);
-            if (today.compareTo("2015-07-07") < 0) {
-                day = "2015-07-07";
+            if (today.compareTo("2016-08-11") < 0) {
+                day = "2016-08-11";
             }
             else {
                 day = today;

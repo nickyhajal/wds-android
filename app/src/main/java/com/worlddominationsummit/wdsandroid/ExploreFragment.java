@@ -189,8 +189,9 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
                             });
                         }
                         update_items(filtered_list);
-                        // TODO: IF AUTO CHECKIN IS ON
-                        checkin();
+                        if (Store.get("auto-checkin", "yes").equals("yes")) {
+                            checkin();
+                        }
                     } catch (JSONException e) {
                         Log.e("WDS", "Json Exception", e);
                     }

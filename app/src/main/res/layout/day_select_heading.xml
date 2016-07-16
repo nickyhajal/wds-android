@@ -12,14 +12,18 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="3dp"
         android:layout_toLeftOf="@+id/search_close"
-        android:hint="@string/search_title"
-        android:paddingLeft="16dp"
+        android:ellipsize="end"
+        android:paddingEnd="12dp"
+        android:paddingStart="52dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="52dp"
         android:paddingTop="5dp"
         android:paddingBottom="2dp"
-        android:text="Tuesday, July 7th"
+        android:text="Thurs, August 11th"
         android:textColor="@color/dark_gray"
+        android:singleLine="true"
         android:textColorHint="@color/white"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/selectBtn"
@@ -30,6 +34,6 @@
         android:paddingTop="3dp"
         android:text="Select"
         android:textColor="@color/dark_gray"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>

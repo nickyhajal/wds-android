@@ -64,14 +64,14 @@
             android:gravity="center_vertical"
             android:tag="font_Karla"
             android:textSize="17sp"
-            android:text="Meetups"/>
+            android:text="Events"/>
         <Switch
-            android:id="@+id/meetups"
+            android:id="@+id/events"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:textOff="Hide"
             android:textOn="Mine"
-            android:tag="meetups"
+            android:tag="events"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
     <RelativeLayout

@@ -3,7 +3,7 @@ package com.worlddominationsummit.wdsandroid;
  * Created by nicky on 5/19/15.
  */
 
-import android.os.Handler;
+import android.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MeetupsAdapter extends SectionAdapter {
+public class EventsAdapter extends SectionAdapter {
 
     public String day;
     public int numItems;
@@ -30,16 +30,26 @@ public class MeetupsAdapter extends SectionAdapter {
     public JSONArray items;
     public FragmentActivity context;
     public String mState;
+    public String mType;
+    public String mMeetupType;
 
-    public MeetupsAdapter(FragmentActivity activity) {
+    public EventsAdapter(FragmentActivity activity) {
         this.context = activity;
         this.sections = new ArrayList<String>();
         this.numItems = 0;
         this.day = "2014-07-10";
+        mType = "meetup";
+        mMeetupType = "all";
     }
 
     public void setState(String state) {
         mState = state;
+    }
+    public void setType(String typeId) {
+        mType = typeId;
+    }
+    public void setMeetupType(String meetupType) {
+        mMeetupType = meetupType;
     }
     public void setDay(String day) {
         this.day = day;
@@ -78,13 +88,18 @@ public class MeetupsAdapter extends SectionAdapter {
                 else {
                     ev.remove("because");
                 }
-                if (!lastTime.equals(ev.optString("startStr"))) {
-                    sectionIndex += 1;
-                    this.items.put(new JSONArray());
-                    this.sections.add(ev.optString("startStr"));
+                if (ev.optString("type", "meetup").equals(mType)) {
+                    if (mType.equals("meetup") && (!mMeetupType.equals("all") && !ev.optString("format", "discover").equals(mMeetupType))) {
+                        continue;
+                    }
+                    if (!lastTime.equals(ev.optString("startStr"))) {
+                        sectionIndex += 1;
+                        this.items.put(new JSONArray());
+                        this.sections.add(ev.optString("startStr"));
+                    }
+                    this.items.optJSONArray(sectionIndex).put(ev);
+                    lastTime = ev.optString("startStr");
                 }
-                this.items.optJSONArray(sectionIndex).put(ev);
-                lastTime = ev.optString("startStr");
             }
 
         }
@@ -122,7 +137,7 @@ public class MeetupsAdapter extends SectionAdapter {
         JSONObject ev = getRowItem(section, row);
         final Event event = Event.fromJson(ev);
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.context).inflate(R.layout.meetup_row, parent, false);
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.event_row, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.name.setTypeface(Font.use("Vitesse_Medium"));
             holder.who = (TextView) convertView.findViewById(R.id.who);
@@ -140,10 +155,15 @@ public class MeetupsAdapter extends SectionAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.name.setText(event.what);
-        holder.who.setText("A meetup for "+event.who);
+        holder.who.setText(this.getWho(event));
         holder.rsvp.setTextColor(context.getResources().getColor(R.color.orange));
         if (Me.isAttendingEvent(event)){
-            holder.rsvp.setText("unRSVP");
+            if (event.type.equals("academy")) {
+                holder.rsvp.setText("You're Attending!");
+            }
+            else {
+                holder.rsvp.setText("unRSVP");
+            }
         }
         else {
             if (event.isFull()) {
@@ -151,43 +171,58 @@ public class MeetupsAdapter extends SectionAdapter {
                 holder.rsvp.setTextColor(context.getResources().getColor(R.color.dark_gray));
             }
             else {
-                holder.rsvp.setText("RSVP");
+                if (event.type.equals("academy")) {
+                    holder.rsvp.setText("Attend");
+                } else {
+                    holder.rsvp.setText("RSVP");
+                }
             }
         }
         if (ev.has("because")) {
             event.setBecause(ev.optJSONArray("because"));
             holder.because.setText("Because you're interested in "+event.becauseStr);
             holder.because.setVisibility(View.VISIBLE);
+        } else {
+            holder.because.setVisibility(View.GONE);
         }
 
         final Button rsvp = holder.rsvp;
+
         holder.rsvp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Boolean isAttending = Me.isAttendingEvent(event);
                 Boolean isFull = event.isFull();
-                if (!isFull || isAttending) {
-                    Me.toggleRsvp(event, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject jsonObject) {
-                            rsvp.setText(event.isAttending() ? "unRSVP" : "RSVP");
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            MainActivity.offlineAlert();
-                        }
-                    });
+                RsvpDialog dialog = new RsvpDialog();
+                dialog.setEvent(event, isAttending);
+                if (!isFull || !event.type.equals("academy")) {
+                    dialog.show(MainActivity.self.getFragmentManager(), "rsvpdialog");
                 }
             }
         });
         holder.details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.self.open_meetup(event);
+                MainActivity.self.open_event(event);
             }
         });
         return convertView;
+    }
+
+    private String getWho(Event event) {
+        String typeId = event.type;
+        String eventType = EventTypes.byId.optString("singular", "meetup").toLowerCase();
+        if (typeId.equals("academy")) {
+            if (event.descr != null && event.descr.length() > 0) {
+                String descr = event.descr;
+                int max = 200;
+                if (descr.length() > max) {
+                    descr = descr.substring(0, (max-3))+"...";
+                }
+                return descr;
+            }
+        }
+        return event.whoStr;
     }
 
     @Override
@@ -213,9 +248,13 @@ public class MeetupsAdapter extends SectionAdapter {
         else {
             holder = (HeaderHolder) convertView.getTag();
         }
-        holder.time.setText(this.sections.get(section));
+        if (this.sections != null && this.sections.get(section) != null) {
+            holder.time.setText(this.sections.get(section));
+        }
         return convertView;
     }
+
+
 
     @Override
     public void onRowItemClick(AdapterView<?> parent, View view, int section, int row, long id) {

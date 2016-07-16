@@ -51,8 +51,8 @@ public class JsonHelper {
         int len = json.length();
         for(int i = 0; i < len; i++) {
             try {
-                if(json.get(i) != val) {
-                    out.put(val);
+                if(!String.valueOf(json.get(i)).equals(val)) {
+                    out.put(json.get(i));
                 }
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);

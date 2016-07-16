@@ -89,13 +89,13 @@ public class WalkthroughFragment extends Fragment{
                     imageView.setImageResource(R.drawable.wt_communities_icon);
                     break;
                 case 3:
-                    title.setText("Meetups");
-                    text.setText("Browse and RSVP to the wide-range of attendee-hosted meetups during WDS.\n\nWe'll even make some suggestions based on your communities.");
+                    title.setText("Activities");
+                    text.setText("Browse and RSVP to the wide-range of WDS Activities as well as attendee-hosted meetups during WDS.\n\nWe'll even make some suggestions based on your communities.");
                     imageView.setImageResource(R.drawable.wt_meetups_icon);
                     break;
                 case 4:
                     title.setText("Your Schedule");
-                    text.setText("Stay on top of your schedule!\n\nEverything you care about is clearly outlined — even your meetups!");
+                    text.setText("Stay on top of your schedule!\n\nEverything you care about is clearly outlined — even your academies, activities and meetups!");
                     imageView.setImageResource(R.drawable.wt_schedule_icon);
                     break;
                 case 5:

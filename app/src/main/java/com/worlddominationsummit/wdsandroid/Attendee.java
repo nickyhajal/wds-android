@@ -22,6 +22,7 @@ public class Attendee {
     public String last_name = "";
     public String full_name;
     public String user_name;
+    public String ticket_type = "";
     public String email;
     public String site;
     public String twitter;
@@ -45,6 +46,7 @@ public class Attendee {
         atn.first_name = params.optString("first_name");
         atn.last_name = params.optString("last_name");
         atn.user_name = params.optString("user_name");
+        atn.ticket_type = params.optString("ticket_type");
         atn.email = params.optString("email");
         atn.site = params.optString("site");
         atn.twitter = params.optString("twitter");
@@ -60,11 +62,12 @@ public class Attendee {
     }
 
     public Attendee() { }
-    public Attendee(String user_id, String first_name, String last_name, String user_name, String email, String site, String twitter, String facebook, String instagram, String pic, String location, String lat, String lon, String distance) {
+    public Attendee(String user_id, String first_name, String last_name, String user_name, String email, String ticket_type, String site, String twitter, String facebook, String instagram, String pic, String location, String lat, String lon, String distance) {
         this.user_id = user_id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.user_name = user_name;
+        this.ticket_type = ticket_type;
         this.email = email;
         this.twitter = twitter;
         this.facebook = facebook;
@@ -118,7 +121,11 @@ public class Attendee {
             qs.put("Why did you decide to travel " + this.distance + " miles from " + this.location + " to the World Domination Summit?");
             qs.put("What are you excited about these days?");
             qs.put("What's your super-power?");
-            qs.put("What's your goal for WDS 2015?");
+            qs.put("What's your goal for WDS 2016?");
+            qs.put("What's your favorite song?");
+            qs.put("What's your favorite treat?");
+            qs.put("What's your favorite quote?");
+            qs.put("What are you looking forward to during your time in Portland?");
             for (int i = 0; i < len; i++) {
                 String q = "";
                 JSONObject answer = answers.optJSONObject(i);

@@ -27,7 +27,7 @@ public class FiltersFragment extends Fragment {
     public Switch mAtns;
     public Spinner mComms;
     public Switch mTwitter;
-    public Switch mMeetups;
+    public Switch mEvents;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class FiltersFragment extends Fragment {
             ViewGroup vg = (ViewGroup) mView;
             mAtns = (Switch) mView.findViewById(R.id.atns);
             mTwitter = (Switch) mView.findViewById(R.id.twitter);
-            mMeetups = (Switch) mView.findViewById(R.id.meetups);
+            mEvents = (Switch) mView.findViewById(R.id.events);
             mComms = (Spinner) mView.findViewById(R.id.comms);
             Font.applyTo(mView);
             ArrayList<String> comms = new ArrayList<String>();
@@ -55,7 +55,7 @@ public class FiltersFragment extends Fragment {
                     ((Switch) v).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            String val = "1";
+                            String val;
                             String name = buttonView.getTag().toString();
                             if (isChecked) {
                                 val = "0";
@@ -65,6 +65,9 @@ public class FiltersFragment extends Fragment {
 //                                else {
 //                                    val = "1";
 //                                }
+                            }
+                            else {
+                                val = "1";
                             }
 //                            else {
 ////                                if(name.equals("following")) {
@@ -128,9 +131,9 @@ public class FiltersFragment extends Fragment {
                 mTwitter.setChecked(false);
             }
             if (filters.has("meetups") && filters.optString("meetups").equals("0")) {
-                mMeetups.setChecked(true);
+                mEvents.setChecked(true);
             } else {
-                mMeetups.setChecked(false);
+                mEvents.setChecked(false);
             }
             mComms.setSelection(Integer.parseInt(filters.optString("communities")));
             Store.set("dispatch_filters", filters);

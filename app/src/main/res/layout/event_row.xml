@@ -13,7 +13,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:textColor="@color/blue"
-        android:textSize="24sp"/>
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/who"
