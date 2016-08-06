@@ -34,8 +34,10 @@ public class Attendee {
     public String lon;
     public String distance = "";
     public String qnaStr;
+    public JSONObject card;
     public Boolean isQna;
     public Boolean hasPic;
+    public String academy = "0";
 
     public static Attendee fromHashMap(HashMap<String, String> params) {
         return Attendee.fromJson(new JSONObject(params));
@@ -57,6 +59,8 @@ public class Attendee {
         atn.lat = params.optString("lat");
         atn.lon = params.optString("lon");
         atn.distance = params.optString("distance");
+        atn.academy = params.optString("academy", "0");
+        atn.card = params.optJSONObject("card");
         atn.init();
         return atn;
     }

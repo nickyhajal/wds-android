@@ -137,6 +137,31 @@ public class Me {
         return step.equals("") ? 0 : Integer.parseInt(step);
     }
 
+    public static boolean claimedAcademy() {
+        return !Me.atn.academy.equals("0");
+    }
+
+    public static void claimAcademy(final String event_id, final Response.Listener<JSONObject> successListener, final Response.ErrorListener errorListener) {
+        JSONObject p = new JSONObject();
+        try {
+            p.put("event_id", event_id);
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+        Api.post("event/claim-academy", p, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Me.addRsvp(event_id);
+                successListener.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResponse(error);
+            }
+        });
+    }
+
     public static void saveUserToken(String user_token) {
         Store.set("user_token", user_token);
         Me.checkLoggedIn();
@@ -441,6 +466,12 @@ public class Me {
                 errorListener.onErrorResponse(error);
             }
         });
+    }
+
+    public static void addRsvp(String event_id) {
+        JSONArray rsvps = Me.getJSONArray("rsvps");
+        rsvps.put(Integer.valueOf(event_id));
+        Me.set("rsvps", rsvps);
     }
 
 

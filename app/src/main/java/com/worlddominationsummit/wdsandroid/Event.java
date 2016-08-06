@@ -39,6 +39,8 @@ public class Event{
     public String becauseStr;
     public String max;
     public String num_rsvps;
+    public String free_max = "0";
+    public String num_free = "0";
     public JSONArray ints;
     public JSONArray hostsJSON;
     public ArrayList<Attendee> hosts;
@@ -70,6 +72,8 @@ public class Event{
         ev.dayStr = params.optString("dayStr");
         ev.max = params.optString("max");
         ev.num_rsvps = params.optString("num_rsvps");
+        ev.free_max = params.optString("free_max");
+        ev.num_free = params.optString("num_free");
         try {
             JSONArray hosts = params.getJSONArray("hosts");
             ev.hostsJSON = hosts;
@@ -111,6 +115,8 @@ public class Event{
         this.startStr = startStr;
         this.dayStr = dayStr;
         this.hostsJSON = hostsJSON;
+        this.num_free = "0";
+        this.free_max = "0";
     }
     public void init() {
         hosts = new ArrayList<Attendee>();
@@ -166,6 +172,11 @@ public class Event{
             return Character.toUpperCase(subject.charAt(0)) + subject.substring(1);
         }
         return "";
+    }
+    public boolean hasClaimableTickets() {
+        int num_free = Integer.valueOf(this.num_free);
+        int free_max = Integer.valueOf(this.free_max);
+        return ((free_max > 0) && (num_free < free_max));
     }
     public void setBecause(JSONArray because) {
         String str = "";

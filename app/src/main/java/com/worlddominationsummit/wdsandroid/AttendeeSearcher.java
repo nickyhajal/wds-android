@@ -38,7 +38,6 @@ public class AttendeeSearcher implements Runnable{
             "match me"
         };
         if(Arrays.asList(special).contains(query)) {
-            Puts.i("SPECIAL");
             specialSearch();
         }
         else {

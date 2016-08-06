@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by nicky on 7/8/16.
@@ -45,10 +48,23 @@ public class RsvpDialog extends DialogFragment {
 
         btn_no.setText("Nevermind");
         String typelow = eventType.optString("singular", "meetup").toLowerCase();
+        String mode = "purchase";
         if (mEvent.type.equals("academy")) {
-            btn_yes.setText("Get a Ticket");
             title.setText("Attend this Academy");
-            msg.setText("360 and Connect attendees may claim one complimentary academy and purchase additional academies for $29.\n\nYou'll need to complete this process through our site. Tap below to continue.");
+            if (!Me.claimedAcademy() && mEvent.hasClaimableTickets()) {
+                mode = "claim";
+                btn_yes.setText("Claim");
+                msg.setText("360 and Connect attendees may claim one complimentary academy and purchase additional academies for $29."+
+                "\n\nWould you like to claim this ticket? (You can't change this later)");
+            } else if (!Me.claimedAcademy() && !mEvent.hasClaimableTickets()) {
+                msg.setText("You still have 1 free academy to claim but unfortunately thre are no more Insider Access tickets available for this academy.\n\n"+
+                        "You can still purchase a ticket for $29.");
+                btn_yes.setText("Purchase");
+            } else {
+                msg.setText("WDS Academies cost $59 but 360 and Connect attendees can get access for just $29.\n\n"
+                        +"Would you like to purchase this academy?");
+                btn_yes.setText("Purchase");
+            }
         } else {
             if (mAttending) {
                 title.setText("Can't make it?");
@@ -61,17 +77,47 @@ public class RsvpDialog extends DialogFragment {
             }
         }
         final DialogFragment self = this;
+        final String ac_mode = mode;
         View.OnClickListener yesListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                self.dismiss();
-                btn_yes.setText("RSVPing...");
 
                 if (mEvent.type.equals("academy")) {
-                    String url = "https://worlddominationsummit.com/academy/"+mEvent.slug;
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(browserIntent);
+                    if (ac_mode.equals("claim")) {
+                        btn_yes.setText("Claiming...");
+                        Me.claimAcademy(mEvent.event_id, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                if (MainActivity.self.eventsFragment != null && MainActivity.self.eventsFragment == MainActivity.self.active) {
+                                    MainActivity.self.eventsFragment.update_items();
+                                }
+                                if (MainActivity.self.eventFragment != null && MainActivity.self.eventFragment == MainActivity.self.active) {
+                                    MainActivity.self.eventFragment.updateRsvpButton();
+                                }
+                                btn_yes.setText("Claimed!");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        self.dismiss();
+                                    }
+                                }, 2000);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+                    } else if (ac_mode.equals("purchase")) {
+                        HashMap<String, String> prod = new HashMap<>();
+                        prod.put("name", "WDS Academy");
+                        prod.put("descr", mEvent.what);
+                        prod.put("event_id", mEvent.event_id);
+                        self.dismiss();
+                        MainActivity.self.open_cart("academy", prod);
+                    }
                 } else {
+                    btn_yes.setText("RSVPing...");
                     Me.toggleRsvp(mEvent, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
@@ -82,6 +128,7 @@ public class RsvpDialog extends DialogFragment {
                                 MainActivity.self.eventFragment.updateRsvpButton();
                             }
                             btn_yes.setText("RSVP");
+                            self.dismiss();
                         }
                     }, new Response.ErrorListener() {
                         @Override

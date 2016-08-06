@@ -248,6 +248,9 @@ public class HomeFragment extends Fragment{
         this.adapter.notifyDataSetChanged();
     }
     public void update_items(ArrayList<HashMap> items) {
+        if (items == null) {
+            items = new ArrayList<HashMap>();
+        }
         this.items = items;
         this.update_items();
     }

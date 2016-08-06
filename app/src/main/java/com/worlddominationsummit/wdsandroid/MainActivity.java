@@ -42,6 +42,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.crashlytics.android.Crashlytics;
+
+import io.card.payment.CardIOActivity;
+import io.card.payment.CreditCard;
+import io.fabric.sdk.android.Fabric;
+
 public class MainActivity extends FragmentActivity implements Runnable {
 
     public static MainActivity self;
@@ -73,6 +79,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public CommunitiesFragment communitiesFragment;
     public UserNotesFragment userNotesFragment;
     public EventFragment eventFragment;
+    public CartFragment cartFragment;
     public ExploreFragment exploreFragment;
     public CheckinFragment checkinFragment;
     public EventAttendeesFragment eventAttendeesFragment;
@@ -81,6 +88,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public Boolean tabsActive = false;
     public Boolean searching = false;
     public Fragment active;
+    public int SCAN_REQUEST_CODE = 19819;
     public HashMap<String, Fragment> frags = new HashMap<String, Fragment>();
     public String ntfnData = "";
     public static float density;
@@ -93,6 +101,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         this.contentLayout = new FrameLayout(this);
         this.contentLayout.setId(R.id.frame_layout);
         this.setContentView(this.contentLayout);
@@ -218,6 +227,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
         postFragment = new PostFragment();
         eventAttendeesFragment = new EventAttendeesFragment();
         communitiesFragment = new CommunitiesFragment();
+        cartFragment = new CartFragment();
         filtersFragment = new FiltersFragment();
         dispatchContentFragment = new DispatchContentFragment();
         homeFragment = new HomeFragment();
@@ -228,6 +238,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void startExperience() {
 //        Store.set("walkthrough", "0");
+//        Store.set("user_token", "");
         int step = Me.checkWalkthrough();
         if(step < 7) {
             open_walkthrough(step);
@@ -350,6 +361,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 title = "Check In";
             } else if (active == communitiesFragment) {
                 title = "Communities";
+            } else if (active == cartFragment) {
+                title = "Let's Do This!";
             } else if (active == scheduleFragment) {
                 title = "Your Schedule";
             } else if (active == registrationFragment) {
@@ -404,6 +417,19 @@ public class MainActivity extends FragmentActivity implements Runnable {
             public void run() {
                 eventsFragment.willDisplay();
                 tabsFragment.open(eventsFragment, "events");
+            }
+        }, 10);
+    }
+    public void open_cart(String code, HashMap prod) {
+        cartFragment.setProduct(code, prod);
+        open_cart();
+    }
+    public void open_cart() {
+        open_tabs();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tabsFragment.open(cartFragment, "cart");
             }
         }, 10);
     }
@@ -630,6 +656,44 @@ public class MainActivity extends FragmentActivity implements Runnable {
         return currentFragment;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SCAN_REQUEST_CODE) {
+            String resultDisplayStr;
+            if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
+                CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
+
+                // Never log a raw card number. Avoid displaying it, but if necessary use getFormattedCardNumber()
+                resultDisplayStr = "Card Number: " + scanResult.getRedactedCardNumber() + "\n";
+
+                // Do something with the raw number, e.g.:
+                // myService.setCardNumber( scanResult.cardNumber );
+
+                if (scanResult.isExpiryValid()) {
+                    resultDisplayStr += "Expiration Date: " + scanResult.expiryMonth + "/" + scanResult.expiryYear + "\n";
+                }
+
+                if (scanResult.cvv != null) {
+                    // Never log or display a CVV
+                    resultDisplayStr += "CVV has " + scanResult.cvv.length() + " digits.\n";
+                }
+
+                if (scanResult.postalCode != null) {
+                    resultDisplayStr += "Postal Code: " + scanResult.postalCode + "\n";
+                }
+                cartFragment.setCard(scanResult.getFormattedCardNumber(), scanResult.cvv, scanResult.expiryMonth, scanResult.expiryYear);
+            }
+            else {
+                resultDisplayStr = "Scan was canceled.";
+            }
+            Puts.i(resultDisplayStr);
+            // do something with resultDisplayStr, maybe display it in a textView
+            // resultTextView.setText(resultDisplayStr);
+        }
+        // else handle other activity results
+    }
 
     @Override
     public void onBackPressed() {

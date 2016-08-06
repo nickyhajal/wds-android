@@ -13,6 +13,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <!--<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />-->
     <!--74:A4:C4:02:1E:CD:3B:BC:2B:2D:48:CD:D2:9E:23:FF:A4:58:9F:09;com.worlddominationsummit.wdsandroid-->
 
@@ -41,6 +46,8 @@
                 <category android:name="com.worlddominationsummit.wdsandroid" />
             </intent-filter>
         </receiver>
+        <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation" />
+        <activity android:name="io.card.payment.DataEntryActivity" />
         <service
             android:name="com.worlddominationsummit.wdsandroid.MyGcmListenerService"
             android:exported="false" >
@@ -65,6 +72,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="3a3d44766f7f51cc70d2bf6049548f46da107e09"
+            />
     </application>
 
 

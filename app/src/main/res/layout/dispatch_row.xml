@@ -63,6 +63,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:ellipsize="end"
+                    android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="@color/dark_gray"
                     android:text=" - global"

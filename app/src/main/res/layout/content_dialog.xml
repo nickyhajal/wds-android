@@ -45,15 +45,5 @@
             android:background="@color/orange"
             android:text="Sounds Good"/>
 
-        <Button
-            android:id="@+id/btn_no"
-            android:layout_width="fill_parent"
-            android:layout_weight="1.0"
-            android:layout_height="match_parent"
-            android:textColor="@color/dark_gray"
-            android:padding="5dp"
-            android:background="@color/dark_yellow_tan"
-            android:text="Cancel"/>
-
     </LinearLayout>
 </LinearLayout>

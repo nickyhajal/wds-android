@@ -95,7 +95,7 @@ public class DispatchAdapter extends ArrayAdapter<HashMap>{
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-        mImageLoader.DisplayImage(item.author.pic, holder.avatar);
+        mImageLoader.DisplayImage(item.author.getPic(144), holder.avatar);
         holder.name.setText(item.author.full_name);
         holder.content.setText(item.content);
         Linkify.addLinks(holder.content, Linkify.WEB_URLS);

@@ -56,6 +56,10 @@ public class EventsAdapter extends SectionAdapter {
     }
     public void setItems(JSONArray items) {
         this.items = new JSONArray();
+        if (items == null) {
+            this.numItems = 0;
+            return;
+        }
         this.numItems = items.length();
         int sectionIndex = -1;
         String lastTime = "";
@@ -248,7 +252,7 @@ public class EventsAdapter extends SectionAdapter {
         else {
             holder = (HeaderHolder) convertView.getTag();
         }
-        if (this.sections != null && this.sections.get(section) != null) {
+        if (this.sections != null && section < this.sections.size() && this.sections.get(section) != null) {
             holder.time.setText(this.sections.get(section));
         }
         return convertView;
