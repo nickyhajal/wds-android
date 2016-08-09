@@ -1,1 +1,42 @@
-{"project_info":{"project_id":"wds-app-ea9c","project_number":"388613775470","name":"WDS App"},"client":[{"client_info":{"client_id":"android:com.worlddominationsummit.wdsandroid","client_type":1,"android_client_info":{"package_name":"com.worlddominationsummit.wdsandroid"}},"oauth_client":[],"services":{"analytics_service":{"status":1},"cloud_messaging_service":{"status":2,"apns_config":[]},"appinvite_service":{"status":1,"other_platform_oauth_client":[]},"google_signin_service":{"status":1},"ads_service":{"status":1}}}]}
+{
+  "project_info": {
+    "project_number": "1072064542998",
+    "firebase_url": "https://worlddominationsummit.firebaseio.com",
+    "project_id": "worlddominationsummit",
+    "storage_bucket": "worlddominationsummit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072064542998:android:d2561306e7492514",
+        "android_client_info": {
+          "package_name": "com.worlddominationsummit.wdsandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072064542998-ts5vtdempido6mu16m101msgcgl8cosq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDodZCl2oqv7J1IQiLjMRwQOIjhvuWmCdE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

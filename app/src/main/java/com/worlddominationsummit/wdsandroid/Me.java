@@ -41,6 +41,18 @@ public class Me {
     public static void update(JSONObject params) {
         Me.atn = Attendee.fromJson(params);
         Me.params = params;
+        if (Me.atn.firetoken != null && Me.atn.firetoken.length() > 0) {
+            Fire.auth(Me.atn.firetoken);
+        }
+    }
+
+    public static void fireAuthCallback() {
+        fireSet("version", MainActivity.version);
+        Fire.set("/notifications/"+Me.atn.user_id, new HashMap<String, Object>());
+    }
+
+    public static void fireSet(String path, String val) {
+        Fire.set("/users/"+Me.atn.user_id+"/"+path, val);
     }
 
     public static void sync (Response.Listener<JSONObject> successListener, Response.ErrorListener errorListener) {

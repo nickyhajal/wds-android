@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 23
@@ -9,8 +9,8 @@ android {
         applicationId "com.worlddominationsummit.wdsandroid"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 17
-        versionName "1.7"
+        versionCode 18
+        versionName "1.8"
     }
     buildTypes {
         release {
@@ -25,6 +25,7 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -32,20 +33,23 @@ dependencies {
     compile files('libs/android-smart-image-view-1.0.0.jar')
     compile files('libs/htmlcleaner-2.2.1.jar')
     compile files('libs/htmlspanner.jar')
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'info.hoang8f:android-segmented:1.0.5'
     compile 'com.github.pungrue26:SelectableRoundedImageView:c310290065'
     compile 'com.github.curioustechizen.android-ago:library:1.2.0'
     compile 'com.github.applidium:HeaderListView:f9c33c21ae'
-    compile 'com.google.android.gms:play-services-maps:9.0.2'
-    compile 'com.google.android.gms:play-services-location:9.0.2'
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-    compile 'com.google.android.gms:play-services-auth:9.0.2'
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
+    compile 'com.google.android.gms:play-services-auth:9.4.0'
+    compile 'com.google.android.gms:play-services-gcm:9.4.0'
     compile 'com.stripe:stripe-android:+'
     compile 'io.card:android-sdk:5.4.0'
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-database:9.4.0'
+    compile 'com.google.firebase:firebase-auth:9.4.0'
 }
 
 buildscript {
@@ -60,21 +64,16 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application'
-//Put Fabric plugin after Android plugin
-apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    compile 'com.android.support:design:24.1.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

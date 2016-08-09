@@ -30,7 +30,11 @@ public class MyGcmListenerService extends GcmListenerService {
         } catch (JSONException e) {
             Log.e("WDS", "Json Exception", e);
         }
-        int id = Integer.parseInt(data.getString("id").replaceAll("\\D+", "").substring(4, 12));
+        String digits = data.getString("id").replaceAll("\\D+", "");
+        int id = Integer.parseInt(digits.substring(0, 8));
+        if (digits.length() > 10) {
+            id = Integer.parseInt(digits.substring(3, 11));
+        }
 
         /**
          * Production applications would usually process the message here.

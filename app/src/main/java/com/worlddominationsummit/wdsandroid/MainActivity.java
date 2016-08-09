@@ -51,6 +51,7 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends FragmentActivity implements Runnable {
 
     public static MainActivity self;
+    public static String version = "16.3.0";
     private Button search_close;
     public EditText search_inp;
     private TextView title;
@@ -80,6 +81,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public UserNotesFragment userNotesFragment;
     public EventFragment eventFragment;
     public CartFragment cartFragment;
+    public ChatFragment chatFragment;
+    public ChatsFragment chatsFragment;
     public ExploreFragment exploreFragment;
     public CheckinFragment checkinFragment;
     public EventAttendeesFragment eventAttendeesFragment;
@@ -204,6 +207,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.initActionBar();
         Store.init(this);
         Api.init(this);
+        Fire.init();
         initScreens();
         this.open_loading();
         EventTypes.init();
@@ -228,6 +232,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
         eventAttendeesFragment = new EventAttendeesFragment();
         communitiesFragment = new CommunitiesFragment();
         cartFragment = new CartFragment();
+        chatFragment = new ChatFragment();
+        chatsFragment = new ChatsFragment();
         filtersFragment = new FiltersFragment();
         dispatchContentFragment = new DispatchContentFragment();
         homeFragment = new HomeFragment();
@@ -349,6 +355,10 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 }
             } else if (active == eventTypesFragment) {
                 title = "Events";
+            } else if (active == chatsFragment) {
+                title = "Messages";
+            } else if (active == chatFragment) {
+                title = "Chat with";
             } else if (active == eventsFragment) {
                 title = EventTypes.byId.optJSONObject(eventsFragment.mType).optString("plural");
             } else if (active == exploreFragment) {
@@ -420,6 +430,27 @@ public class MainActivity extends FragmentActivity implements Runnable {
             }
         }, 10);
     }
+    public void open_chat(String pid) {
+        chatFragment.setPid(pid);
+        open_chat();
+    }
+    public void open_chat(Attendee atn) {
+        chatFragment.setAttendee(atn);
+        open_chat();
+    }
+    public void open_chat(ArrayList<Attendee> atns) {
+        chatFragment.setAttendees(atns);
+        open_chat();
+    }
+    public void open_chat() {
+        open_tabs();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tabsFragment.open(chatFragment, "chat");
+            }
+        }, 10);
+    }
     public void open_cart(String code, HashMap prod) {
         cartFragment.setProduct(code, prod);
         open_cart();
@@ -462,6 +493,11 @@ public class MainActivity extends FragmentActivity implements Runnable {
                 tabsFragment.open(homeFragment, "home");
             }
         }, 10);
+    }
+
+    public void open_chats() {
+        open_tabs();
+        tabsFragment.open(chatsFragment, "chats");
     }
 
     public void open_explore() {

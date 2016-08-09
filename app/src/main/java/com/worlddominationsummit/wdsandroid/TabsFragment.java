@@ -27,7 +27,8 @@ public class TabsFragment extends Fragment{
     public ImageButton dispatch;
     public ImageButton schedule;
     public ImageButton meetups;
-//TURN ON LATER    public ImageButton explore;
+    public ImageButton explore;
+    public ImageButton chat;
     public MainActivity context;
     public Fragment active;
     public HashMap<String, Fragment> frags;
@@ -50,7 +51,8 @@ public class TabsFragment extends Fragment{
             this.dispatch = (ImageButton) this.view.findViewById(R.id.btn_dispatch);
             this.schedule = (ImageButton) this.view.findViewById(R.id.btn_schedule);
             this.meetups = (ImageButton) this.view.findViewById(R.id.btn_meetups);
-//TURN ON LATER            this.explore = (ImageButton) this.view.findViewById(R.id.btn_explore);
+            this.chat = (ImageButton) this.view.findViewById(R.id.btn_chat);
+            this.explore = (ImageButton) this.view.findViewById(R.id.btn_explore);
             dispatch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
@@ -69,12 +71,18 @@ public class TabsFragment extends Fragment{
                     MainActivity.self.open_event_types();
                 }
             });
-//TURN ON LATER            explore.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View arg0) {
-//                    MainActivity.self.open_explore();
-//                }
-//            });
+            chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    MainActivity.self.open_chats();
+                }
+            });
+            explore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    MainActivity.self.open_explore();
+                }
+            });
         }
         return this.view;
     }
@@ -108,7 +116,8 @@ public class TabsFragment extends Fragment{
         dispatch.setImageResource((MainActivity.self.active == this.context.homeFragment) ? R.drawable.dispatch_icon_selected : R.drawable.dispatch_icon);
         schedule.setImageResource((MainActivity.self.active == this.context.scheduleFragment) ? R.drawable.schedule_icon_selected : R.drawable.schedule_icon);
         meetups.setImageResource((MainActivity.self.active == this.context.eventTypesFragment) ? R.drawable.meetups_icon_selected : R.drawable.meetups_icon);
-//TURN ON LATER        explore.setImageResource((MainActivity.self.active == this.context.exploreFragment) ? R.drawable.explore_icon_selected : R.drawable.explore_icon);
+        explore.setImageResource((MainActivity.self.active == this.context.exploreFragment) ? R.drawable.explore_icon_selected : R.drawable.explore_icon);
+        chat.setImageResource((MainActivity.self.active == this.context.chatsFragment) ? R.drawable.chat_icon_selected : R.drawable.chat_icon);
 //        this.dispatch.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.homeFragment) ? R.drawable.dispatch_icon_selected : R.drawable.dispatch_icon), 32, 32), null, null);
 //        this.schedule.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.scheduleFragment) ? R.drawable.schedule_icon_selected : R.drawable.schedule_icon), 32, 32), null, null);
 //        this.meetups.setCompoundDrawablesWithIntrinsicBounds(null, getDrawable(((MainActivity.self.active == this.context.eventsFragment) ? R.drawable.meetups_icon_selected : R.drawable.meetups_icon), 32, 32), null, null);

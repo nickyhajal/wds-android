@@ -4,6 +4,10 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import net.nightwhistler.htmlspanner.HtmlSpanner;
 
 import org.json.JSONArray;
@@ -34,6 +38,8 @@ public class Attendee {
     public String lon;
     public String distance = "";
     public String qnaStr;
+    public String firetoken;
+    public Boolean receivesMsgs = false;
     public JSONObject card;
     public Boolean isQna;
     public Boolean hasPic;
@@ -61,6 +67,7 @@ public class Attendee {
         atn.distance = params.optString("distance");
         atn.academy = params.optString("academy", "0");
         atn.card = params.optJSONObject("card");
+        atn.firetoken = params.optString("firetoken");
         atn.init();
         return atn;
     }
@@ -86,6 +93,24 @@ public class Attendee {
         this.full_name = first_name + " " + last_name;
         this.initDistance();
         this.initPic();
+    }
+
+    public void readyForMessages(final Runnable r) {
+        final Attendee self = this;
+        Fire.get("/users/" + this.user_id + "/version", new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    self.receivesMsgs = ((String) dataSnapshot.getValue()).compareTo("16.3") >= 0;
+                    r.run();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void initDistance() {
@@ -128,6 +153,7 @@ public class Attendee {
             qs.put("What's your goal for WDS 2016?");
             qs.put("What's your favorite song?");
             qs.put("What's your favorite treat?");
+            qs.put("What's your favorite beverage?");
             qs.put("What's your favorite quote?");
             qs.put("What are you looking forward to during your time in Portland?");
             for (int i = 0; i < len; i++) {

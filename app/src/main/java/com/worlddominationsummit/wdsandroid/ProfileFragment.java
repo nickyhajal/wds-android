@@ -42,6 +42,7 @@ public class ProfileFragment extends Fragment {
     public Button mTwitter;
     public Button mSite;
     public Button mConnect;
+    public Button mOpenMessage;
     public Button mNotes;
     public SelectableRoundedImageView mAv;
     public LinearLayout mLoading;
@@ -132,6 +133,7 @@ public class ProfileFragment extends Fragment {
                 mConnect.setText("Friend "+mAtn.first_name);
             }
             mNotes.setText("Your Notes on "+mAtn.first_name);
+            mOpenMessage.setText("Send a Message to "+mAtn.first_name);
             mHeading.setText("A bit about "+mAtn.first_name);
             updateAvatar();
         }
@@ -191,6 +193,7 @@ public class ProfileFragment extends Fragment {
             mTwitter = (Button) mView.findViewById(R.id.twitter);
             mSite = (Button) mView.findViewById(R.id.site);
             mConnect = (Button) mView.findViewById(R.id.connect);
+            mOpenMessage = (Button) mView.findViewById(R.id.openMessage);
             mNotes = (Button) mView.findViewById(R.id.notes);
             mHeading = (TextView) mView.findViewById(R.id.about_heading);
             mScrollView = (ScrollView) mView.findViewById(R.id.scrollView);
@@ -236,6 +239,12 @@ public class ProfileFragment extends Fragment {
                             }
                         });
                     }
+                }
+            });
+            mOpenMessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.self.open_chat(mAtn);
                 }
             });
             mNotes.setOnClickListener(new View.OnClickListener() {
