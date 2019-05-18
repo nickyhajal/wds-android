@@ -1,63 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/light_tan"
-    >
+    android:orientation="vertical">
+
     <RelativeLayout
-        android:visibility="visible"
-        android:background="@color/tan"
         android:layout_width="match_parent"
-        android:layout_height="85dp">
+        android:layout_height="85dp"
+        android:background="@color/tan"
+        android:visibility="visible">
+
         <LinearLayout
             android:layout_width="fill_parent"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
+            android:layout_height="100dp"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/priceSep"
-            android:padding="22dp"
-            android:layout_height="100dp">
+            android:background="@color/tan"
+            android:orientation="vertical"
+            android:padding="22dp">
+
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="font_Vitesse"
                 android:text=""
-                android:textSize="20sp"
-                android:tag="font_Karla_Bold"
                 android:textColor="@color/dark_gray"
-                />
+                android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/descr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginTop="-2dp"
+                android:tag="font_Karla"
                 android:text=""
-                android:textSize="16sp"
-                android:tag="font_Vitesse"
                 android:textColor="@color/dark_gray"
-                />
+                android:textSize="14sp" />
         </LinearLayout>
+
         <View
-            android:layout_width="2dp"
             android:id="@id/priceSep"
+            android:layout_width="2dp"
             android:layout_height="fill_parent"
-            android:layout_toLeftOf="@+id/price"
+            android:layout_toLeftOf="@+id/priceShell"
             android:background="@color/dark_gray_35" />
-        <TextView
-            android:id="@+id/price"
+
+        <RelativeLayout
+            android:id="@+id/priceShell"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:background="@color/light_tan_50"
-            android:text="heyyyy"
-            android:gravity="center"
-            android:textSize="26sp"
-            android:layout_alignParentTop="true"
+            android:background="@color/tan"
+            android:gravity="center_vertical"
             android:layout_alignParentRight="true"
-            android:tag="font_Vitesse_Bold"
-            android:textColor="@color/dark_gray"
-            />
+            android:layout_alignParentTop="true">
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/tan"
+                android:tag="font_Vitesse_Bold"
+                android:text="$547"
+                android:textColor="@color/dark_gray"
+                android:textSize="26sp" />
+
+            <TextView
+                android:id="@+id/fee"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price"
+                android:background="@color/tan"
+                android:gravity="center"
+                android:tag="font_Karla_Italic"
+                android:layout_marginTop="-4dp"
+                android:text="$10.00"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </RelativeLayout>
     <View
         android:layout_width="fill_parent"
@@ -65,141 +91,210 @@
         android:layout_marginBottom="3dp"
         android:background="@color/dark_gray_35" />
     <LinearLayout
+        android:id="@+id/quantityShell"
+        android:layout_marginTop="-1dp"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+            <Button
+                android:id="@+id/q1"
+                android:tag="1"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_marginRight="2dp"
+                android:layout_height="40dp"
+                android:text="1 Ticket"
+                android:background="@color/dark_gray"
+                android:textColor="@color/light_tan"
+                android:textSize="13sp"
+                android:padding="3dp"
+                />
+            <Button
+                android:id="@+id/q2"
+                android:tag="2"
+                android:layout_marginRight="2dp"
+                android:textColor="@color/dark_gray"
+                android:background="@color/tan"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="2 Tickets"
+                android:textSize="13sp"
+                android:padding="3dp"
+                />
+            <Button
+                android:id="@+id/q3"
+                android:tag="3"
+                android:background="@color/tan"
+                android:textSize="13sp"
+                android:textColor="@color/dark_gray"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="3 Tickets"
+                android:padding="3dp"
+                />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/existingCardShell"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="22dp"
+        android:layout_height="wrap_content"
         android:background="@color/bright_tan"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:padding="22dp">
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="CHARGE TO"
-            android:textSize="16sp"
             android:tag="font_Vitesse_Bold"
+            android:text="CHARGE TO"
             android:textColor="@color/dark_gray"
-            />
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/existing_details"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="16sp"
             android:tag="font_Karla_Bold"
+            android:text=""
             android:textColor="@color/dark_gray"
-            />
+            android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/newCardShell"
-        android:padding="22dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/bright_tan"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:padding="22dp">
+
         <Button
             android:id="@+id/scanCard"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:paddingTop="0dp"
+            android:layout_marginBottom="22dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/blue"
             android:paddingBottom="0dp"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:textSize="15sp"
-            android:text="Scan Card"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/light_tan"
-            android:layout_marginBottom="22dp"
-            android:background="@color/blue"
+            android:paddingTop="0dp"
             android:tag="font_Karla_Bold"
-            />
+            android:text="Scan Card"
+            android:textColor="@color/light_tan"
+            android:textSize="15sp" />
+
         <EditText
             android:id="@+id/cc_number"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:paddingTop="0dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/tan"
+            android:hint="Card Number"
             android:paddingBottom="0dp"
             android:paddingLeft="12dp"
-            android:hint="Card Number"
             android:paddingRight="0dp"
-            android:textSize="15sp"
-            android:layout_marginTop="4dp"
+            android:paddingTop="0dp"
+            android:tag="font_Karla_Bold"
             android:textColor="@color/blue"
             android:textColorHint="@color/gray"
-            android:background="@color/tan"
-            android:tag="font_Karla_Bold"
-            />
+            android:textSize="15sp" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <Button
                 android:id="@+id/cc_exp_open"
                 android:layout_width="fill_parent"
-                android:height="36dp"
-                android:layout_toLeftOf="@+id/cc_cvv"
+                android:layout_height="36dp"
                 android:layout_alignParentLeft="true"
-                android:textSize="15sp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_toLeftOf="@+id/cc_cvv"
+                android:height="36dp"
+                android:background="@color/tan"
                 android:gravity="left|center_vertical"
                 android:onClick="showExpirationPicker"
+                android:paddingLeft="12dp"
                 android:tag="font_Karla_Bold"
                 android:text="Expiration"
-                android:layout_marginTop="4dp"
-                android:background="@color/tan"
-                android:paddingLeft="12dp"
                 android:textColor="@color/gray"
-                android:layout_marginRight="4dp"
-                android:layout_height="36dp" />
+                android:textSize="15sp" />
+
             <EditText
                 android:id="@+id/cc_cvv"
                 android:layout_width="140dp"
                 android:layout_height="36dp"
-                android:paddingTop="0dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="4dp"
+                android:background="@color/tan"
+                android:hint="CVV"
                 android:paddingBottom="0dp"
                 android:paddingLeft="12dp"
-                android:hint="CVV"
-                android:layout_alignParentRight="true"
                 android:paddingRight="0dp"
-                android:textSize="15sp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/blue"
-                android:background="@color/tan"
+                android:paddingTop="0dp"
                 android:tag="font_Karla_Bold"
-                />
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
         </RelativeLayout>
     </LinearLayout>
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:background="@color/dark_gray_35" />
+
     <Button
         android:id="@+id/toggleCard"
         android:layout_width="match_parent"
         android:layout_height="34dp"
-        android:paddingTop="0dp"
+        android:background="@color/tan_90"
         android:paddingBottom="0dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:textSize="15sp"
+        android:paddingTop="0dp"
+        android:tag="font_Vitesse_Medium"
         android:text="Add Card"
         android:textColor="@color/orange"
-        android:background="@color/tan_90"
-        android:tag="font_Vitesse_Medium"
-        />
+        android:textSize="15sp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="22dp"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:padding="22dp">
+
+        <Button
+            android:id="@+id/terms"
+            android:layout_width="fill_parent"
+            android:layout_height="32dp"
+            android:layout_above="@+id/submit"
+            android:layout_marginRight="4dp"
+            android:height="30dp"
+            android:background="@color/tan"
+            android:gravity="center"
+            android:tag="font_Vitesse"
+            android:text="Ticket Terms"
+            android:textColor="@color/dark_gray"
+            android:layout_marginBottom="8dp"
+            android:textSize="14sp" />
         <Button
             android:id="@+id/submit"
             android:layout_width="fill_parent"
-            android:height="40dp"
+            android:layout_height="42dp"
             android:layout_alignParentBottom="true"
-            android:textSize="17sp"
+            android:layout_marginRight="4dp"
+            android:height="46dp"
+            android:background="@color/orange"
             android:gravity="center"
             android:tag="font_Vitesse_Bold"
             android:text="Purchase"
-            android:background="@color/orange"
             android:textColor="@color/light_tan"
-            android:layout_marginRight="4dp"
-            android:layout_height="36dp" />
+            android:textSize="17sp" />
     </RelativeLayout>
 </LinearLayout>

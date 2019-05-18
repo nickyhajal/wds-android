@@ -1,6 +1,8 @@
 package com.worlddominationsummit.wdsandroid;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -92,6 +94,8 @@ public class WalkthroughFragment extends Fragment{
                     title.setText("Activities");
                     text.setText("Browse and RSVP to the wide-range of WDS Activities as well as attendee-hosted meetups during WDS.\n\nWe'll even make some suggestions based on your communities.");
                     imageView.setImageResource(R.drawable.wt_meetups_icon);
+//                    Bitmap orig = BitmapFactory.decodeResource(getResources(), R.drawable.wt_meetups_icon);
+//                    imageView.setImageResource(Bitmap.createScaledBitmap(orig,100, 100, false));
                     break;
                 case 4:
                     title.setText("Your Schedule");
@@ -100,7 +104,7 @@ public class WalkthroughFragment extends Fragment{
                     break;
                 case 5:
                     title.setText("Browse Attendees");
-                    text.setText("Search WDSers, browse their profiles and friend them to easily stay connected in the future.");
+                    text.setText("Search WDSers, browse their profiles and friend them to easily stay connected in the future.\n\nYou can even directly message attendees or groups of attendees.");
                     imageView.setImageResource(R.drawable.wt_attendees_icon);
                     break;
                 case 6:

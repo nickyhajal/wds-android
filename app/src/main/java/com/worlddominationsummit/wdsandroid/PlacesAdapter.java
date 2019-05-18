@@ -102,7 +102,7 @@ public class PlacesAdapter extends ArrayAdapter<HashMap>{
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                             Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
                     intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    mContext.startActivity(intent);
+                    MainActivity.self.startActivity(intent);
                 }
             }
         };

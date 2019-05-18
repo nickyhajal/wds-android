@@ -33,29 +33,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:layout_gravity="center_vertical"
-        android:background="@color/bright_tan">
-        <TextView
-            android:layout_alignParentLeft="true"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:gravity="center_vertical"
-            android:tag="font_Karla"
-            android:textSize="17sp"
-            android:text="Twitter Posts"/>
-        <Switch
-            android:id="@+id/twitter"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:textOff="Hide"
-            android:textOn="Show"
-            android:tag="twitter"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:layout_gravity="center_vertical"
         android:background="@color/white">
         <TextView
             android:layout_alignParentLeft="true"

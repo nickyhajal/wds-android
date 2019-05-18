@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worlddominationsummit.wdsandroid.NonFocusingScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+>
+<LinearLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="18dp"
+    >
+
+    <TextView
+        android:id="@+id/text"
+        android:text="Every year WDS Attendees take to the stage to share their stories of adventure, bravery, kindness and more.\n\nHave a story you’d like to share?\n\nLeave your phone number and a 250 character summary of your story below.\n\nWe’ll get in touch if we'll be able to feature your story.\n\n"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginBottom="0dp"
+        />
+    <TextView
+        android:id="@+id/musttext"
+        android:text="You must be available to meet in person at 3PM on Saturday, July 15th"
+        android:layout_width="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/tan_90"
+        />
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Your Phone #"
+        android:textColorHint="@color/gray"
+        android:background="@color/white"
+        android:textSize="15dp"
+        android:layout_marginBottom="4dp"
+        android:padding="6dp"
+        />
+
+    <EditText
+        android:id="@+id/story"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:hint="Your Story Summary"
+        android:background="@color/white"
+        android:padding="6dp"
+        android:gravity="top|left"
+        android:maxLength="250"
+        android:textColorHint="@color/gray"
+        android:textSize="15dp"
+        />
+    <TextView
+        android:id="@+id/storycount"
+        android:text="250"
+        android:layout_width="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/blue"
+        android:gravity="right"
+        />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="Submit"
+        android:background="@color/orange"
+        android:textColor="@color/light_tan"
+        android:gravity="center_horizontal|center_vertical"
+        />
+
+
+</LinearLayout>
+    </com.worlddominationsummit.wdsandroid.NonFocusingScrollView>

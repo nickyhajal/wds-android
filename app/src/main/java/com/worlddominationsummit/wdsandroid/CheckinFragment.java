@@ -69,7 +69,7 @@ public class CheckinFragment extends Fragment {
         if (mView == null) {
             return;
         }
-        Assets.getSmart("places", new Response.Listener<JSONObject>() {
+        Assets.INSTANCE.getSmart("places", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
                 if (mView != null) {

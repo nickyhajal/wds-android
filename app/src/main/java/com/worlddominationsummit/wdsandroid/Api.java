@@ -2,6 +2,7 @@ package com.worlddominationsummit.wdsandroid;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -17,14 +18,20 @@ import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Iterator;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.Response;
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 
 import javax.net.ssl.HostnameVerifier;
@@ -46,7 +53,8 @@ public class Api {
     public static RequestQueue queue;
 
 //    private static String url = "http://wds.nky";
-    private static String url = "https://worlddominationsummit.com";
+    private static String url = "https://api.worlddominationsummit.com";
+//    private static String url = "https://staging.worlddominationsummit.com";
 
     public static void init(Context context){
         HurlStack hurlStack = new HurlStack() {
@@ -79,6 +87,9 @@ public class Api {
 
     public static void request(int method, String path, JSONObject params, final Response.Listener<JSONObject> successListener, final Response.ErrorListener errorListener) {
         String url = Api.url+"/api/"+path;
+        if (params != null && params.has("url")) {
+            url = params.optString("url")+path;
+        }
         if(Me.user_token != null && Me.user_token.length() > 0) {
             if (params == null) {
                 params = new JSONObject();
@@ -93,12 +104,26 @@ public class Api {
             url += "?"+JsonHelper.UrlEncode(params);
         }
 
-//        Puts.i(params);
-//        Puts.i(url);
+
         Response.Listener<JSONObject> onSuccess = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
                 successListener.onResponse(rsp);
+////                Puts.i(rsp.toString());
+//                JSONObject orig = rsp;
+//                String rspStr = rsp.toString();
+//                rspStr = fixEncodingUnicode(rspStr);
+//                JSONObject fixed = null;
+//                try {
+//                    fixed = new JSONObject(rspStr);
+//                } catch (JSONException e) {
+//                    Log.e("WDS", "Json Exception", e);
+//                }
+//                if(fixed != null) {
+//                    successListener.onResponse(fixed);
+//                } else {
+//                    successListener.onResponse(orig);
+//                }
             }
         };
         Response.ErrorListener onError = new Response.ErrorListener() {
@@ -107,9 +132,34 @@ public class Api {
                 errorListener.onErrorResponse(volleyError);
             }
         };
+
+        // REF: http://speakman.net.nz/blog/2013/11/25/getting-started-with-volley-for-android/
+        // https://stackoverflow.com/questions/27932123/utf-8-encoding-in-volley-requests/27932638
+        // hoping this solves the OOM error that Tina is seeing
+        Request req = new JsonObjectRequest(method, url, params, onSuccess, onError) {
+            @Override
+            protected Response<JSONObject> parseNetworkResponse (NetworkResponse response) {
+                try {
+                    String utf8String = new String(response.data, "UTF-8");
+                    return Response.success(new JSONObject(utf8String), HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    // log error
+                    return Response.error(new ParseError(e));
+                } catch (JSONException e) {
+                    // log error
+                    return Response.error(new ParseError(e));
+                }
+            }
+        };
         JsonObjectRequest request = new JsonObjectRequest(method, url, params, onSuccess, onError);
+
+        if (method == Request.Method.POST ) {
+//            Puts.i(url);
+//            Puts.i(params);
+        }
         Api.queue.add(request);
     }
+
     // Let's assume your server app is hosting inside a server machine
     // which has a server certificate in which "Issued to" is "localhost",for example.
     // Then, inside verify method you can verify "localhost".
@@ -124,6 +174,7 @@ public class Api {
             }
         };
     }
+
 
     private static TrustManager[] getWrappedTrustManagers(TrustManager[] trustManagers) {
         final X509TrustManager originalTrustManager = (X509TrustManager) trustManagers[0];
@@ -160,6 +211,8 @@ public class Api {
         };
     }
 
+
+
     private static SSLSocketFactory getSSLSocketFactory()
             throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -182,5 +235,18 @@ public class Api {
         sslContext.init(null, wrappedTrustManagers, null);
 
         return sslContext.getSocketFactory();
+    }
+
+    public static String fixEncodingUnicode(String response) {
+        String str = "";
+        try {
+            str = new String(response.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+
+            e.printStackTrace();
+        }
+
+        String decodedStr = Html.fromHtml(str).toString();
+        return  decodedStr;
     }
 }

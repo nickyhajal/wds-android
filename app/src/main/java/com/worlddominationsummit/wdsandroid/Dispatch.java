@@ -18,6 +18,7 @@ public class Dispatch {
     public JSONObject mFilters;
     public JSONObject mParams;
     public String mSince;
+    public String attachedMedia;
     public Boolean mNoMoreBefore;
 
     public void initParams(JSONObject params) {
@@ -127,6 +128,10 @@ public class Dispatch {
             params.put("channel_type", mParams.get("channel_type"));
             if(mParams.has("channel_id")) {
                 params.put("channel_id", mParams.get("channel_id"));
+            }
+            if (attachedMedia != null) {
+                params.put("media_type", "photo");
+                params.put("media", attachedMedia);
             }
         } catch (JSONException e) {
             Log.e("WDS", "Json Exception", e);

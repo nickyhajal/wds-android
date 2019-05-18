@@ -24,6 +24,8 @@ public class DispatchItem {
     public String channel_type = "loading";
     public String channel_id = "loading";
     public String channel = "loading";
+    public String media = "";
+    public String media_type = "";
     public String created_at_str = "loading";
     public String num_likes_str = "loading";
     public String num_comments_str = "loading";
@@ -42,6 +44,8 @@ public class DispatchItem {
             it.content = params.optString("comment");
         }
         it.num_comments = params.optString("num_comments");
+        it.media = params.optString("media");
+        it.media_type = params.optString("media_type");
         it.num_likes = params.optString("num_likes");
         it.channel_type = params.optString("channel_type");
         it.channel_id = params.optString("channel_id");
@@ -102,6 +106,8 @@ public class DispatchItem {
         }
         if (Me.likesFeedItem(this.feed_id)) {
             this.num_likes_str += " | Liked!";
+        } else if ( num_l > 0) {
+            this.num_likes_str += " | Like";
         }
         if (num_c == 1) {
             this.num_comments_str = "1 Comment";

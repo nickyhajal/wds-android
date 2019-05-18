@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_tan"
-    android:paddingLeft="16dp"
     >
     <LinearLayout
+        android:layout_centerInParent="true"
         android:id="@+id/loading"
         android:visibility="visible"
         android:layout_width="fill_parent"
@@ -21,7 +21,20 @@
             android:textColor="@color/dark_gray"
             />
     </LinearLayout>
+    <ImageView
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrib"
+        android:scaleType="fitStart"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/scrib_rect"
+        android:layout_gravity="center_horizontal"
+        />
     <ScrollView
+        android:layout_alignParentTop="true"
+        android:overScrollMode="always"
+        android:paddingLeft="16dp"
         android:visibility="gone"
         android:id="@+id/scrollView"
         android:layout_width="fill_parent"
@@ -55,21 +68,21 @@
                 android:layout_marginRight="16dp"
                 android:tag="font_Karla_Bold"
                 />
-            <Button
-                android:id="@+id/openMessage"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                android:textSize="15sp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/orange"
-                android:background="@color/tan"
-                android:layout_marginRight="16dp"
-                android:tag="font_Karla_Bold"
-                />
+            <!--<Button-->
+                <!--android:id="@+id/openMessage"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="36dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="40dp"-->
+                <!--android:paddingRight="40dp"-->
+                <!--android:textSize="15sp"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:textColor="@color/orange"-->
+                <!--android:background="@color/tan"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:tag="font_Karla_Bold"-->
+                <!--/>-->
             <Button
                 android:id="@+id/notes"
                 android:layout_width="match_parent"
@@ -165,4 +178,4 @@
     </ScrollView>
 
 
-</LinearLayout>
+</RelativeLayout>

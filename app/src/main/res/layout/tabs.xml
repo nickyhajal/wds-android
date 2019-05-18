@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/db1_root"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
@@ -13,7 +14,8 @@
         android:weightSum="1.0"
         android:gravity="center|bottom"
         android:orientation="horizontal"
-        android:layout_marginBottom="50dp">
+        android:layout_above="@+id/tabbar"
+        >
         <FrameLayout
             android:id="@+id/tab_content"
             android:layout_width="wrap_content"
@@ -21,7 +23,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/tabs"
+        android:id="@+id/tabbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="1"
@@ -29,12 +31,12 @@
         android:weightSum="1.0"
         android:gravity="center|bottom"
         android:orientation="horizontal"
-        android:background="@color/coffee">
+        android:background="@color/darker_gray_blue">
 
         <ImageButton
             android:id="@+id/btn_dispatch"
             style="?android:attr/buttonStyleSmall"
-            android:layout_weight="0.2"
+            android:layout_weight="0.25"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:layout_gravity="center_horizontal|center"
@@ -42,14 +44,14 @@
             android:paddingBottom="10dp"
             android:maxHeight="40dp"
             android:scaleType="fitCenter"
-            android:background="@color/coffee"
+            android:background="@color/darker_gray_blue"
             android:src="@drawable/dispatch_icon"
             />
 
         <ImageButton
             android:id="@+id/btn_schedule"
             style="?android:attr/buttonStyleSmall"
-            android:layout_weight="0.2"
+        android:layout_weight="0.25"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal|center"
@@ -57,23 +59,24 @@
             android:paddingBottom="10dp"
             android:maxHeight="40dp"
             android:scaleType="fitCenter"
-            android:background="@color/coffee"
+            android:background="@color/darker_gray_blue"
             android:textColor="@color/white"
             android:src="@drawable/schedule_icon"
             />
+        <!--android:layout_weight="0.2"-->
 
         <ImageButton
             android:id="@+id/btn_meetups"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.25"
             android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal|center"
             android:maxHeight="40dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:scaleType="fitCenter"
-            android:background="@color/coffee"
+            android:background="@color/darker_gray_blue"
             android:textColor="@color/white"
             android:src="@drawable/meetups_icon"
             />
@@ -89,26 +92,26 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:scaleType="fitCenter"
-            android:background="@color/coffee"
+            android:background="@color/darker_gray_blue"
             android:textColor="@color/white"
             android:src="@drawable/chat_icon"
             />
 
-        <ImageButton
-            android:id="@+id/btn_explore"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_weight="0.2"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_horizontal|center"
-            android:maxHeight="40dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:scaleType="fitCenter"
-            android:background="@color/coffee"
-            android:textColor="@color/white"
-            android:src="@drawable/explore_icon"
-            />
+        <!--<ImageButton-->
+            <!--android:id="@+id/btn_explore"-->
+            <!--style="?android:attr/buttonStyleSmall"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_weight="0.2"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_gravity="center_horizontal|center"-->
+            <!--android:maxHeight="40dp"-->
+            <!--android:paddingTop="10dp"-->
+            <!--android:paddingBottom="10dp"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:background="@color/darker_gray_blue"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:src="@drawable/explore_icon"-->
+            <!--/>-->
 
 
     </LinearLayout>

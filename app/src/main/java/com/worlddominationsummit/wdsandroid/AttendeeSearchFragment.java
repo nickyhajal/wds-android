@@ -30,7 +30,7 @@ public class AttendeeSearchFragment extends Fragment{
     public View view;
     public ListView listview;
     public AttendeeSearchAdapter adapter;
-    public ArrayList<HashMap> items;
+    public ArrayList<HashMap<String, String>> items;
     public RelativeLayout mSearchControls;
 
     @Override
@@ -39,7 +39,7 @@ public class AttendeeSearchFragment extends Fragment{
             this.view = inflater.inflate(R.layout.attendee_search_results, container, false);
             this.listview = (ListView) this.view.findViewById(R.id.results);
             mSearchControls = (RelativeLayout) this.view.findViewById(R.id.search_controls);
-            this.update_items(new ArrayList<HashMap>());
+            this.update_items(new ArrayList<HashMap<String, String>>());
             int count = mSearchControls.getChildCount();
             View.OnClickListener searchControlClick = new View.OnClickListener() {
                 @Override
@@ -63,19 +63,21 @@ public class AttendeeSearchFragment extends Fragment{
 
     public void update_items(JSONArray items) {
         try {
-            this.update_items((ArrayList<HashMap>) JsonHelper.toList(items));
+            this.update_items((ArrayList<HashMap<String, String>>) JsonHelper.toList(items));
         } catch (JSONException e) {
             Log.e("WDS", "Json Exception in attendee search update items", e);
         }
     }
-    public void update_items(ArrayList<HashMap> items) {
+    public void update_items(ArrayList<HashMap<String, String>> items) {
         this.items = items;
         this.update_items();
     }
     public void update_items() {
-        this.adapter = new AttendeeSearchAdapter(this.getActivity(), this.items);
-        if (this.listview != null) {
-            this.listview.setAdapter(this.adapter);
+        if (getActivity() != null) {
+            this.adapter = new AttendeeSearchAdapter(this.getActivity(), this.items);
+            if (this.listview != null) {
+                this.listview.setAdapter(this.adapter);
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by nicky on 5/18/15.
@@ -37,7 +38,23 @@ public class EventTypesFragment extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.update_items(EventTypes.list);
+        JSONArray list = new JSONArray();
+        try {
+            List types = JsonHelper.toList(EventTypes.types);
+            for (int t = 0; t < EventTypes.list.length(); t++) {
+                try {
+                    JSONObject e = EventTypes.list.getJSONObject(t);
+                    if (types.contains((String) e.optString("id"))) {
+                        list.put(e);
+                    }
+                } catch (JSONException e){
+                    Log.e("WDS", "Json Exception", e);
+                }
+            }
+            this.update_items(list);
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
     }
 
     @Override
@@ -56,7 +73,12 @@ public class EventTypesFragment extends Fragment{
     }
     public void update_items() {
         try {
-            mAdapter = new EventTypesAdapter(this.getActivity(), (ArrayList<HashMap>) JsonHelper.toList(mItems));
+            ArrayList<HashMap> items = (ArrayList<HashMap>) JsonHelper.toList(mItems);
+//            if (Me.hasSignedUpForRegistration()) {
+//                items.remove(0);
+//                items.add((HashMap) JsonHelper.toMap(EventTypes.byId.optJSONObject("registration")));
+//            }
+            mAdapter = new EventTypesAdapter(this.getActivity(), items);
             if (mTypesList != null) {
                 mTypesList.setAdapter(mAdapter);
             }

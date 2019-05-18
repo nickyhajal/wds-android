@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="orange" type="color">#FFE99533</item>
-    <item name="tan" type="color">#FFEAEADC</item>
+    <item name="orange" type="color">#FFFD7021</item>
+    <item name="bblue" type="color">#FF0F54ED</item>
+    <item name="dark_gray_blue" type="color">#FF414958</item>
+    <item name="darker_gray_blue" type="color">#FF262A36</item>
+    <item name="cyan" type="color">#FF00BFF2</item>
+    <item name="canary" type="color">#FFFFFDEF</item>
+    <item name="red" type="color">#FFF23E06</item>
+    <item name="tan" type="color">#FFD4D7DC</item>
     <item name="tan_90" type="color">#90EAEADC</item>
     <item name="yellowish_tan" type="color">#FFF2F2E8</item>
     <item name="dark_yellow_tan" type="color">#FFD6D6CC</item>
+    <item name="dark_yellow_tan_50" type="color">#50D6D6CC</item>
     <item name="mid_tan" type="color">#FFF6F6EA</item>
     <item name="bright_tan" type="color">#FFFCFCF3</item>
     <item name="medium_tan" type="color">#FFFDFDF8</item>
@@ -13,20 +20,27 @@
     <item name="light_tan_50" type="color">#50FCFCFA</item>
     <item name="gray" type="color">#FF8A8A7D</item>
     <item name="light_gray" type="color">#FFD8D8D4</item>
-    <item name="dark_gray" type="color">#FF848477</item>
+    <item name="dark_gray" type="color">#FF919CA2</item>
     <item name="dark_gray_35" type="color">#35848477</item>
     <item name="orangish_gray" type="color">#FFB1AEAA</item>
     <item name="yellowish_gray" type="color">#FFE8E8DE</item>
-    <item name="blue" type="color">#FF0A72B0</item>
-    <item name="green" type="color">#FFB0BA1E</item>
-    <item name="bright_green" type="color">#FFBDC72B</item>
+    <item name="blue" type="color">#FF0F54ED</item>
+    <item name="green" type="color">#FF006F3D</item>
+    <item name="bright_green" type="color">#FF13AB2E</item>
+    <item name="sel_green" type="color">#FFFCFFCA</item>
     <item name="white" type="color">#FFFFFFFF</item>
     <item name="coffee" type="color">#FF21170A</item>
+    <item name="clear" type="color">#00FFFFFF</item>
     <item name="light_coffee" type="color">#FF716B60</item>
+
+    <item name="yellow_canvas" type="color">#FFFCFCF3</item>
+    <item name="white_canvas" type="color">#FFFBFBF6</item>
+    <item name="dark_canvas" type="color">#FFF7F7F1</item>
 
 
     <integer-array name="androidcolors">
         <item>@color/orange</item>
+        <item>@color/red</item>
         <item>@color/tan</item>
         <item>@color/tan_90</item>
         <item>@color/yellowish_tan</item>
@@ -39,6 +53,7 @@
         <item>@color/yellowish_gray</item>
         <item>@color/blue</item>
         <item>@color/green</item>
+        <item>@color/sel_green</item>
         <item>@color/bright_green</item>
         <item>@color/white</item>
         <item>@color/coffee</item>

@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.android.volley.*;
 import com.android.volley.Response;
 import com.joooonho.SelectableRoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,16 +39,17 @@ public class ProfileFragment extends Fragment {
     public TextView mHeading;
     public WebView mAbout;
     public ScrollView mScrollView;
+    public ImageView mScrib;
     public Button mFb;
     public Button mInstagram;
     public Button mTwitter;
     public Button mSite;
     public Button mConnect;
-    public Button mOpenMessage;
+//    public Button mOpenMessage;
     public Button mNotes;
     public SelectableRoundedImageView mAv;
     public LinearLayout mLoading;
-    public ImageLoader mImgLoader = new ImageLoader(getActivity());
+    public ImageLoader mImgLoader = ImageLoader.getInstance();
     public LinearLayout mAvatarLayout;
 
     public void setAttendee(Attendee atn) {
@@ -124,7 +127,7 @@ public class ProfileFragment extends Fragment {
                 mAbout.loadData("", "text/html", null);
             }
             else {
-                mAbout.loadData(mAtn.qnaStr, "text/html", null);
+                mAbout.loadData(mAtn.qnaHtml(), "text/html", null);
             }
             if (Me.isFriend(mAtn.user_id)) {
                 mConnect.setText("You're Friends!");
@@ -133,7 +136,7 @@ public class ProfileFragment extends Fragment {
                 mConnect.setText("Friend "+mAtn.first_name);
             }
             mNotes.setText("Your Notes on "+mAtn.first_name);
-            mOpenMessage.setText("Send a Message to "+mAtn.first_name);
+//            mOpenMessage.setText("Send a Message to "+mAtn.first_name);
             mHeading.setText("A bit about "+mAtn.first_name);
             updateAvatar();
         }
@@ -165,7 +168,7 @@ public class ProfileFragment extends Fragment {
             mAv.setBorderWidthDP(5);
             mAv.setBorderColor(MainActivity.self.getResources().getColor(R.color.light_tan));
             //mAv.mutateBackground(true);
-            mImgLoader.DisplayImage(mAtn.pic, mAv);
+            mImgLoader.displayImage(mAtn.pic, mAv);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
             ViewGroup.LayoutParams vparams = new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
             mAvatarLayout.setOrientation(LinearLayout.VERTICAL);
@@ -177,7 +180,7 @@ public class ProfileFragment extends Fragment {
             vg.addView(mAvatarLayout, vparams);
         }
         else {
-           mImgLoader.DisplayImage(mAtn.pic, mAv);
+           mImgLoader.displayImage(mAtn.pic, mAv);
         }
     }
 
@@ -192,8 +195,9 @@ public class ProfileFragment extends Fragment {
             mInstagram = (Button) mView.findViewById(R.id.instagram);
             mTwitter = (Button) mView.findViewById(R.id.twitter);
             mSite = (Button) mView.findViewById(R.id.site);
+            mScrib = (ImageView) mView.findViewById(R.id.scrib);
             mConnect = (Button) mView.findViewById(R.id.connect);
-            mOpenMessage = (Button) mView.findViewById(R.id.openMessage);
+//            mOpenMessage = (Button) mView.findViewById(R.id.openMessage);
             mNotes = (Button) mView.findViewById(R.id.notes);
             mHeading = (TextView) mView.findViewById(R.id.about_heading);
             mScrollView = (ScrollView) mView.findViewById(R.id.scrollView);
@@ -241,12 +245,12 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             });
-            mOpenMessage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MainActivity.self.open_chat(mAtn);
-                }
-            });
+//            mOpenMessage.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    MainActivity.self.open_chat(mAtn);
+//                }
+//            });
             mNotes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -298,7 +302,8 @@ public class ProfileFragment extends Fragment {
                         int scrollY = scrollView.getScrollY(); //for verticalScrollView
                         float density = MainActivity.density;
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                        int dim = (160 - scrollY);
+                        int scrollP = scrollY / (int) density;
+                        int dim = (160 - scrollY/(int)density);
                         if (dim > 160) {
                             dim = 160;
                         }
@@ -309,15 +314,21 @@ public class ProfileFragment extends Fragment {
                         params.width = ddim;
                         params.height = ddim;
                         params.gravity = Gravity.CENTER_HORIZONTAL;
-                        int mdim = 45 - (scrollY / 3);
+                        int mdim = 45 - (scrollY / (int)density);
                         if (mdim < 30) {
                             mdim = 30;
                         }
+                        float alpha = 0.9f - ((float)scrollP/(float)160*density);
+                        if (alpha < 0f) {
+                            alpha = 0f;
+                        }
+                        mScrib.setAlpha(alpha);
                         params.topMargin = (int) (mdim * density);
-                        mAv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        mImgLoader.DisplayImage(mAtn.pic, mAv);
+//                        mAv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                        mImgLoader.displayImage(mAtn.pic, mAv);
                         mAv.setLayoutParams(params);
-                        mAv.setBorderWidthDP((5f / (160f / (float) dim)));
+//                        mAv.setBorderWidthDP((5f / (160f / (float) dim)));
+                        mAv.setBorderWidthDP(3f*MainActivity.density);
                     }
                 }
             });

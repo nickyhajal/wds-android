@@ -3,6 +3,7 @@ package com.worlddominationsummit.wdsandroid;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
@@ -31,6 +33,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public View view;
     MapView mapView;
     public LinearLayout slidingLayout;
+    public LinearLayout mHostedArea;
     public DominationScrollView content;
     public TextView what;
     public TextView time;
@@ -38,6 +41,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public TextView descr;
     public TextView mHostedBy;
     public TextView mHostName;
+    public TextView mHost2Name;
     public TextView mVenue;
     public TextView mAddr;
     public TextView mVNotes;
@@ -45,7 +49,8 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public Button mAttendees;
     public Button mFeed;
     public ImageView mHostAvatar;
-    public ImageLoader mImgLoader = new ImageLoader(getActivity());
+    public ImageView mHost2Avatar;
+    public ImageLoader mImgLoader = ImageLoader.getInstance();
     public Event event;
     public GoogleMap map;
     static final int MIN_DISTANCE = 50;
@@ -98,31 +103,47 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public void setEvent(Event event) {
         this.event = event;
         if (this.view != null) {
-            this.what.setText(event.what);
-            this.time.setText(event.timeStr);
-            this.who.setText(event.whoStr);
-            this.descr.setText(event.descrWithHtmlParsed());
-            mVenue.setText("at "+event.place);
-            if (event.address != null && event.address.length() > 0 && !event.address.equals("null")) {
-                mAddr.setText(event.address);
+            this.what.setText(event.getWhat());
+            this.time.setText(event.getTimeStr()+"\nat "+event.getPlace());
+            this.who.setText(Html.fromHtml(event.getWhoStr()).toString());
+            this.descr.setText(event.descrSpecial());
+//            mVenue.setText("at "+ event.getPlace());
+            if (event.getAddress() != null && event.getAddress().length() > 0 && !event.getAddress().equals("null")) {
+                mAddr.setText(event.getAddress());
                 mAddr.setVisibility(View.VISIBLE);
-
             } else {
                 mAddr.setVisibility(View.GONE);
             }
-            if (event.venueNote != null && event.venueNote.length() > 0 && !event.venueNote.equals("null")) {
-                mVNotes.setText(event.venueNote);
+            if (event.getVenueNote() != null && event.getVenueNote().length() > 0 && !event.getVenueNote().equals("null")) {
+                mVNotes.setText(event.getVenueNote());
                 mVNotes.setVisibility(View.VISIBLE);
 
             } else {
                 mVNotes.setVisibility(View.GONE);
             }
-            if (event.host != null && event.host.first_name != null && event.host.last_name != null) {
-                mHostName.setText(event.host.first_name+"\n"+event.host.last_name);
-                mImgLoader.DisplayImage(event.host.pic, mHostAvatar);
+            if (event.getHost() != null && event.getHost().first_name != null && event.getHost().first_name.length() > 0  && event.getHost().last_name != null) {
+                mHostName.setText(event.getHost().first_name+"\n"+ event.getHost().last_name);
+                mImgLoader.displayImage(event.getHost().pic, mHostAvatar);
+                mHostName.setVisibility(View.VISIBLE);
+                mHostAvatar.setVisibility(View.VISIBLE);
+                mHostedArea.setVisibility(View.VISIBLE);
             }
             else {
                 mHostName.setText("");
+                mHostName.setVisibility(View.GONE);
+                mHostAvatar.setVisibility(View.GONE);
+                mHostedArea.setVisibility(View.GONE);
+            }
+            if (event.getHost2() != null && event.getHost2().first_name != null && event.getHost2().first_name.length() > 0 && event.getHost2().last_name != null) {
+                mHost2Name.setText(event.getHost2().first_name+"\n"+ event.getHost2().last_name);
+                mImgLoader.displayImage(event.getHost2().pic, mHost2Avatar);
+                mHost2Name.setVisibility(View.VISIBLE);
+                mHost2Avatar.setVisibility(View.VISIBLE);
+            }
+            else {
+                mHost2Name.setText("");
+                mHost2Name.setVisibility(View.GONE);
+                mHost2Avatar.setVisibility(View.GONE);
             }
             //this.descr.setText(event.descr);
         }
@@ -142,8 +163,9 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             this.what.setTypeface(Font.use("Vitesse_Medium"));
             this.time = (TextView) this.view.findViewById(R.id.meetupTime);
             this.time.setTypeface(Font.use("Karla_Bold"));
-            mVenue = (TextView) this.view.findViewById(R.id.meetupVenue);
-            mVenue.setTypeface(Font.use("Karla_Bold"));
+//            mVenue = (TextView) this.view.findViewById(R.id.meetupVenue);
+//            mVenue.setTypeface(Font.use("Karla_Bold"));
+            mHostedArea= (LinearLayout) this.view.findViewById(R.id.hostedArea);
             mAddr = (TextView) this.view.findViewById(R.id.meetupAddr);
             mAddr.setTypeface(Font.use("Karla"));
             mVNotes = (TextView) this.view.findViewById(R.id.meetupVenueNotes);
@@ -165,10 +187,19 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mHostName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.self.open_profile(event.host);
+                    MainActivity.self.open_profile(event.getHost());
                 }
             });
             mHostAvatar = (ImageView) this.view.findViewById(R.id.hostAvatar);
+            mHost2Name = (TextView) this.view.findViewById(R.id.host2Name);
+            mHost2Name.setTypeface(Font.use("Karla_Bold"));
+            mHost2Name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.self.open_profile(event.getHost2());
+                }
+            });
+            mHost2Avatar = (ImageView) this.view.findViewById(R.id.host2Avatar);
             content = (DominationScrollView) this.view.findViewById(R.id.content);
             contentStartWeight = ((LinearLayout.LayoutParams) content.getLayoutParams()).weight;
             slidingLayout = (LinearLayout) this.view.findViewById(R.id.slidingLayout);
@@ -181,16 +212,22 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mAttendees.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.self.open_event_attendees(event.event_id);
+                MainActivity.self.open_event_attendees(event.getEvent_id());
                 }
             });
             mFeed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.self.homeFragment.setChannel("event", event.event_id);
+                    String channel = event.getType().equals("ambassador") ? "ambassador" : "meetup";
+                    MainActivity.self.homeFragment.setChannel(channel, event.getEvent_id());
                     MainActivity.self.open_dispatch();
                 }
             });
+            if (event.getType().compareTo("program") == 0) {
+                mRsvp.setVisibility(View.GONE);
+            } else {
+                mRsvp.setVisibility(View.VISIBLE);
+            }
             mRsvp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -198,10 +235,15 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                     Boolean isFull = event.isFull();
                     RsvpDialog dialog = new RsvpDialog();
                     dialog.setEvent(event, isAttending);
-
-                    if (!isFull && (!isAttending || !event.type.equals("academy"))) {
-                        dialog.show(MainActivity.self.getFragmentManager(), "rsvpdialog");
+                    if (!isAttending || (isAttending && event.isCancelable())) {
+                        if ((isAttending) || (!isAttending && !isFull)) {
+                            dialog.show(MainActivity.self.getFragmentManager(), "rsvpdialog");
+                        }
                     }
+//
+//                    if (!isFull && (!isAttending || !event.getType().equals("academy") || !event.isPurchase())) {
+//                        dialog.show(MainActivity.self.getFragmentManager(), "rsvpdialog");
+//                    }
                 }
             });
             final EventFragment ref = this;
@@ -241,19 +283,22 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void updateRsvpButton() {
-        if (mRsvp != null) {
+        if (mRsvp != null && getActivity() != null && event != null && event.getType() != null) {
             mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
             mRsvp.setTextColor(getActivity().getResources().getColor(R.color.light_tan));
             if (Me.isAttendingEvent(event)) {
-                mRsvp.setText("You'll be there!");
+                mRsvp.setText(event.isCancelable() ? "Attending! - Tap to unRSVP" : "Attending!");
             } else {
                 if (event.isFull()) {
                     mRsvp.setText("Event Full");
                     mRsvp.setBackgroundColor(getActivity().getResources().getColor(R.color.light_gray));
                     mRsvp.setTextColor(getActivity().getResources().getColor(R.color.dark_gray));
                 } else {
-                    if (event.type.equals("academy")) {
+                    if (event.getType().equals("academy")) {
                         mRsvp.setText("Attend");
+                    }
+                    else if (event.getType().equals("activity")) {
+                        mRsvp.setText("Add to Schedule");
                     } else {
                         mRsvp.setText("RSVP");
                     }
@@ -282,19 +327,19 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                     venue.setTypeface(Font.use("Vitesse_Medium"));
                     TextView address = (TextView) v.findViewById(R.id.address);
                     address.setTypeface(Font.use("Karla_Italic"));
-                    venue.setText(event.place);
-                    address.setText(event.address);
+                    venue.setText(event.getPlace());
+                    address.setText(event.getAddress());
                     return v;
                 }
             });
             map.clear();
-            if(event.lat != null && event.lon != null && event.address != null
-                    && !event.lat.equals("null") && !event.lon.equals("null") && !event.address.equals("null")) {
-                LatLng markerPos = new LatLng(Double.parseDouble(ref.event.lat), Double.parseDouble(ref.event.lon));
+            if(event.getLat() != null && event.getLon() != null && event.getAddress() != null
+                    && !event.getLat().equals("null") && !event.getLon().equals("null") && !event.getAddress().equals("null")) {
+                LatLng markerPos = new LatLng(Double.parseDouble(ref.event.getLat()), Double.parseDouble(ref.event.getLon()));
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPos, 16));
                 Marker marker = map.addMarker(new MarkerOptions()
-                .title(ref.event.place)
-                .snippet(ref.event.address)
+                .title(ref.event.getPlace())
+                .snippet(ref.event.getAddress())
                 .anchor(0.5f, 1.0f)
                 .position(markerPos));
                 marker.showInfoWindow();

@@ -5,14 +5,22 @@
 package com.worlddominationsummit.wdsandroid;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +32,10 @@ public class Me {
     public static String user_token;
     private static JSONObject params;
     public static Attendee atn;
+    private static Boolean watchingNotns = false;
+    private static ValueEventListener mNotnlistener;
+    private static ValueEventListener mStateListener;
+//    private static ChildEventListener mPreListener;
 
     public static void init(MainActivity context) {
         Me.context = context;
@@ -40,9 +52,12 @@ public class Me {
 
     public static void update(JSONObject params) {
         Me.atn = Attendee.fromJson(params);
+        Crashlytics.setUserEmail(Me.atn.email);
+        Crashlytics.setUserName(Me.atn.full_name);
         Me.params = params;
         if (Me.atn.firetoken != null && Me.atn.firetoken.length() > 0) {
             Fire.auth(Me.atn.firetoken);
+            Me.watchNotifications();
         }
     }
 
@@ -54,9 +69,112 @@ public class Me {
     public static void fireSet(String path, String val) {
         Fire.set("/users/"+Me.atn.user_id+"/"+path, val);
     }
+    public static void fireSet(String path, Long val) {
+        Fire.set("/users/"+Me.atn.user_id+"/"+path, val);
+    }
+
+    public static void stopWatchingNotificatons() {
+        if (Me.mNotnlistener != null) {
+            Fire.unwatch(Me.mNotnlistener);
+            Me.mNotnlistener = null;
+        }
+        if (Me.mStateListener != null) {
+            Fire.unwatch(Me.mStateListener);
+            Me.mStateListener = null;
+        }
+//        if (Me.mPreListener != null) {
+//            Fire.unwatch(Me.mPreListener);
+//            Me.mPreListener = null;
+//        }
+    }
+    public static void watchNotifications() {
+        if (Me.mNotnlistener == null) {
+            Me.mNotnlistener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        long count = (long) dataSnapshot.getValue();
+                        MainActivity.self.updateNotificationCount(count);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            Fire.watch("/users/" + Me.atn.user_id + "/notification_count", Me.mNotnlistener);
+        }
+        if (Me.mStateListener == null) {
+            Me.mStateListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        MainActivity.state = (HashMap) dataSnapshot.getValue();
+                        MainActivity.self.homeFragment.update_items();
+                        MainActivity.self.ticketChoiceFragment.updateItems();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            Fire.watch("/state", Me.mStateListener);
+        }
+//        String preorder = Store.get("preorder");
+//        if (Me.mPreListener == null && preorder.equals("")) {
+//            Me.mPreListener = new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                    if (dataSnapshot.exists()) {
+//                        long now = Calendar.getInstance().getTimeInMillis();
+//                        HashMap val = (HashMap) dataSnapshot.getValue();
+//                        long diff = (now - ((long) val.get("created_at"))) / 1000;
+//                        if (diff < 12000) {
+//                            ArrayList<HashMap> fresh = (ArrayList) MainActivity.pre.get("fresh");
+//                            fresh.add(val);
+//                            MainActivity.pre.put("fresh", fresh);
+//                        } else {
+//                            ArrayList<HashMap> used = (ArrayList) MainActivity.pre.get("used");
+//                            used.add(val);
+//                            MainActivity.pre.put("used", used);
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//                }
+//
+//                @Override
+//                public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//                }
+//
+//                @Override
+//                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            };
+//            HashMap ord = new HashMap();
+//            ord.put("type", "limitLast");
+//            ord.put("val", "30");
+//            ArrayList query = new ArrayList<>();
+//            query.add(ord);
+//            Fire.query("/presales", query, Me.mPreListener);
+//        }
+    }
 
     public static void sync (Response.Listener<JSONObject> successListener, Response.ErrorListener errorListener) {
-        Assets.pull("me", successListener, errorListener);
+        Assets.INSTANCE.pull("me", successListener, errorListener);
     }
 
     public static String get (String key) {
@@ -113,7 +231,7 @@ public class Me {
             Api.get("user/validate", null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject rsp) {
-                    Log.i("WDS", rsp.toString());
+//                    Log.i("WDS", rsp.toString());
                     if(rsp.has("valid")) {
                         Me.context.open_tabs();
                         Me.checkDeviceRegistered();
@@ -125,13 +243,13 @@ public class Me {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Puts.i("connect err");
+//                    Puts.i("connect err");
                     Me.context.open_tabs();
                 }
             });
         }
         else {
-            Puts.i("not token");
+//            Puts.i("not token");
             Me.context.open_login();
         }
     }
@@ -139,9 +257,38 @@ public class Me {
     public static void checkDeviceRegistered() {
         String registered = Store.get("saved_device_token");
         if (registered.length() == 0) {
-            Intent intent = new Intent(MainActivity.self, MyGcmRegistrationService.class);
-            MainActivity.self.startService(intent);
+            Me.getAndSaveToken();
+        } else {
+            Long diff = System.currentTimeMillis() - Long.valueOf(registered);
+            if (diff > 3600000) {
+                Me.getAndSaveToken();
+            }
         }
+    }
+    public static void getAndSaveToken() {
+        JSONObject params = new JSONObject();
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        String uuid = Settings.Secure.getString(Me.context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        try {
+            params.put("token", token);
+            params.put("uuid", uuid);
+            params.put("type", "and");
+            Api.post("device", params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    Store.set("saved_device_token", String.valueOf(System.currentTimeMillis()));
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("WDS Device Fail", volleyError.toString());
+                }
+            });
+        } catch (JSONException e) {
+            Log.e("WDS", "Json Exception", e);
+        }
+
     }
 
     public static int checkWalkthrough() {
@@ -150,7 +297,7 @@ public class Me {
     }
 
     public static boolean claimedAcademy() {
-        return !Me.atn.academy.equals("0");
+        return !Me.atn.pre19.equals("1") || !Me.atn.academy.equals("0");
     }
 
     public static void claimAcademy(final String event_id, final Response.Listener<JSONObject> successListener, final Response.ErrorListener errorListener) {
@@ -386,6 +533,23 @@ public class Me {
         }
     }
 
+    public static boolean hasSignedUpForRegistration() {
+        try {
+            JSONArray rsvps = new JSONArray(Me.get("rsvps"));
+            int len = rsvps.length();
+            for (int i = 0; i < len; i++) {
+                if (EventTypes.regs.contains(rsvps.optInt(i))) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (JSONException e) {
+
+            Log.e("WDS", "JSON Exception", e);
+            return false;
+        }
+    }
+
     public static boolean isAttendingEvent(HashMap<String, String> event) {
         if(event.get("type").equals("program")) {
             return Me.hasPermissionForEvent(event);
@@ -423,7 +587,7 @@ public class Me {
         return ftype.equals("all") || ftype.equals(Me.atn.ticket_type);
     }
     public static boolean hasPermissionForEvent(Event event) {
-        String ftype = event.for_type;
+        String ftype = event.getFor_type();
         if (ftype == null) {
             ftype = "all";
         }
@@ -431,27 +595,31 @@ public class Me {
     }
 
     public static boolean isAttendingEvent(Event event) {
-        if(event.type.equals("program")) {
-            return Me.hasPermissionForEvent(event);
+        if (event != null) {
+            if (event.getType().equals("program")) {
+                return Me.hasPermissionForEvent(event);
+            } else {
+                try {
+                    JSONArray rsvps = new JSONArray(Me.get("rsvps"));
+                    int len = rsvps.length();
+                    for (int i = 0; i < len; i++) {
+                        if (rsvps.getInt(i) == Integer.parseInt(event.getEvent_id())) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } catch (JSONException e) {
+                    Log.e("WDS", "JSON Exception", e);
+                    return false;
+                }
+            }
         }
         else {
-            try {
-                JSONArray rsvps = new JSONArray(Me.get("rsvps"));
-                int len = rsvps.length();
-                for (int i = 0; i < len; i++) {
-                    if (rsvps.getInt(i) == Integer.parseInt(event.event_id)) {
-                        return true;
-                    }
-                }
-                return false;
-            } catch (JSONException e) {
-                Log.e("WDS", "JSON Exception", e);
-                return false;
-            }
+            return false;
         }
     }
     public static void toggleRsvp(final Event event, final Response.Listener<JSONObject> successListener, final Response.ErrorListener errorListener) {
-        String event_id = String.valueOf(event.event_id);
+        String event_id = String.valueOf(event.getEvent_id());
         JSONObject params = new JSONObject();
         try {
             params.put("event_id", event_id);
@@ -463,10 +631,10 @@ public class Me {
             public void onResponse(JSONObject rsp) {
                 JSONArray rsvps = Me.getJSONArray("rsvps");
                 if(Me.isAttendingEvent(event)) {
-                    rsvps = JsonHelper.deleteVal(rsvps, event.event_id);
+                    rsvps = JsonHelper.deleteVal(rsvps, event.getEvent_id());
                 }
                 else {
-                    rsvps.put(Integer.valueOf(event.event_id));
+                    rsvps.put(Integer.valueOf(event.getEvent_id()));
                 }
                 Me.set("rsvps", rsvps);
                 successListener.onResponse(rsp);
@@ -500,7 +668,7 @@ public class Me {
             } catch (JSONException e) {
                 Log.e("WDS", "Json Exception", e);
             }
-            JSONArray ev_ints = event.ints;
+            JSONArray ev_ints = event.getInts();
             int my_len = my_ints.length();
             int ev_len = ev_ints.length();
             int all_len = all_ints.length();

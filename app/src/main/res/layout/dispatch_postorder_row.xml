@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingTop="0dp"
+    android:background="@color/white"
+    android:paddingLeft="2dp"
+    >
+    <ImageView
+        android:id="@+id/preimg"
+        android:layout_alignParentTop="true"
+        android:layout_margin="0dp"
+        android:layout_marginLeft="6dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitStart"
+        android:paddingTop="0dp"
+        android:src="@drawable/postorder"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:baselineAlignBottom="false" />
+    <RelativeLayout
+        android:id="@+id/precont_shell"
+        android:layout_below="@+id/preimg"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/precont"
+            android:scaleType="fitCenter"
+            android:src="@drawable/postorder_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="-20dp" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/submit"
+        android:layout_below="@+id/precont_shell"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@color/orange"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:text="Sounds good!"
+        android:layout_height="50dp" />
+</RelativeLayout>

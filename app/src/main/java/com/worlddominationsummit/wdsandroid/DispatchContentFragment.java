@@ -38,9 +38,14 @@ public class DispatchContentFragment extends Fragment {
     public Boolean scrollToBottom = false;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onStart() {
+        super.onStart();
         update_items();
+    }
+
+    @Override
+    public void onSaveInstanceState( Bundle outState ) {
+
     }
 
     public void setItem(HashMap item) {
@@ -101,10 +106,12 @@ public class DispatchContentFragment extends Fragment {
     }
 
     public void update_items() {
-        mAdapter = new DispatchContentAdapter(this.getActivity(), mItems);
-        mAdapter.mContext = this;
-        if (mDispatchContentList != null) {
-            mDispatchContentList.setAdapter(mAdapter);
+        if (getActivity() != null) {
+            mAdapter = new DispatchContentAdapter(this.getActivity(), mItems);
+            mAdapter.mContext = this;
+            if (mDispatchContentList != null) {
+                mDispatchContentList.setAdapter(mAdapter);
+            }
         }
     }
 

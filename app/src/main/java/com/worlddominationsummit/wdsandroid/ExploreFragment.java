@@ -1,10 +1,12 @@
 package com.worlddominationsummit.wdsandroid;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +42,7 @@ import java.util.HashMap;
  * Created by nicky on 5/18/15.
  */
 public class ExploreFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    public static final int MY_LOCATION_REQUEST_CODE = 251;
     public View mView;
     public ListView mPlacesList;
     public PlacesAdapter mAdapter;
@@ -75,6 +79,7 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
     @Override
     public void onConnected(Bundle bundle) {
         if (mRequestingLocationUpdates) {
+//            Puts.i("REQUEST");
             startLocationUpdates();
         }
     }
@@ -90,16 +95,42 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
     }
 
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        if (ContextCompat.checkSelfPermission(MainActivity.self, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+//            Puts.i("HAS PERMS");
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } else {
+//            Puts.i("REQUEST PERMS");
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},MY_LOCATION_REQUEST_CODE);
+            // Show rationale and request permission.
+        }
+        onLocationChanged();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_LOCATION_REQUEST_CODE) {
+            if (permissions.length == 1 &&
+                    permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdates();
+            } else {
+                // Permission was denied. Display an error message.
+            }
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+//        Puts.i(mCurrentLocation.toString());
+        onLocationChanged();
+    }
+    public void onLocationChanged() {
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         update_checkins();
-        MainActivity.self.checkinFragment.onLocationChanged(location);
-//        update_places();
+        MainActivity.self.checkinFragment.onLocationChanged(mCurrentLocation);
+        update_places();
     }
 
     @Override
@@ -109,6 +140,7 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
     }
 
     protected void createLocationRequest() {
+//        Puts.i("CREATE LOCATION REQ");
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
@@ -116,13 +148,14 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
     }
 
     public void update_places() {
-        Assets.getSmart("places", new Response.Listener<JSONObject>() {
+        Assets.INSTANCE.getSmart("places", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
                 if (mView != null) {
                     try {
                         JSONArray filtered = new JSONArray();
                         JSONArray places = rsp.getJSONArray("data");
+//                        Puts.i(places);
                         int len = places.length();
                         mLastClosestDistance = 99999999;
                         mLastClosestPlace = null;
@@ -131,8 +164,10 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
                             String pick = place.optString("pick");
                             place.put("address", ((String) place.get("address")).replaceAll(", Portland[,]? OR[\\s0-9]*", ""));
                             int type = Integer.parseInt(place.optString("place_type"));
+//                            Puts.i("UPDATE PLACES");
                             if (mPlaceType == 0 || type == mPlaceType || (mPlaceType == 999 && pick != null && !pick.equals("null") && pick.length() > 0)) {
                                 if (mCurrentLocation != null) {
+//                                    Puts.i("CURRENT LOCATION");
                                     float[] result = {0};
                                     Location.distanceBetween(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), Double.parseDouble(place.optString("lat")), Double.parseDouble(place.optString("lon")), result);
                                     float distance = (float) (result[0] * 3.28);
@@ -307,7 +342,7 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
         this.update_items();
     }
     public void update_items() {
-        if (mAdapter == null && mPlacesList != null) {
+        if (mAdapter == null && mPlacesList != null && getActivity() != null) {
             mAdapter = new PlacesAdapter(this.getActivity(), mItems);
             mAdapter.mContext = this;
             mPlacesList.setAdapter(mAdapter);
@@ -319,8 +354,8 @@ public class ExploreFragment extends Fragment implements GoogleApiClient.Connect
 
     public void checkin() {
         if (mLastClosestPlace != null) {
-            Puts.i(mLastClosestDistance);
-            Puts.i(mLastClosestPlace.toString());
+//            Puts.i(mLastClosestDistance);
+//            Puts.i(mLastClosestPlace.toString());
         }
        if (mLastClosestDistance < 400 ) {
            long now = System.currentTimeMillis() / 1000;

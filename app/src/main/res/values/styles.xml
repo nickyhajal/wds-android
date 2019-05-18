@@ -9,10 +9,17 @@
         <item name="android:icon">@drawable/globe_logo</item>
         <!-- Customize your theme here. -->
     </style>
+    <!--<style name="RadioButton.">-->
+        <!--<attr name="sc_corner_radius" format="dimension" />-->
+        <!--<attr name="sc_border_width" format="dimension" />-->
+        <!--<attr name="sc_tint_color" format="color" />-->
+        <!--<attr name="sc_checked_text_color" format="color" />-->
+    <!--</style>-->
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/green</item>
+        <item name="android:background">@color/bblue</item>
         <item name="android:icon">@drawable/globe_logo</item>
+        <item name="android:windowActionBarOverlay">false</item>
     </style>
 
 </resources>

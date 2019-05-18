@@ -5,23 +5,26 @@
     android:padding="0dp"
     android:background="@color/tan"
     >
-    <include layout="@layout/day_select"/>
-    <include layout="@layout/day_select_heading"/>
+    <com.worlddominationsummit.wdsandroid.DaySelector
+        android:id="@+id/daySelector"
+        android:background="@drawable/button_bottom_line"
+        android:layout_width="fill_parent"
+        android:layout_height="63dp" />
 
     <TextView
         android:id="@+id/nullMsg"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:textSize="24sp"
+        android:minLines="2"
+        android:textSize="18sp"
         android:textColor="@color/dark_gray"
-        android:text="You don't have anything scheduled here... yet."
         android:padding="30dp"
         android:layout_marginTop="70dp"
         android:gravity="center_horizontal"
         android:visibility="gone"
         />
 
-  <com.applidium.headerlistview.HeaderListView
+  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
       android:id="@+id/scheduleList"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
@@ -32,5 +35,5 @@
       android:layout_marginLeft="4dp"
       android:layout_marginRight="4dp"
       >
-  </com.applidium.headerlistview.HeaderListView>
+  </se.emilsjolander.stickylistheaders.StickyListHeadersListView>
 </LinearLayout>

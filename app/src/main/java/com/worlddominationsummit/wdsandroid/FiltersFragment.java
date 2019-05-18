@@ -26,7 +26,7 @@ public class FiltersFragment extends Fragment {
     public View mView;
     public Switch mAtns;
     public Spinner mComms;
-    public Switch mTwitter;
+//    public Switch mTwitter;
     public Switch mEvents;
 
     @Override
@@ -35,7 +35,7 @@ public class FiltersFragment extends Fragment {
             mView = inflater.inflate(R.layout.filters, container, false);
             ViewGroup vg = (ViewGroup) mView;
             mAtns = (Switch) mView.findViewById(R.id.atns);
-            mTwitter = (Switch) mView.findViewById(R.id.twitter);
+//            mTwitter = (Switch) mView.findViewById(R.id.twitter);
             mEvents = (Switch) mView.findViewById(R.id.events);
             mComms = (Spinner) mView.findViewById(R.id.comms);
             Font.applyTo(mView);
@@ -126,9 +126,9 @@ public class FiltersFragment extends Fragment {
                 mAtns.setChecked(false);
             }
             if (filters.has("twitter") && filters.optString("twitter").equals("0")) {
-                mTwitter.setChecked(true);
+//                mTwitter.setChecked(true);
             } else {
-                mTwitter.setChecked(false);
+//                mTwitter.setChecked(false);
             }
             if (filters.has("meetups") && filters.optString("meetups").equals("0")) {
                 mEvents.setChecked(true);

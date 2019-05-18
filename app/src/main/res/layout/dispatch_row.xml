@@ -26,7 +26,10 @@
             android:id="@+id/avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:layout_marginLeft="10dp"
+            android:src="@drawable/default_avatar"
             android:layout_marginRight="10dp"
             android:padding="0dp" />
 
@@ -41,18 +44,18 @@
                 android:layout_width="fill_parent"
                 android:text="Nicky Hajal"
                 android:layout_height="22dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="2dp"
                 android:textColor="@color/orange"
                 android:textSize="15sp" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_marginTop="-2dp"
+                android:layout_marginTop="-6dp"
                 android:layout_height="30dp">
                 <com.github.curioustechizen.ago.RelativeTimeTextView
                     android:textColor="@color/dark_gray"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:id="@+id/timestamp"
                     android:text="20 minutes ago"
                     android:layout_width="wrap_content"
@@ -64,10 +67,11 @@
                     android:layout_height="fill_parent"
                     android:ellipsize="end"
                     android:paddingRight="10dp"
+                    android:paddingTop="3dp"
                     android:singleLine="true"
                     android:textColor="@color/dark_gray"
                     android:text=" - global"
-                    android:textSize="14sp" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -79,11 +83,25 @@
         android:layout_height="fill_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:lineSpacingMultiplier="1.1"
         android:textColor="@color/coffee"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         />
+        <ImageView
+            android:id="@+id/media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="280dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/gray_dots"
+            />
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_marginBottom="5dp"
@@ -96,7 +114,7 @@
             android:background="@color/white"
             android:textColor="@color/orange"
             android:text="3 Likes"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:layout_width="0dp"
             android:gravity="left|center"
             android:paddingLeft="10dp"
@@ -107,7 +125,7 @@
             android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textColor="@color/orange"
             android:text="3 Likes"
             android:gravity="right|center"

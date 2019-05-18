@@ -12,7 +12,7 @@
         android:gravity="center"
         android:tag="font_Karla_Italic"
         android:text="Loading..."
-        android:textColor="@color/dark_gray"
+        android:textColor="@color/bright_tan"
         android:textSize="26sp" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:tag="font_Karla_Italic"
         android:textSize="26sp"
         android:gravity="center"
-        android:textColor="@color/dark_gray"
+        android:textColor="@color/bright_tan"
         />
 
     <ListView

@@ -52,7 +52,7 @@ public class RegistrationAdapter extends SectionAdapter {
         String lastTime = "";
         for (int i = 0; i < this.numItems; i++) {
             JSONObject ev = items.optJSONObject(i);
-            Event evo = Event.fromJson(ev);
+            Event evo = Event.Companion.fromJson(ev);
             HashMap<String, String> evh = new HashMap<String, String>();
             try {
                 evh = (HashMap) JsonHelper.toMap(ev);
@@ -100,7 +100,7 @@ public class RegistrationAdapter extends SectionAdapter {
     @Override
     public View getRowView(int section, int row, View convertView, ViewGroup parent) {
         ViewHolder holder = new ViewHolder();
-        final Event event = Event.fromJson((JSONObject) getRowItem(section, row));
+        final Event event = Event.Companion.fromJson((JSONObject) getRowItem(section, row));
         if (convertView == null) {
             convertView = LayoutInflater.from(this.context).inflate(R.layout.schedule_row, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
@@ -117,20 +117,20 @@ public class RegistrationAdapter extends SectionAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?daddr="+event.lat+","+event.lon));
+                        Uri.parse("http://maps.google.com/maps?daddr="+ event.getLat() +","+ event.getLon()));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 context.startActivity(intent);
             }
         };
         holder.navBtn.setOnClickListener(navListener);
         holder.place.setOnClickListener(navListener);
-        String name = event.what;
-        if (event.type.equals("meetup")) {
+        String name = event.getWhat();
+        if (event.getType().equals("meetup")) {
             name = "Meetup: " + name;
-        } else if (event.type.equals("academy")) {
+        } else if (event.getType().equals("academy")) {
             name = "Academy: " + name;
         }
-        if (event.type.equals("meetup")) {
+        if (event.getType().equals("meetup")) {
             holder.moreBtn.setVisibility(View.VISIBLE);
             holder.moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,7 +154,7 @@ public class RegistrationAdapter extends SectionAdapter {
         }
 
         holder.name.setText(name);
-        holder.place.setText(event.place);
+        holder.place.setText(event.getPlace());
         return convertView;
     }
 

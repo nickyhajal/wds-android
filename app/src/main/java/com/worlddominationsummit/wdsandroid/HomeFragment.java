@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment{
     public Button mCommunityBtn;
     public Event activeEvent;
     public int mTries = 0;
+    public int mTypes = 1;
 
     public void init() {
         mDispatch = new Dispatch();
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment{
             mDispatchControls.setVisibility(View.GONE);
             mCommunityControls.setVisibility(View.VISIBLE);
             mCommunityBtn.setText(Dispatch.getCommunityFromInterest(channel_id));
-        } else if (channel_type.equals("event")) {
+        } else if (channel_type.equals("meetup")) {
             activeEvent = MainActivity.self.eventFragment.event;
             mDispatchControls.setVisibility(View.GONE);
             mCommunityControls.setVisibility(View.VISIBLE);
@@ -254,11 +255,88 @@ public class HomeFragment extends Fragment{
         this.items = items;
         this.update_items();
     }
+    public ArrayList<HashMap> merge_special_items() {
+        ArrayList<HashMap> finalItems = this.items;
+        if (finalItems.size() > 0) {
+            HashMap first = finalItems.get(0);
+            String type = (String) first.get("type");
+            if (type != null) {
+                finalItems.remove(0);
+            }
+        }
+        HashMap<String, Object> state = MainActivity.state;
+        if (state != null) {
+//            String special = (String) state.get("special");
+            String special = (String) state.get("test19_special");
+//            Puts.i(special);
+            String version = (String) state.get("and_version");
+            mTypes = 1;
+            if (version != null && version.compareTo(MainActivity.version) > 0) {
+                mTypes = 2;
+                HashMap<String, Object> item = new HashMap<>();
+                item.put("type", "update");
+                finalItems.add(0, item);
+            }
+            if (special != null) {
+                if (special.equals("announce")) {
+                    HashMap<String, Object> announce = (HashMap<String, Object>) state.get("announce");
+                    mTypes = 2;
+                    HashMap<String, Object> item = new HashMap<>();
+                    item.put("type", "announce");
+                    item.put("msg", announce);
+                    finalItems.add(0, item);
+                }
+                else if (special.equals("attendee-stories")) {
+//                    Store.set("atnstory", "");
+                    String atnstory = Store.get("atnstory");
+                    if (atnstory.equals("")) {
+                        mTypes = 2;
+                        HashMap<String, Object> item = new HashMap<>();
+                        item.put("type", "attendee-stories");
+                        finalItems.add(0, item);
+                    }
+                } else if (special.equals("preorder")) {
+//                    Store.set("preorder19", "");
+                    String preorder = Store.get("preorder19");
+//                    Puts.i(preorder);
+                    if (preorder.equals("")) {
+//                        Puts.i("TYPE PRE OPEN IT");
+                        mTypes = 2;
+                        HashMap<String, Object> item = new HashMap<>();
+                        item.put("type", "preorder");
+                        finalItems.add(0, item);
+                    } else if (preorder.equals("closed")) {
+                        mTypes = 2;
+                        HashMap<String, Object> item = new HashMap<>();
+                        item.put("type", "closed-preorder");
+                        finalItems.add(0, item);
+                    } else if (preorder.equals("purchased")) {
+                        mTypes = 2;
+                        HashMap<String, Object> item = new HashMap<>();
+                        item.put("type", "postorder");
+                        finalItems.add(0, item);
+                    }
+                }
+            }
+        }
+        return finalItems;
+    }
     public void update_items() {
-        this.adapter = new DispatchAdapter(this.getActivity(), this.items);
-        this.adapter.mContext = this;
-        if (this.dispatchContent != null) {
-            this.dispatchContent.setAdapter(this.adapter);
+        ArrayList<HashMap> finalItems = merge_special_items();
+        if (this.getActivity() != null) {
+            this.adapter = new DispatchAdapter(this.getActivity(), finalItems);
+            this.adapter.mTypes = mTypes;
+            this.adapter.mContext = this;
+            if (this.dispatchContent != null) {
+                this.dispatchContent.setAdapter(this.adapter);
+            }
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    update_items();
+                }
+            }, 1000);
         }
     }
     public void setOffline(Boolean isOffline) {

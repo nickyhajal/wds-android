@@ -1,10 +1,15 @@
 package com.worlddominationsummit.wdsandroid;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 //import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,25 +39,37 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import com.crashlytics.android.Crashlytics;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
 import io.fabric.sdk.android.Fabric;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends FragmentActivity implements Runnable {
+    private static final int MY_CAMERA_REQUEST_CODE = 100;
+
 
     public static MainActivity self;
-    public static String version = "16.3.0";
+    public static HashMap state;
+    public static HashMap pre;
+    public static String version = "19.1.5";
     private Button search_close;
     public EditText search_inp;
     private TextView title;
@@ -60,31 +78,41 @@ public class MainActivity extends FragmentActivity implements Runnable {
     private FrameLayout contentLayout;
     private Spinner mMeetupSpinner;
     private Spinner mExploreSpinner;
+    private RelativeLayout mNotnCountShell;
+    private TextView mNotnCount;
+    private ImageView mLogo;
     private LinearLayout mMeetupHead;
     private RelativeLayout mExploreHead;
     private RelativeLayout mScheduleHead;
+    private RelativeLayout mChatAdminHead;
+    private Button mChatStartBtn;
     private AttendeeSearcher searcher;
-    private Boolean tabsStarted = false;
+    public Boolean tabsStarted = false;
     public LoginFragment loginFragment;
     public LoadingFragment loadingFragment;
     public WalkthroughFragment walkthroughFragment;
     public EventsFragment eventsFragment;
     public EventTypesFragment eventTypesFragment;
+    public ChatEditFragment chatEditFragment;
     public AttendeeSearchFragment attendeeSearchFragment;
     public ScheduleFragment scheduleFragment;
     public HomeFragment homeFragment;
     public ProfileFragment profileFragment;
     public RegistrationFragment registrationFragment;
+    public TicketChoiceFragment ticketChoiceFragment;
     public PostFragment postFragment;
     public FiltersFragment filtersFragment;
     public CommunitiesFragment communitiesFragment;
     public UserNotesFragment userNotesFragment;
     public EventFragment eventFragment;
     public CartFragment cartFragment;
+    public AtnStoryFragment atnStoryFragment;
     public ChatFragment chatFragment;
+    public NotificationFragment notificationFragment;
     public ChatsFragment chatsFragment;
     public ExploreFragment exploreFragment;
     public CheckinFragment checkinFragment;
+    public WDSCameraFragment cameraFragment;
     public EventAttendeesFragment eventAttendeesFragment;
     public DispatchContentFragment dispatchContentFragment;
     public TabsFragment tabsFragment;
@@ -101,9 +129,22 @@ public class MainActivity extends FragmentActivity implements Runnable {
     protected void onCreate(Bundle savedInstanceState) {
         MainActivity.self = this;
         MainActivity.density = getResources().getDisplayMetrics().density;
+        MainActivity.pre = new HashMap();
+        MainActivity.pre.put("fresh", new ArrayList<HashMap>());
+        MainActivity.pre.put("used", new ArrayList<HashMap>());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         super.onCreate(savedInstanceState);
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .diskCacheFileCount(1000)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+//        ImageLoaderConfiguration.createDefault(this)
+        ImageLoader.getInstance().init(config);
         Fabric.with(this, new Crashlytics());
         this.contentLayout = new FrameLayout(this);
         this.contentLayout.setId(R.id.frame_layout);
@@ -119,11 +160,24 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.startExperience();
     }
 
+    public void updateChatStartBtn(int numChatters) {
+        if (numChatters > 0) {
+            mChatStartBtn.setVisibility(View.VISIBLE);
+        } else {
+            mChatStartBtn.setVisibility(View.GONE);
+        }
+    }
+
+
     public void initActionBar(){
         final MainActivity ref = this;
         ActionBar actionBar = getActionBar();
         actionBar.setCustomView(R.layout.attendee_search_bar);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+//        getActionBar().setHomeButtonEnabled(false);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setDisplayShowHomeEnabled(false);
         View bar = actionBar.getCustomView();
         bar.setVisibility(View.VISIBLE);
         this.title = (TextView) bar.findViewById(R.id.title);
@@ -137,6 +191,10 @@ public class MainActivity extends FragmentActivity implements Runnable {
         this.search_inp.setTypeface(Font.use("Karla"));
         this.searcher = new AttendeeSearcher(this, search_inp);
         this.titleShell.setVisibility(View.GONE);
+        mLogo = (ImageView) bar.findViewById(R.id.logo);
+        mNotnCountShell = (RelativeLayout) bar.findViewById(R.id.notnCountShell);
+        mNotnCount = (TextView) bar.findViewById(R.id.notnCount);
+        mNotnCount.setTypeface(Font.use("Karla_Italic"));
         mMeetupSpinner = (Spinner) bar.findViewById(R.id.meetupSpinner);
         mMeetupHead = (LinearLayout) bar.findViewById(R.id.meetups);
         mMeetupHead.setVisibility(View.GONE);
@@ -153,14 +211,29 @@ public class MainActivity extends FragmentActivity implements Runnable {
         });
         mScheduleHead = (RelativeLayout) bar.findViewById(R.id.scheduleHead);
         mScheduleHead.setVisibility(View.GONE);
-        Button regBtn = (Button) bar.findViewById(R.id.regBtn);
-        regBtn.setTypeface(Font.use("Vitesse_Medium"));
-        regBtn.setOnClickListener(new View.OnClickListener() {
+        mChatAdminHead = (RelativeLayout) bar.findViewById(R.id.chatAdminHead);
+        mChatAdminHead.setVisibility(View.GONE);
+        mChatStartBtn = (Button) bar.findViewById(R.id.chatStartBtn);
+        mChatStartBtn.setVisibility(View.VISIBLE);
+        mChatStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                open_registration();
+                chatEditFragment.startChat();
             }
         });
+        mChatAdminHead.setVisibility(View.GONE);
+        mChatStartBtn.setTypeface(Font.use("Vitesse_Medium"));
+        mChatStartBtn.setVisibility(View.GONE);
+//        Button regBtn = (Button) bar.findViewById(R.id.regBtn);
+//        regBtn.setTypeface(Font.use("Vitesse_Medium"));
+//        regBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                open_registration();
+//            }
+//        });
+        TextView chatAdminTitle = (TextView) bar.findViewById(R.id.chatAdminTitle);
+        chatAdminTitle.setTypeface(Font.use("Vitesse_Medium"));
         TextView regTitle = (TextView) bar.findViewById(R.id.regTitle);
         regTitle.setTypeface(Font.use("Vitesse_Medium"));
         ArrayList<String> meetupSections = new ArrayList<String>();
@@ -200,6 +273,27 @@ public class MainActivity extends FragmentActivity implements Runnable {
             }
 
         });
+        mLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_notifications();
+            }
+        });
+        mNotnCountShell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                open_notifications();
+            }
+        });
+    }
+
+    public void updateNotificationCount(long count) {
+        if (count > 0) {
+            mNotnCount.setText(String.valueOf(count));
+            mNotnCountShell.setVisibility(View.VISIBLE);
+        } else {
+            mNotnCountShell.setVisibility(View.GONE);
+        }
     }
 
     public void initApp() {
@@ -209,9 +303,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
         Api.init(this);
         Fire.init();
         initScreens();
-        this.open_loading();
+//        this.open_loading();
         EventTypes.init();
-        Assets.init(this);
+        Assets.INSTANCE.init(this);
         Me.init(this);
     }
 
@@ -228,11 +322,15 @@ public class MainActivity extends FragmentActivity implements Runnable {
         registrationFragment = new RegistrationFragment();
         checkinFragment = new CheckinFragment();
         attendeeSearchFragment = new AttendeeSearchFragment();
+        ticketChoiceFragment = new TicketChoiceFragment();
         postFragment = new PostFragment();
         eventAttendeesFragment = new EventAttendeesFragment();
         communitiesFragment = new CommunitiesFragment();
         cartFragment = new CartFragment();
+        atnStoryFragment = new AtnStoryFragment();
         chatFragment = new ChatFragment();
+        chatEditFragment = new ChatEditFragment();
+        notificationFragment = new NotificationFragment();
         chatsFragment = new ChatsFragment();
         filtersFragment = new FiltersFragment();
         dispatchContentFragment = new DispatchContentFragment();
@@ -306,7 +404,6 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void open_tabs() {
         if(this.tabsStarted) {
-            Log.i("WDS", "Show events");
             open(this.tabsFragment, "tabs");
             if (ntfnData.length() > 0) {
                 showNotification();
@@ -318,8 +415,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
     public void start_tabs() {
         final MainActivity ref = this;
-        this.open_loading();
-        Assets.sync(new Response.Listener<JSONObject>() {
+//        this.open_loading();
+        Assets.INSTANCE.sync(new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject rsp) {
                 ref.tabsStarted = true;
@@ -358,21 +455,29 @@ public class MainActivity extends FragmentActivity implements Runnable {
             } else if (active == chatsFragment) {
                 title = "Messages";
             } else if (active == chatFragment) {
-                title = "Chat with";
+                title = chatFragment.getTitle();
+            } else if (active == chatEditFragment) {
+                title = chatEditFragment.getTitle();
             } else if (active == eventsFragment) {
-                title = EventTypes.byId.optJSONObject(eventsFragment.mType).optString("plural");
+                title = EventTypes.byId.optJSONObject(eventsFragment.getMType()).optString("plural");
             } else if (active == exploreFragment) {
                 title = "Explore";
             } else if (active == homeFragment) {
                 if (homeFragment.activeEvent != null) {
-                    title = "Dispatch: " + eventFragment.event.what;
+                    title = "Dispatch: " + eventFragment.event.getWhat();
                 }
             } else if (active == checkinFragment) {
                 title = "Check In";
+            } else if (active == ticketChoiceFragment) {
+                title = "Choose Your Ticket";
             } else if (active == communitiesFragment) {
                 title = "Communities";
+            } else if (active == notificationFragment) {
+                title = "Notifications";
             } else if (active == cartFragment) {
                 title = "Let's Do This!";
+            } else if (active == atnStoryFragment) {
+                title = "Your Story";
             } else if (active == scheduleFragment) {
                 title = "Your Schedule";
             } else if (active == registrationFragment) {
@@ -384,9 +489,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
             } else if (active == dispatchContentFragment) {
                 title = "Conversation";
             } else if (active == eventFragment) {
-                title = this.eventFragment.event.what;
+                title = this.eventFragment.event.getWhat();
             } else if (active == eventAttendeesFragment) {
-                title = "Attendees for "+this.eventFragment.event.what;
+                title = "Attendees for "+ this.eventFragment.event.getWhat();
             } else if (active == profileFragment) {
                 title = " ";
             }
@@ -395,6 +500,7 @@ public class MainActivity extends FragmentActivity implements Runnable {
             mMeetupHead.setVisibility(View.GONE);
             mExploreHead.setVisibility(View.GONE);
             mScheduleHead.setVisibility(View.GONE);
+            mChatAdminHead.setVisibility(View.GONE);
             if (title.length() > 0) {
                 if (title.equals("Meetupsoeansrtoen-turnthissettinoff")) {
                     mMeetupHead.setVisibility(View.VISIBLE);
@@ -402,6 +508,8 @@ public class MainActivity extends FragmentActivity implements Runnable {
                         mExploreHead.setVisibility(View.VISIBLE);
                 } else if (title.equals("Your Schedule")) {
                     mScheduleHead.setVisibility(View.VISIBLE);
+                } else if (title.equals("Start a Chat")) {
+                    mChatAdminHead.setVisibility(View.VISIBLE);
                 } else {
                     this.title.setText(title);
                     this.titleShell.setVisibility(View.VISIBLE);
@@ -426,12 +534,25 @@ public class MainActivity extends FragmentActivity implements Runnable {
             @Override
             public void run() {
                 eventsFragment.willDisplay();
-                tabsFragment.open(eventsFragment, "events");
+                tabsFragment.open(eventsFragment, "eventlisting");
+            }
+        }, 10);
+    }
+    public void open_notifications() {
+        notificationFragment.sync();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                open(notificationFragment, "notiffrag");
             }
         }, 10);
     }
     public void open_chat(String pid) {
         chatFragment.setPid(pid);
+        open_chat();
+    }
+    public void open_chat(String pid, Boolean group, String name) {
+        chatFragment.setPid(pid, group, name);
         open_chat();
     }
     public void open_chat(Attendee atn) {
@@ -442,27 +563,56 @@ public class MainActivity extends FragmentActivity implements Runnable {
         chatFragment.setAttendees(atns);
         open_chat();
     }
+    public void open_chat(ArrayList<Attendee> atns, String name) {
+        chatFragment.setName(name);
+        chatFragment.setAttendees(atns);
+        open_chat();
+    }
     public void open_chat() {
         open_tabs();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                tabsFragment.open(chatFragment, "chat");
+                open(chatFragment, "chat");
+            }
+        }, 10);
+    }
+    public void open_chat_edit() {
+        open_tabs();
+        chatEditFragment.clearChat();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                open(chatEditFragment, "chatedit");
+            }
+        }, 10);
+    }
+    public void open_chat_edit(String chatId) {
+        open_tabs();
+        chatEditFragment.setChat(chatId);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                open(chatEditFragment, "chatedit");
             }
         }, 10);
     }
     public void open_cart(String code, HashMap prod) {
         cartFragment.setProduct(code, prod);
+        if (code.equals("wds2019") || code.equals("wdsDouble")) {
+            cartFragment.setTerms("Each ticket includes 1 complimentary, non-transferable WDS Academy, priority booking at the WDS Hotel, and other discounts and benefits.\n\nTickets are non-refundable. Name changes and ticket transfers are permitted up to 30 days prior to the event for a $100 fee. A late transfer option will be available at a higher cost");
+        }
         open_cart();
     }
     public void open_cart() {
         open_tabs();
+//        tabsFragment.open(cartFragment, "cart");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 tabsFragment.open(cartFragment, "cart");
             }
-        }, 10);
+        }, 1);
     }
     public void open_event_types() {
         open_tabs();
@@ -477,12 +627,20 @@ public class MainActivity extends FragmentActivity implements Runnable {
 
     public void open_user_notes(String user_id) {
         userNotesFragment.setUser(user_id);
-        open(userNotesFragment, "user_notes");
+        tabsFragment.open(userNotesFragment, "user_notes");
     }
 
     public void open_event_attendees(String event_id) {
         eventAttendeesFragment.setEvent(event_id);
-        open(eventAttendeesFragment, "event-attendees");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tabsFragment.open(eventAttendeesFragment, "event-attendees");
+            }
+        }, 10);
+    }
+    public void open_atnstory() {
+        open(atnStoryFragment, "atnstory");
     }
     public void open_dispatch() {
         open_tabs();
@@ -528,6 +686,9 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public void open_login() {
         open(this.loginFragment, true, "login");
     }
+    public void open_ticketChoice() {
+        open(this.ticketChoiceFragment, false, "ticketChoice");
+    }
 
     public void open_loading() {
         open(this.loadingFragment, true, "loading");
@@ -552,14 +713,14 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
     public void open_event(Event event) {
         this.eventFragment.setEvent(event);
-        open(this.eventFragment, "event");
+        tabsFragment.open(this.eventFragment, "event");
     }
     public void open_event() {
-        open(this.eventFragment, "event");
+        tabsFragment.open(this.eventFragment, "event");
     }
     public void open_profile(Attendee atn) {
         this.profileFragment.setAttendee(atn);
-        open(this.profileFragment, "events");
+        open(this.profileFragment, "profile");
     }
     public void open_search() {
         searching = true;
@@ -590,32 +751,55 @@ public class MainActivity extends FragmentActivity implements Runnable {
     public void update_search(JSONArray users) {
         this.attendeeSearchFragment.update_items(users);
     }
+    public void update_search(ArrayList<HashMap<String, String>> users) {
+        this.attendeeSearchFragment.update_items(users);
+    }
 
     public void open_checkins() {
         open(checkinFragment, "checkin");
     }
 
 
+
+    @BindView(R.id.addCameraButton) View addCameraButton;
+
+    public void openCamera() {
+        int perm = this.checkCallingOrSelfPermission(Manifest.permission.CAMERA);
+        if ( cameraFragment == null ) {
+            cameraFragment = new WDSCameraFragment();
+        }
+        if (perm == PackageManager.PERMISSION_GRANTED) {
+            open(cameraFragment, true, "cameraFragment");
+        } else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+        }
+    }
+
     public void open(Fragment frag, Boolean hideActionBar, String tag) {
         if(hideActionBar) {
             getActionBar().hide();
         }
         else getActionBar().show();
+//        Puts.i(tag);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, frag, tag);
         if  (frag != loadingFragment) {
+//            Puts.i("tag");
             transaction.addToBackStack(tag);
         }
         transaction.commit();
         if (!frags.containsKey(tag)) {
+//            Puts.i("contains key");
             frags.put(tag, frag);
         }
         if (frag != tabsFragment) {
-            tabsActive = false;
+//            tabsActive = false;
+//            Puts.i("frag isnt tabsfrag");
             this.active = frag;
             updateTitle();
         }
         else {
+//            Puts.i("frag is active now");
             tabsActive = true;
         }
     }
@@ -650,15 +834,24 @@ public class MainActivity extends FragmentActivity implements Runnable {
         return mngr.findFragmentByTag(name);
     }
 
+    public Boolean tabsAreActive() {
+        int inx= getSupportFragmentManager().getBackStackEntryCount() - 1;
+        return inx > -1 && getSupportFragmentManager().getBackStackEntryAt(inx).getName().compareTo("tabs") == 0;
+    }
     public void findActive() {
         Iterator it = frags.entrySet().iterator();
-        tabsActive = false;
+        int inx= getSupportFragmentManager().getBackStackEntryCount() - 1;
+        if (inx > -1 && getSupportFragmentManager().getBackStackEntryAt(inx).getName().compareTo("tabs") == 0) {
+            tabsActive = true;
+        } else {
+            tabsActive = false;
+        }
         while (it.hasNext()) {
             HashMap.Entry pair = (HashMap.Entry) it.next();
             Fragment f = (Fragment) pair.getValue();
             if (f.isVisible() && f != tabsFragment) {
                 if (f == tabsFragment) {
-                    tabsActive = true;
+//                    tabsActive = true;
                 } else {
                     active = f;
                 }
@@ -724,7 +917,6 @@ public class MainActivity extends FragmentActivity implements Runnable {
             else {
                 resultDisplayStr = "Scan was canceled.";
             }
-            Puts.i(resultDisplayStr);
             // do something with resultDisplayStr, maybe display it in a textView
             // resultTextView.setText(resultDisplayStr);
         }
@@ -732,32 +924,96 @@ public class MainActivity extends FragmentActivity implements Runnable {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Me.stopWatchingNotificatons();
+    }
+
+    @Override
     public void onBackPressed() {
         // Fragment fragmentBeforeBackPress = getCurrentFragment();
         // Perform the usual back action
-        if (active == postFragment && false) {
-            open_tabs();
-        }
-        else {
-            if (tabsActive && tabsFragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
+//        Puts.i("tabsActive: " );
+//        Puts.i(tabsAreActive());
+        int c = 0;
+        Boolean foundFrag = true;
+//        while (c < getSupportFragmentManager().getBackStackEntryCount()) {
+//            FragmentManager.BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(c);
+//            c += 1;
+//            if (entry != null) {
+//                Puts.i(entry.getName());
+//            }
+//        }
+        if(tabsAreActive() && active.equals(homeFragment)) {
+//            Puts.i(">>>> CLOSE");
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
+//            finish();
+        } else {
+//            Puts.i("Pop stack back");
+            if(getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                getSupportFragmentManager().popBackStack();
+            }
+            if (tabsAreActive() && tabsFragment.getChildFragmentManager().getBackStackEntryCount() > 0) {
+                c = 0;
+//                Puts.i(">>>> ");
+//                while (c < tabsFragment.getChildFragmentManager().getBackStackEntryCount()) {
+//                    FragmentManager.BackStackEntry entry = tabsFragment.getChildFragmentManager().getBackStackEntryAt(c);
+//                    c += 1;
+//                    if (entry != null) {
+//                        Puts.i(entry.getName());
+//                    } else {
+//                        foundFrag = false;
+//                    }
+//                }
+//                Puts.i("Pop tabs back");
                 tabsFragment.getChildFragmentManager().popBackStack();
             } else {
-                super.onBackPressed();
+//                super.onBackPressed();
                 tabsActive = false;
             }
             Handler hnd = new Handler();
             hnd.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+                        @Override
+                        public void run() {
                     findActive();
                     updateTitle();
                     if (tabsActive) {
                         tabsFragment.updateTabs();
                     }
-                }
-            }, 10);
+            }
+        }, 10);
         }
     }
+
+
+    @Override
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MY_CAMERA_REQUEST_CODE) {
+
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        openCamera();
+                    }
+                }, 700);
+
+            } else {
+                // Camera denied
+
+            }
+
+        }
+    }
+
+
 
     private static class TitleSpinner extends ArrayAdapter<String> {
         private TitleSpinner(Context context, int resource, ArrayList<String> items) {
@@ -786,5 +1042,6 @@ public class MainActivity extends FragmentActivity implements Runnable {
             view.setBackgroundColor(MainActivity.self.getResources().getColor(R.color.coffee));
             return view;
         }
+
     }
 }

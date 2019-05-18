@@ -24,10 +24,10 @@
     android:adjustViewBounds="true"
     android:padding="0dp"
     android:layout_gravity="fill"
-    android:src="@drawable/faded_overlay"
     android:id="@+id/overlay"
-    android:layout_marginLeft="-1dp"
-    />
+    android:layout_marginLeft="-2dp"
+    android:src="@drawable/faded_overlay" />
+
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -47,14 +47,14 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:shadowColor="@color/coffee"
             android:shadowDx="2"
             android:shadowDy="2"
+            android:shadowRadius="3"
             android:paddingRight="20dp"
             android:paddingEnd="20dp"
-            android:shadowRadius="3"
             android:layout_marginBottom="0dp"
             android:layout_above="@+id/descr"
             android:gravity="center"
@@ -64,21 +64,48 @@
 
         <TextView
             android:id="@+id/descr"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:gravity="bottom"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="25dp"
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="3"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:paddingRight="20dp"
-            android:paddingEnd="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:paddingRight="60dp"
+            android:paddingEnd="60dp"
             android:layout_alignParentBottom="true"
             android:text=""
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/bright_tan" />
+
+        <ImageButton
+            android:id="@+id/moreBtn"
+            android:layout_width="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_height="80dp"
+            android:backgroundTint="@color/light_tan"
+            android:background="@color/clear"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            android:src="@drawable/chevron_right_white" />
+        <ImageButton
+            android:id="@+id/openBtn"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="-12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_height="32dp"
+            android:backgroundTint="@color/light_tan"
+            android:background="@color/clear"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            android:src="@drawable/chevron_up_white" />
     </RelativeLayout>
 
 </LinearLayout>

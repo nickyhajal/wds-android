@@ -5,9 +5,11 @@
     android:padding="0dp"
     android:background="@color/tan"
     >
-    <include layout="@layout/day_select"/>
-    <include layout="@layout/day_select_heading"/>
-
+    <com.worlddominationsummit.wdsandroid.DaySelector
+        android:id="@+id/daySelector"
+        android:background="@drawable/button_bottom_line"
+        android:layout_width="fill_parent"
+        android:layout_height="63dp" />
     <TextView
         android:id="@+id/nullMsg"
         android:layout_width="fill_parent"

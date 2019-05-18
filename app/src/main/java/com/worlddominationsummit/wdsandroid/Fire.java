@@ -4,11 +4,14 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.fabric.sdk.android.services.common.Crash;
+
 /**
  * Created by nicky on 08/06/16.
  */
@@ -25,6 +30,7 @@ public class Fire {
     public static DatabaseReference mRef;
     private static FirebaseAuth mAuth;
     private static FirebaseAuth.AuthStateListener mAuthListener;
+
 
     public static void init(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -38,8 +44,8 @@ public class Fire {
                     Puts.i("FIRE SIGNED IN");
                     Me.fireAuthCallback();
                 } else {
-                    Puts.i("FIRE SIGNED OUT");
-                    // User is signed out
+                    Puts.i("NOT SIGNED IN");
+                    // Userz is signed out
 //                    Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
                 // ...
@@ -48,25 +54,37 @@ public class Fire {
         Fire.mAuth.addAuthStateListener(Fire.mAuthListener);
     }
     public static void auth(String token) {
-        Puts.i(token);
+        Crashlytics.log(">>> AUTH FIREBASE");
+        Crashlytics.log(token);
         Fire.mAuth.signInWithCustomToken(token).addOnCompleteListener(MainActivity.self, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Puts.i("RETURN FROM AUTH");
-                Puts.i("signInWithCustomToken:onComplete:" + task.isSuccessful());
 
+                Crashlytics.log(">>>>> SIGN IN RESPONSE");
+//                Puts.i(task.toString());
                 // If sign in fails, display a message to the user. If sign in succeeds
                 // the auth state listener will be notified and logic to handle the
                 // signed in user can be handled in the listener.
                 if (!task.isSuccessful()) {
-                    Puts.i("NO GOOD");
-                    Puts.i(task.getException().toString());
-//                    Log.w("WDS", "signInWithCustomToken", task.getException());
-                    Toast.makeText(MainActivity.self, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
+                    Log.w("WDS", "signInWithCustomToken", task.getException());
+//                    Toast.makeText(MainActivity.self, "Authentication failed.",
+//                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
+//        .addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Puts.i("FAILLL >>");
+//                Puts.i(e.getLocalizedMessage());
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+//            @Override
+//            public void onSuccess(AuthResult authResult) {
+//                Puts.i("SUCCESS >>");
+//                Puts.i(authResult.toString());
+//            }
+//        })
     }
     public static void set(String path, Object val) {
         Fire.mRef.child(path).setValue(val);
@@ -88,6 +106,8 @@ public class Fire {
     }
     public static ChildEventListener query(String path, ArrayList<HashMap<String, String>> query, ChildEventListener cb) {
         Query qRef = getQuery(path, query);
+//        Puts.i("WITH QUERY>>>");
+//        Puts.i(qRef.toString());
         return qRef.addChildEventListener(cb);
     }
     public static ValueEventListener query(String path, ArrayList<HashMap<String, String>> query, ValueEventListener cb) {
@@ -106,21 +126,30 @@ public class Fire {
             }
             if (q.get("type").equals("orderChild")) {
                 qRef.orderByChild((String) q.get("val"));
+//                Puts.i("orderChild!!");
+//                Puts.i(q.get("val").toString());
             }
             if (q.get("type").equals("limitLast")) {
                 qRef.limitToLast(Integer.valueOf((String) q.get("val")));
             }
-            if (q.get("type").equals("StartChildAt")) {
-                qRef.startAt((String) q.get("val"));
+            if (q.get("type").equals("startChildAt")) {
+//                Puts.i("startChildAt!!!");
+//                Puts.i(q.get("val").toString());
+//                qRef.startAt((String) q.get("val"));
+                qRef.startAt(Double.valueOf(q.get("val").toString()));
             }
         }
         return qRef;
     }
     public static void unwatch(ValueEventListener listener) {
-        Fire.mRef.removeEventListener(listener);
+        if (Fire.mRef != null && listener != null)  {
+            Fire.mRef.removeEventListener(listener);
+        }
     }
     public static void unwatch(ChildEventListener listener) {
-        Fire.mRef.removeEventListener(listener);
+        if (Fire.mRef != null && listener != null) {
+            Fire.mRef.removeEventListener(listener);
+        }
     }
 }
 

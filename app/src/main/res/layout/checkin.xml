@@ -38,7 +38,7 @@
         <TextView
             android:tag="font_Karla"
             android:text="We'll check you in automatically if you're near a featured venue."
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:layout_alignParentLeft="true"

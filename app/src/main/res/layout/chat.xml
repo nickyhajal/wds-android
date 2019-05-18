@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/tan"
@@ -7,22 +7,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/messages"
         android:orientation="vertical"
         android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         >
 
         <TextView
             android:id="@+id/msg"
-            android:tag="font_Vitesse"
+            android:tag="font_Vitesse_Medium"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/dark_gray"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
             />
         <TextView
             android:id="@+id/submsg"
             android:tag="font_KarlaItalic"
             android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="@color/dark_gray"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
@@ -30,11 +38,65 @@
     </LinearLayout>
     <ListView
         android:id="@+id/chatMsgList"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
+        android:stackFromBottom="true"
+        android:paddingTop="15dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingBottom="15dp"
+        android:clipToPadding="false"
+        android:layout_above="@+id/typingShell"
         android:background="@color/tan"
-        android:divider="@color/light_gray"
-        android:dividerHeight="1dp"/>
-</LinearLayout>
+        android:divider="@color/tan"
+        android:dividerHeight="0dp"/>
+    <TextView
+        android:id="@+id/typingShell"
+        android:layout_above="@+id/inputArea"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:textColor="@color/dark_gray"
+        android:textSize="12sp"
+        android:background="@color/light_tan_50"
+        android:padding="5dp"
+        android:tag="font_Karla_Italic"
+        />
+    <RelativeLayout
+        android:id="@+id/inputArea"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/submitBtn"
+            android:gravity="center_vertical"
+            android:id="@+id/newMsg"
+            android:background="@color/white"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:textSize="15dp"
+            android:hint="Send a message..."
+            android:tag="font_Karla"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/submitBtn"
+            android:text="Send"
+            android:background="@color/white"
+            android:tag="font_Vitesse_Bold"
+            android:textColor="@color/dark_gray"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textSize="14sp"
+            />
+
+    </RelativeLayout>
+</RelativeLayout>

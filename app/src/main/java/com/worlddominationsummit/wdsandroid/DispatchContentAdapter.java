@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,9 +31,14 @@ public class DispatchContentAdapter extends ArrayAdapter<HashMap>{
     public ImageLoader mImageLoader;
     public Boolean isLoading = false;
     public DispatchContentFragment mContext;
+    public DisplayImageOptions mDisplayImageOptions = new DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .showImageOnLoading(R.drawable.gray_dots)
+                .considerExifParams(true)
+                .build();
     public DispatchContentAdapter(Context context, ArrayList<HashMap> items) {
         super(context, 0, items);
-        mImageLoader = new ImageLoader(context.getApplicationContext());
+        mImageLoader = ImageLoader.getInstance();
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -52,6 +59,7 @@ public class DispatchContentAdapter extends ArrayAdapter<HashMap>{
             holder.channel = (TextView) convertView.findViewById(R.id.channel);
             holder.channel.setTypeface(Font.use("Karla_Italic"));
             holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
+            holder.media = (ImageView) convertView.findViewById(R.id.media);
             holder.content = (TextView) convertView.findViewById(R.id.content);
             holder.content.setTypeface(Font.use("Karla"));
             holder.num_likes = (TextView) convertView.findViewById(R.id.num_likes);
@@ -63,7 +71,13 @@ public class DispatchContentAdapter extends ArrayAdapter<HashMap>{
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-        mImageLoader.DisplayImage(item.author.pic, holder.avatar);
+        if (item.media != null && !item.media.equals("null") && item.media.length() > 0) {
+            mImageLoader.displayImage("https://photos.wds.fm/media/"+item.media+"_large", holder.media, mDisplayImageOptions);
+            holder.media.setVisibility(View.VISIBLE);
+        } else {
+            holder.media.setVisibility(View.GONE);
+        }
+        mImageLoader.displayImage(item.author.pic, holder.avatar);
         holder.name.setText(item.author.full_name);
         holder.content.setText(item.content);
         Linkify.addLinks(holder.content, Linkify.WEB_URLS);
@@ -143,6 +157,7 @@ public class DispatchContentAdapter extends ArrayAdapter<HashMap>{
         private TextView channel;
         private RelativeTimeTextView timestamp;
         private ImageView avatar;
+        private ImageView media;
         private TextView content;
         private TextView num_likes;
         private TextView num_comments;

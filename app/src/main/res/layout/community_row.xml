@@ -30,9 +30,25 @@
         android:id="@+id/join"
         android:text="Join"
         android:layout_alignParentRight="true"
-        android:textSize="18sp"
+        android:textSize="17sp"
         android:layout_width="90dp"
         android:background="@color/orange"
         android:textColor="@color/tan"
-        android:layout_height="59dp" />
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="9dp"
+        android:lineSpacingMultiplier="0.7"
+        android:layout_height="40dp" />
+    <ImageButton
+        android:id="@+id/moreBtn"
+        android:layout_width="14dp"
+        android:layout_alignLeft="@id/join"
+        android:layout_alignStart="@id/join"
+        android:layout_height="20dp"
+        android:backgroundTint="@color/light_tan"
+        android:background="@color/clear"
+        android:scaleType="fitCenter"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="-35dp"
+        android:src="@drawable/chevron_right_brown" />
 </RelativeLayout>

@@ -62,6 +62,7 @@ public class CommunitiesAdapter extends ArrayAdapter<HashMap>{
                 Me.joinCommunity(interest_id, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
+                        holder.size.setText(jsonObject.optString("members", "100") +" members");
                         updateJoinButton(holder.join, interest_id);
                     }
                 }, new Response.ErrorListener() {

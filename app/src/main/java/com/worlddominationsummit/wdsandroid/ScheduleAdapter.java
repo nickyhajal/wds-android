@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -26,7 +27,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScheduleAdapter extends SectionAdapter {
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+public class ScheduleAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 
     public String day;
     public int numItems;
@@ -45,62 +48,58 @@ public class ScheduleAdapter extends SectionAdapter {
         this.day = day;
     }
 
-    public void setItems(JSONArray items) {
+    public void setItems(JSONArray allItems) {
         this.items = new JSONArray();
-        this.numItems = items.length();
-        int sectionIndex = -1;
         String lastTime = "";
-        for (int i = 0; i < this.numItems; i++) {
-            JSONObject ev = items.optJSONObject(i);
-            Event evo = Event.fromJson(ev);
-            HashMap<String, String> evh = new HashMap<String, String>();
-            try {
-                evh = (HashMap) JsonHelper.toMap(ev);
-            } catch (JSONException e) {
-                Log.e("WDS", "Json Exception", e);
-            }
-            if (ev.optString("startDay").equals(this.day) && Me.isAttendingEvent(evh)) {
-                if (!lastTime.equals(ev.optString("startStr"))) {
-                    sectionIndex += 1;
-                    this.items.put(new JSONArray());
-                    this.sections.add(ev.optString("startStr"));
+        if (allItems != null) {
+            for (int i = 0; i < allItems.length(); i++) {
+                JSONObject ev = allItems.optJSONObject(i);
+                Event evo = Event.Companion.fromJson(ev);
+                HashMap<String, String> evh = new HashMap<String, String>();
+                try {
+                    evh = (HashMap) JsonHelper.toMap(ev);
+                } catch (JSONException e) {
+                    Log.e("WDS", "Json Exception", e);
                 }
-                this.items.optJSONArray(sectionIndex).put(ev);
-                lastTime = ev.optString("startStr");
+                if (ev.optString("startDay").equals(this.day) && Me.isAttendingEvent(evh)) {
+                    this.items.put(ev);
+                    if (!lastTime.equals(ev.optString("startStr"))) {
+                        this.sections.add(ev.optString("startStr"));
+                    }
+                    lastTime = ev.optString("startStr");
+                }
             }
-
         }
     }
 
 
     @Override
-    public int numberOfSections() {
-        return this.sections.size();
+    public int getCount() {
+        return this.items.length();
     }
 
     @Override
-    public int numberOfRows(int section) {
-        if (section > -1 && section < this.sections.size()) {
-            return this.items.optJSONArray(section).length();
-        } else {
-            return 0;
-        }
+    public Object getItem(int position) {
+        return this.items.opt(position);
     }
 
     @Override
-    public Object getRowItem(int section, int row) {
-        return this.items.optJSONArray(section).optJSONObject(row);
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public boolean hasSectionHeaderView(int section) {
-        return true;
+    public long getHeaderId(int position) {
+        JSONObject evo = this.items.optJSONObject(position);
+        Event ev = Event.Companion.fromJson(evo);
+
+        return this.sections.indexOf(ev.getStartStr());
     }
 
     @Override
-    public View getRowView(int section, int row, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = new ViewHolder();
-        final Event event = Event.fromJson((JSONObject) getRowItem(section, row));
+        final Event event = Event.Companion.fromJson((JSONObject) this.items.opt(position));
         if (convertView == null) {
             convertView = LayoutInflater.from(this.context).inflate(R.layout.schedule_row, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
@@ -117,17 +116,23 @@ public class ScheduleAdapter extends SectionAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+event.lat+","+event.lon));
+                Uri.parse("http://maps.google.com/maps?daddr="+ event.getLat() +","+ event.getLon()));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 context.startActivity(intent);
             }
         };
         holder.navBtn.setOnClickListener(navListener);
         holder.place.setOnClickListener(navListener);
-        String name = event.what;
-        if (event.type.equals("meetup") || event.type.equals("academy") || event.type.equals("spark_session") || event.type.equals("activity")) {
-            String typeName = EventTypes.byId.optJSONObject(event.type).optString("singular");
-            name = typeName+": " + name;
+        String name = event.getWhat();
+        if (event.getDescr().length() > 0 || event.getType().equals("meetup") || event.getType().equals("academy") || event.getType().equals("spark_session") || event.getType().equals("activity")) {
+            String type = event.getType();
+            if (!type.equals("program")) {
+                JSONObject typeObj = EventTypes.byId.optJSONObject(type);
+                String typeName = typeObj.optString("singular");
+                if (typeName.length() > 0) {
+                    name = typeName + ": " + name;
+                }
+            }
             holder.moreBtn.setVisibility(View.VISIBLE);
             holder.moreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -151,22 +156,12 @@ public class ScheduleAdapter extends SectionAdapter {
         }
 
         holder.name.setText(name);
-        holder.place.setText(event.place);
+        holder.place.setText(event.getPlace());
         return convertView;
     }
 
     @Override
-    public int getSectionHeaderViewTypeCount() {
-        return 2;
-    }
-
-    @Override
-    public int getSectionHeaderItemViewType(int section) {
-        return 1;
-    }
-
-    @Override
-    public View getSectionHeaderView(int section, View convertView, ViewGroup parent) {
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
         HeaderHolder holder;
         if (convertView == null) {
             holder = new HeaderHolder();
@@ -177,13 +172,9 @@ public class ScheduleAdapter extends SectionAdapter {
         } else {
             holder = (HeaderHolder) convertView.getTag();
         }
-        holder.time.setText(this.sections.get(section));
+        long id = getHeaderId(position);
+        holder.time.setText(this.sections.get((int) id));
         return convertView;
-    }
-
-    @Override
-    public void onRowItemClick(AdapterView<?> parent, View view, int section, int row, long id) {
-        super.onRowItemClick(parent, view, section, row, id);
     }
 
     private class ViewHolder {

@@ -33,6 +33,7 @@ public class Attendee {
     public String facebook;
     public String instagram;
     public String pic;
+    public String pre19 = "0";
     public String location = "";
     public String lat;
     public String lon;
@@ -61,6 +62,7 @@ public class Attendee {
         atn.facebook = params.optString("facebook");
         atn.instagram = params.optString("instagram");
         atn.pic = params.optString("pic");
+        atn.pre19 = params.optString("pre19");
         atn.location = params.optString("location");
         atn.lat = params.optString("lat");
         atn.lon = params.optString("lon");
@@ -73,7 +75,7 @@ public class Attendee {
     }
 
     public Attendee() { }
-    public Attendee(String user_id, String first_name, String last_name, String user_name, String email, String ticket_type, String site, String twitter, String facebook, String instagram, String pic, String location, String lat, String lon, String distance) {
+    public Attendee(String user_id, String first_name, String last_name, String user_name, String email, String ticket_type, String site, String twitter, String facebook, String instagram, String pic, String location, String lat, String lon, String distance, String pre19) {
         this.user_id = user_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -83,6 +85,7 @@ public class Attendee {
         this.twitter = twitter;
         this.facebook = facebook;
         this.site = site;
+        this.pre19 = pre19;
         this.instagram = instagram;
         this.pic = pic;
         this.location = location;
@@ -146,16 +149,27 @@ public class Attendee {
                     "      a { color: #E99533; text-decoration: underline; }" +
                     "    </style><body>";
             JSONArray qs = new JSONArray();
-            qs.put("");
+            qs.put(""); // Skip question_id 0
             qs.put("Why did you decide to travel " + this.distance + " miles from " + this.location + " to the World Domination Summit?");
             qs.put("What are you excited about these days?");
             qs.put("What's your super-power?");
-            qs.put("What's your goal for WDS 2016?");
+            qs.put("What's your goal for WDS 2019?");
             qs.put("What's your favorite song?");
             qs.put("What's your favorite treat?");
             qs.put("What's your favorite beverage?");
             qs.put("What's your favorite quote?");
             qs.put("What are you looking forward to during your time in Portland?");
+            qs.put("What is something you'd love help with from the WDS community?");
+            qs.put("What is something you can offer to another WDS attendee?");
+            qs.put("If you had one wish, what would you wish for?");
+            qs.put("What's one project or goal you're working on now?");
+            qs.put(""); // Skip question_id 13
+            qs.put("What book has had the biggest impact on your life?");
+            qs.put("What's your favorite song to get pumped up?");
+            qs.put("What's your favorite treat to celebrate a job well-done?");
+            qs.put("What's your favorite beverage to kick-back and relax?");
+            qs.put("What's your favorite way to contribute to society at large?");
+
             for (int i = 0; i < len; i++) {
                 String q = "";
                 JSONObject answer = answers.optJSONObject(i);
@@ -171,10 +185,36 @@ public class Attendee {
         }
     }
 
+    public String qnaHtml() {
+        return "<html>" +
+                "<head>" +
+                "<style type=\"text/css\">" +
+                "@font-face {\n" +
+                "    font-family: Karla;" +
+                "    src: url(\"file:///android_asset/fonts/KarlaRegular.ttf\")" +
+                "}"+
+                "body {" +
+                "    font-family: Karla;" +
+                "}" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                this.qnaStr +
+                "</body>" +
+                "</html>";
+    }
     public Spanned qna() {
         HtmlSpanner htmlspanner = new HtmlSpanner();
         String str = this.qnaStr.replace("\n", "<br>");
         Spannable text = htmlspanner.fromHtml(str);
         return text;
+    }
+
+    public HashMap toSimpleHashMap() {
+        HashMap<String, Object> out = new HashMap<>();
+        out.put("first_name", first_name);
+        out.put("last_name", last_name);
+        out.put("user_id", user_id);
+        return out;
     }
 }

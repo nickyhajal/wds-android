@@ -30,7 +30,7 @@ public class EventAttendeesFragment extends Fragment{
     public View view;
     public ListView listview;
     public AttendeeSearchAdapter adapter;
-    public ArrayList<HashMap> items;
+    public ArrayList<HashMap<String, String>> items;
     public TextView mLoading;
     public TextView mNullMsg;
     public String mEventId;
@@ -80,7 +80,7 @@ public class EventAttendeesFragment extends Fragment{
             this.listview = (ListView) this.view.findViewById(R.id.results);
             mLoading = (TextView) this.view.findViewById(R.id.loading);
             mNullMsg= (TextView) this.view.findViewById(R.id.nullMsg);
-            this.update_items(new ArrayList<HashMap>());
+            this.update_items(new ArrayList<HashMap<String, String>>());
             Font.applyTo(view);
             setEvent(mEventId);
         }
@@ -89,12 +89,12 @@ public class EventAttendeesFragment extends Fragment{
 
     public void update_items(JSONArray items) {
         try {
-            this.update_items((ArrayList<HashMap>) JsonHelper.toList(items));
+            this.update_items((ArrayList<HashMap<String, String>>) JsonHelper.toList(items));
         } catch (JSONException e) {
             Log.e("WDS", "Json Exception in attendee search update items", e);
         }
     }
-    public void update_items(ArrayList<HashMap> items) {
+    public void update_items(ArrayList<HashMap<String, String>> items) {
         this.items = items;
         this.update_items();
     }

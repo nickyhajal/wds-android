@@ -22,7 +22,7 @@ public class Avatar {
         return Avatar.url(user_id, String.valueOf(size));
     }
     public static String url(String user_id, String size) {
-        return "http://avatar.wds.fm/"+user_id+"?width="+size;
+        return "https://avatar.wds.fm/"+user_id+"?width="+size;
     }
     public static Bitmap bitmap(int user_id, int size) {
         return Avatar.bitmap(String.valueOf(user_id), String.valueOf(size));
